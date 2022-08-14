@@ -70,14 +70,14 @@ class NeuralNetwork:
 		self.output = self.activation2.output
 	
 
-	def randomize(self, randomizationAmount, randomuzationStrength):
+	def randomize(self, randomizationAmount, randomuzationStrengthWeights, randomuzationStrengthBiases):
 		for index, dense in enumerate(self.denses):
 			for index2, weight in enumerate(self.denses[index].weights):
 				if(np.random.uniform(0,1) <= randomizationAmount):
-					self.denses[index].weights[index2] = self.denses[index].weights[index2] + np.random.uniform(-1,1)*randomuzationStrength
+					self.denses[index].weights[index2] = self.denses[index].weights[index2] + np.random.uniform(-1,1)*randomuzationStrengthWeights
 			for index2, biases in enumerate(self.denses[index].biases):
 				if(np.random.uniform(0,1) <= randomizationAmount):
-					self.denses[index].biases[index2] = self.denses[index].biases[index2] + np.random.uniform(-1,1)*randomuzationStrength
+					self.denses[index].biases[index2] = self.denses[index].biases[index2] + np.random.uniform(-1,1)*randomuzationStrengthBiases
 
 	def copy(self):
 		return deepcopy(self)

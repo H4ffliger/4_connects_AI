@@ -6,6 +6,7 @@ import time
 import math
 #Multithreading
 from concurrent.futures import ThreadPoolExecutor
+import concurrent.futures
 
 
 
@@ -21,7 +22,7 @@ class Genetics():
 		for x in range(self.population):
 			self.agents.append(NeuralNetwork(aInputs, aOutputs))
 		for x in range(self.population):
-			self.agents[x].randomize(1, 0.05)
+			self.agents[x].randomize(1, 0.05, 0.1)
 
 
 
@@ -87,7 +88,7 @@ class Genetics():
 
 
 
-	def roundClose(self, randomizationAmount, randomuzationStrength):
+	def roundClose(self, randomizationAmount, randomuzationStrengthWeights, randomuzationStrengthBiases):
 		#start_time = time.time()
 		totalFitness = 0
 		self.newAgents = []
@@ -100,7 +101,7 @@ class Genetics():
 			#Fitness calculation
 			self.agents[i].fitness = math.pow(self.agents[i].fitness,self.FITNESS_REWARD)
 			#Just in case every agent has a score of 0
-			#self.agents[i].fitness += 1
+			self.agents[i].fitness += 1
 
 			#self.p.map(self.newAgents.append(self.agents[i].copy()), range(0, int(self.agents[i].fitness)))
 			#self.p.close()
@@ -115,11 +116,15 @@ class Genetics():
 		#print(len(self.newAgents))
 		#np.random.randint(0,0)
 		self.agents = []
+		#executor = concurrent.futures.ThreadPoolExecutor() # Or ProcessPoolExecutor
+		#executor.map(self.agents.append(self.newAgents[np.random.randint(0, len(self.newAgents)-1)].copy()), range(0, 10))
+		#time.sleep(2)
 		for x in range(self.population):
+			#print(len(self.agents))
 			self.agents.append(self.newAgents[np.random.randint(0, len(self.newAgents)-1)].copy())
 			self.agents[x].fitness = 0
 			#Mutate
-			self.agents[x].randomize(randomizationAmount, randomuzationStrength)
+			self.agents[x].randomize(randomizationAmount, randomuzationStrengthWeights, randomuzationStrengthBiases)
 
 		#Remember print is bevore randomization takes place
 		#print("--- %s seconds ---" % (time.time() - start_time))

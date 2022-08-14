@@ -33,7 +33,8 @@ AGENT_INPUTS = gameSize
 AGENT_OUTPUTS = 5
 #Mutation 0.05 = 5% on 5% of weights
 randomizationAmount = 1
-randomuzationStrength = 0.03
+randomuzationStrengthWeights = 0.03
+randomuzationStrengthBiases = 0.1
 #Reward is exponential default 1.75
 FITNESS_REWARD = 1
 #Population / Probability = real probability
