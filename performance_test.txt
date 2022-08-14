@@ -1,0 +1,1 @@
+python -m cProfile --sort cumulative main.py testMP >> out1.log
