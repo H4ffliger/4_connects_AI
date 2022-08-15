@@ -7,6 +7,7 @@ import math
 #Multithreading
 from concurrent.futures import ThreadPoolExecutor
 import concurrent.futures
+import logging
 
 
 
@@ -96,21 +97,26 @@ class Genetics():
 		#In precentage
 		x = []
 		for i in range(len(self.agents)-1, -1, -1):
-			totalFitness += self.agents[i].fitness 
+			totalFitness += self.agents[i].fitness
 			totalRightGuesses += self.agents[i].fitness
 			#Fitness calculation
+			#devide by 5 to get smaller fitness
+			#Agents with fitness 10/5 = 2 **2 = 4 20 / 5 = 4 **2 = 16 
+			self.agents[i].fitness = self.agents[i].fitness/20
 			self.agents[i].fitness = math.pow(self.agents[i].fitness,self.FITNESS_REWARD)
 			#Just in case every agent has a score of 0
-			self.agents[i].fitness += 1
+			#self.agents[i].fitness += 1
 
 			#self.p.map(self.newAgents.append(self.agents[i].copy()), range(0, int(self.agents[i].fitness)))
 			#self.p.close()
 			#self.p.join()
-			with ThreadPoolExecutor() as executor:
-				executor.map(self.newAgents.append(self.agents[i].copy()), range(0, int(self.agents[i].fitness)))
-			#for y in range(0, int(self.agents[i].fitness)):
-			#	self.newAgents.append(self.agents[i].copy())
+			#Multithread not able to do lists
+			#with ThreadPoolExecutor() as executor:
+			#	executor.map(self.newAgents.append(self.agents[i].copy()), range(0, int(self.agents[i].fitness)))
+			for y in range(0, int(self.agents[i].fitness)):
+				self.newAgents.append(self.agents[i].copy())
 		#print("totalFitness: " + str(totalFitness))
+		logging.debug("newAgents list size: " + str(len(self.newAgents)))
 
 		#print("Checkittttt")
 		#print(len(self.newAgents))

@@ -11,6 +11,9 @@ from functools import partial
 import pyfiglet
 #Analyzer
 import tracemalloc
+
+import logging
+logging.basicConfig(level=logging.DEBUG)
 '''
 import linecache
 import os
@@ -57,7 +60,7 @@ gameSize = 6*7
 
 #Genetic Algorithm
 POP_COUNT = 200
-GHOSTAGENTS_POP = 500#POP_COUNT*15
+GHOSTAGENTS_POP = POP_COUNT*15
 #ROUND_COUNT 0 = 1'000'000
 ROUND_COUNT = 250000000
 #Individual agents
@@ -66,27 +69,34 @@ AGENT_INPUTS = gameSize
 AGENT_OUTPUTS = 6 #ToDo:Check if not one to small
 #Mutation 0.05 = 5% on 5% of weights
 randomizationAmount = 0.05
-randomuzationStrengthWeights = 0.02
+randomuzationStrengthWeights = 0.05
 randomuzationStrengthBiases = 0.1
 #Reward is exponential default 1.75
-FITNESS_REWARD = 1.5
+FITNESS_REWARD = 1.75
 #Population / Probability = real probability
-SNAPSHOT_PROBABILITY = 80
+SNAPSHOT_PROBABILITY = 120
 #Games each round for each agent
-GAMESPERROUND = 1
-GHOSTGAMESPERROUND = 20
+GAMESPERROUND = 20
+GHOSTGAMESPERROUND = 5
 PLAYERTOMOVE = 100000
 SHOWAFTER = 1000000
 SHOWEVERY = 20000
 
+#AI vs AI
 WINFITNESS = 4
 DRAWFITNESS = 0.5
 LOSEFITNESS = 0.1
 
+#AI vs Ghost (Ghost doesnt get fitness thats why AI gets only half of it)
+WINFITNESSGHOST = 8
+DRAWFITNESSGHOST = 1
+LOSEFITNESSGHOST = 0.2
+
+
 EXPORTEVERYXMOVE = 25
 #1 = >= Durchschnitt 1.1 = 110% von normaler Qualität
 EXPORTQUALITY = 1
-EXPORTAFTER = 30
+EXPORTAFTER = 0
 EXPORTAMOUNT = 2
 
 
@@ -134,7 +144,7 @@ def getGhost2Move(userToPlay, board, indexMove):
 	return sortedPicks[indexMove]
 
 
-def gameRound(y: int, idx: int):
+def gameRoundGhost(y: int, idx: int):
 
 	#All fight the same enemy
 	if(y == 0):
@@ -148,16 +158,15 @@ def gameRound(y: int, idx: int):
 		game = GameField()
 		game_over = False
 		userToPlay = 0
-
+		#First move throws off the AI for the first x 100 moves
+		firstMoveNoise = 3 #np.random.randint(0,7)
+		firstMovePlayed = False
 
 
 		while not game_over:
-
 			debugMoves = 0
 			valid_move = False
 			bannedOutputs = 0
-			firstMoveNoise = np.randint(0,7)
-			firstMovePlayed = False
 
 			while not valid_move:
 				#y == 0 > AI gets second move
@@ -184,9 +193,9 @@ def gameRound(y: int, idx: int):
 					bannedOutputs += 1
 					if(chosen_move == -1 or bannedOutputs >= AGENT_OUTPUTS):
 						if(y == 0):
-							genetics2.calculateFitnessParticular(x, DRAWFITNESS)
+							genetics2.calculateFitnessParticular(x, DRAWFITNESSGHOST)
 						else:
-							genetics1.calculateFitnessParticular(x, DRAWFITNESS)
+							genetics1.calculateFitnessParticular(x, DRAWFITNESSGHOST)
 						game_over = True
 						valid_move = True
 
@@ -195,10 +204,7 @@ def gameRound(y: int, idx: int):
 					print(game.print_board())
 			
 
-			if(userToPlay == 0):
-				userToPlay = 1
-			else:
-				userToPlay = 0
+
 
 			# End the game if there is a winner CHECK IS REVERSED
 			if(game.check_winner() and game_over == False):
@@ -209,18 +215,130 @@ def gameRound(y: int, idx: int):
 				#y == 1 and usertoplay == 0 AI lose
 				#y == 1 and usertoplay == 1 AI win
 				if(y == 0):
-					if(userToPlay == 1):
-						genetics2.calculateFitnessParticular(x, LOSEFITNESS)#Must be 3
+					if(userToPlay == 0):
+						genetics2.calculateFitnessParticular(x, LOSEFITNESSGHOST)#Must be 3
 					else:
-						genetics2.calculateFitnessParticular(x, WINFITNESS)#Must be 3
-				#O winns the game
+						genetics2.calculateFitnessParticular(x, WINFITNESSGHOST)#Must be 3
+				#1 winns the game
 				else:
-					if(userToPlay == 1):
-						genetics1.calculateFitnessParticular(x, WINFITNESS)#Must be 3
+					if(userToPlay == 0):
+						genetics1.calculateFitnessParticular(x, WINFITNESSGHOST)#Must be 3
 					else:
-						genetics1.calculateFitnessParticular(x, LOSEFITNESS)#Must be 3
+						genetics1.calculateFitnessParticular(x, LOSEFITNESSGHOST)#Must be 3
 				game_over = True
 				valid_move = True
+
+			if(userToPlay == 0):
+				userToPlay = 1
+			else:
+				userToPlay = 0
+
+
+			# End the game if there is a tie
+			if not any(-1 in x for x in game.board):
+				if(game_over == False):
+					if(y == 0):
+						genetics2.calculateFitnessParticular(x, DRAWFITNESSGHOST)
+					else:
+						genetics1.calculateFitnessParticular(x, DRAWFITNESSGHOST)
+				game_over = True
+				valid_move = True
+
+
+def gameRoundAI(y: int, idx: int):
+
+	for x in range(POP_COUNT-1, 0, -1):
+
+		#All fight random enemies
+		if(y == 0):
+			enemy = np.random.randint(0, POP_COUNT)
+		else:
+			enemy = np.random.randint(0, POP_COUNT)
+
+
+		game = GameField()
+		game_over = False
+		userToPlay = 0
+		#First move throws off the AI for the first x 100 moves
+		firstMoveNoise = 3 #np.random.randint(0,7)
+		firstMovePlayed = False
+
+
+		while not game_over:
+			debugMoves = 0
+			valid_move = False
+			bannedOutputs = 0
+
+			while not valid_move:
+				#y == 0 > AI gets second move
+				if(firstMovePlayed == False):
+					firstMovePlayed = True;
+					chosen_move = firstMoveNoise
+				elif(y == 0):
+					#userToPay 0 = Ghost gets first move
+					if(userToPlay == 0):
+						chosen_move = getAIMove(enemy, game.board, bannedOutputs)
+					else:
+						chosen_move = getAI2Move(x, game.board, bannedOutputs)
+				else:
+					if(userToPlay == 0):
+						chosen_move = getAIMove(x, game.board, bannedOutputs)
+
+					else:
+						chosen_move = getAI2Move(enemy, game.board, bannedOutputs)
+
+
+
+				valid_move = game.turn(chosen_move)
+				if(valid_move == False and game_over == False):
+					bannedOutputs += 1
+					if(chosen_move == -1 or bannedOutputs >= AGENT_OUTPUTS):
+						if(y == 0):
+							genetics2.calculateFitnessParticular(x, DRAWFITNESS)
+							genetics1.calculateFitnessParticular(enemy, DRAWFITNESS)
+						else:
+							genetics1.calculateFitnessParticular(x, DRAWFITNESS)
+							genetics2.calculateFitnessParticular(enemy, DRAWFITNESS)
+						game_over = True
+						valid_move = True
+
+				if(x > POP_COUNT-1 and b % SHOWEVERY == 1 and b < ROUND_COUNT - SHOWAFTER):
+					#time.sleep(0.2)
+					print(game.print_board())
+			
+
+
+
+			# End the game if there is a winner CHECK IS REVERSED
+			if(game.check_winner() and game_over == False):
+				#X wins the game
+				#Ghosts
+				#y == 0 and usertoplay == 0 AI win
+				#y == 0 and usertoplay == 1 AI lose
+				#y == 1 and usertoplay == 0 AI lose
+				#y == 1 and usertoplay == 1 AI win
+				if(y == 0):
+					if(userToPlay == 0):
+						genetics2.calculateFitnessParticular(x, LOSEFITNESS)#Must be 3
+						genetics1.calculateFitnessParticular(enemy, WINFITNESS)
+					else:
+						genetics2.calculateFitnessParticular(x, WINFITNESS)#Must be 3
+						genetics1.calculateFitnessParticular(enemy, LOSEFITNESS)
+				#1 winns the game
+				else:
+					if(userToPlay == 0):
+						genetics1.calculateFitnessParticular(x, WINFITNESS)#Must be 3
+						genetics2.calculateFitnessParticular(enemy, LOSEFITNESS)
+					else:
+						genetics1.calculateFitnessParticular(x, LOSEFITNESS)#Must be 3
+						genetics2.calculateFitnessParticular(enemy, WINFITNESS)
+				game_over = True
+				valid_move = True
+
+			if(userToPlay == 0):
+				userToPlay = 1
+			else:
+				userToPlay = 0
 
 
 			# End the game if there is a tie
@@ -228,10 +346,14 @@ def gameRound(y: int, idx: int):
 				if(game_over == False):
 					if(y == 0):
 						genetics2.calculateFitnessParticular(x, DRAWFITNESS)
+						genetics1.calculateFitnessParticular(enemy, DRAWFITNESS)
 					else:
 						genetics1.calculateFitnessParticular(x, DRAWFITNESS)
+						genetics2.calculateFitnessParticular(enemy, DRAWFITNESS)
 				game_over = True
 				valid_move = True
+
+
 
 
 
@@ -239,8 +361,25 @@ def gameRound(y: int, idx: int):
 for b in range(ROUND_COUNT-1, 0, -1):
 	#PlayAgainstGhost
 	for y in range(0,2):
+		#Testing
+		#Doble amount of fitness due to double reward 
+		#for x in range(0, GAMESPERROUND):
+		#	gameRoundAI(y,1)
+
 		with ThreadPoolExecutor() as executor:
-			worker = partial(gameRound, y)
+			worker = partial(gameRoundAI, y)
+			executor.map(worker, range(0, GAMESPERROUND))
+
+		
+
+
+
+		#Debug Testing gameRound(y,1)
+		#for x in range(0, GHOSTGAMESPERROUND):
+		#	gameRoundGhost(y,1)
+
+		with ThreadPoolExecutor() as executor:
+			worker = partial(gameRoundGhost, y)
 			executor.map(worker, range(0, GHOSTGAMESPERROUND))
 
 
@@ -253,12 +392,12 @@ for b in range(ROUND_COUNT-1, 0, -1):
 
 	#New approach (and fitnessOfRound2 > GHOSTGAMESPERROUND + GHOSTGAMESPERROUND/3)
 	for g1 in range(len(genetics1.agents)-1, -1, -1):
-		if(GHOSTGAMESPERROUND + GHOSTGAMESPERROUND/3  <= genetics1.agents[g1].fitness and np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
+		if(GHOSTGAMESPERROUND*2 + GAMESPERROUND*2.2 <= genetics1.agents[g1].fitness and np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
 			genetics1.copyAgenttoGhost(g1)
 
 	#New approach (and fitnessOfRound > GHOSTGAMESPERROUND + GHOSTGAMESPERROUND/3)
 	for g2 in range(len(genetics2.agents)-1, -1, -1):
-		if(GHOSTGAMESPERROUND + GHOSTGAMESPERROUND/3 +1  <= genetics2.agents[g2].fitness and np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
+		if(GHOSTGAMESPERROUND*2 + GAMESPERROUND*2.2 <= genetics2.agents[g2].fitness and np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
 			genetics2.copyAgenttoGhost(g2)
 
 
