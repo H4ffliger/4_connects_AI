@@ -8,6 +8,7 @@ import sys
 from concurrent.futures import ThreadPoolExecutor
 #For passing arguments
 from functools import partial
+from minmax import minMaxAI
 import pyfiglet
 #Analyzer
 import tracemalloc
@@ -49,11 +50,11 @@ tracemalloc.start()
 ascii_banner = pyfiglet.figlet_format("GNeuroNetWK")
 print(ascii_banner)
 
-print("Version 0.01\n"+
+print("Version 0.02\n"+
 	"Genetic neuronal network developed by Huffliger \n" +
 	"Designed to solve compute intense problems\n" +
 	"Currently test boilerplate to check functionality\n" + 
-	"Beat the randomness function\n\n")
+	"Beat the game 4 connects with external minmax score progress check\n\n")
 
 #Game Specific
 gameSize = 6*7
@@ -78,14 +79,13 @@ SNAPSHOT_PROBABILITY = POP_COUNT/0.8
 #Games each round for each agent
 GAMESPERROUND = 20
 GHOSTGAMESPERROUND = 10
-PLAYERTOMOVE = 100000
-SHOWAFTER = 100
-SHOWEVERY = 10
+SHOWAFTER = 100000000
+SHOWEVERY = 1000
 
 #AI vs AI
 WINFITNESS = 4
 DRAWFITNESS = 0.5
-LOSEFITNESS = 0.1
+LOSEFITNESS = -0.2 # experiment with -0.5
 
 #AI vs Ghost (Ghost doesnt get fitness thats why AI gets only half of it)
 WINFITNESSGHOST = 8
@@ -142,6 +142,9 @@ def getGhost2Move(userToPlay, board, indexMove):
 	moveProbabiltyScore = genetics2.thinkParticularGhost(userToPlay, board.flatten()).flatten()
 	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
 	return sortedPicks[indexMove]
+
+def getStack2Move(userToPlay, board, indexMove):
+	return minMaxAI(board)
 
 
 def gameRoundGhost(y: int, idx: int):
@@ -354,6 +357,107 @@ def gameRoundAI(y: int, idx: int):
 				valid_move = True
 
 
+# Change to do => don't train on this data (don't cloe the round /generations)
+
+def checkAIQuality(y: int, idx: int):
+	qual_check_wins = 0;
+	qual_check_draws = 0;
+	qual_check_losses = 0;
+	logging.debug("Starting quality check on generation " + str(y+1))
+	#Performance wise only 20% of the population gets testet
+	for x in range(int(POP_COUNT/10)-1, 0, -1):
+		game = GameField()
+		game_over = False
+		userToPlay = 0
+		#First move throws off the AI for the first x 100 moves
+		firstMoveNoise = np.random.randint(2,5)
+		firstMovePlayed = False
+
+		print("Checking agent " + str(x))
+		while not game_over:
+			valid_move = False
+			bannedOutputs = 0
+
+			while not valid_move:
+				#y == 0 > AI gets second move
+				if(firstMovePlayed == False):
+					firstMovePlayed = True;
+					chosen_move = firstMoveNoise
+				elif(y == 0):
+					#userToPay 0 = Ghost gets first move
+					if(userToPlay == 0):
+						chosen_move = minMaxAI(game.board)
+						#chosen_move = getGhostMove(enemy, game.board, bannedOutputs)
+					else:
+						chosen_move = getAI2Move(x, game.board, bannedOutputs)
+				else:
+					if(userToPlay == 0):
+						chosen_move = getAIMove(x, game.board, bannedOutputs)
+					else:
+						#chosen_move = getGhost2Move(enemy, game.board, bannedOutputs)
+						chosen_move = minMaxAI(game.board)
+
+				valid_move = game.turn(chosen_move)
+				if(valid_move == False and game_over == False):
+					bannedOutputs += 1
+					if(chosen_move == -1 or bannedOutputs >= AGENT_OUTPUTS):
+						if(y == 0):
+							qual_check_draws += 1
+						else:
+							qual_check_draws += 1
+						game_over = True
+						valid_move = True
+				if(x > POP_COUNT-2 and b % SHOWEVERY == 1 and b < ROUND_COUNT - SHOWAFTER):
+					time.sleep(0.3)
+					print(game.print_board())
+			
+
+
+
+			# End the game if there is a winner CHECK IS REVERSED
+			if(game.check_winner() and game_over == False):
+				#X wins the game
+				#Ghosts
+				# y == 0 then gen2
+				# y == 1 then gen1
+				#y == 0 and usertoplay == 0 AI win
+				#y == 0 and usertoplay == 1 AI lose
+				#y == 1 and usertoplay == 0 AI lose
+				#y == 1 and usertoplay == 1 AI win
+				if(y == 0):
+					if(userToPlay == 0):
+						qual_check_losses += 1
+					else:
+						qual_check_wins += 1
+				#1 winns the game
+				else:
+					if(userToPlay == 0):
+						qual_check_wins += 1
+					else:
+						qual_check_losses += 1
+				game_over = True
+				valid_move = True
+
+			if(userToPlay == 0):
+				userToPlay = 1
+			else:
+				userToPlay = 0
+
+
+			# End the game if there is a tie
+			if not any(-1 in x for x in game.board):
+				if(game_over == False):
+					if(y == 0):
+						qual_check_draws += 1
+					else:
+						qual_check_draws += 1
+				game_over = True
+				valid_move = True
+	file_object = open("dumbed_saves/" + sys.argv[1] + "_GEN_"+str(y+1) +"_min_max_progress.csv", 'a')
+	file_object.write(str(roundsCompleted)+";" +str(qual_check_wins)+";"+str(qual_check_draws)+";"+str(qual_check_losses)+"\n")
+	file_object.close()
+
+
 
 
 
@@ -381,6 +485,9 @@ for b in range(ROUND_COUNT-1, 0, -1):
 		with ThreadPoolExecutor() as executor:
 			worker = partial(gameRoundGhost, y)
 			executor.map(worker, range(0, GHOSTGAMESPERROUND))
+
+		#Play against external minmax algorithm
+		checkAIQuality(y,1)
 
 
 
@@ -419,7 +526,7 @@ for b in range(ROUND_COUNT-1, 0, -1):
 
 
 	roundsCompleted += 1
-	file_object = open("dumbed_saves/" + sys.argv[1] + ".txt", 'a')
+	file_object = open("dumbed_saves/" + sys.argv[1] + ".csv", 'a')
 	file_object.write(str(roundsCompleted)+";"+str(fitnessOfRound1)+ ";" + str(fitnessOfRound2)+ ";" +str(len(genetics1.ghostAgents))+";"+str(len(genetics2.ghostAgents))+"\n")
 	file_object.close()
 
