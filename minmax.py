@@ -3,25 +3,6 @@ import numpy as np
 from copy import deepcopy
 import time
 
-
-
-#GPU stuff
-import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-
-#Introduction
-import pyfiglet
-#ascii_banner = pyfiglet.figlet_format("GNeuroNetWK")
-#print(ascii_banner)
-'''
-print("Version 0.01\n"+
-	"Genetic neuronal network developed by Huffliger \n" +
-	"Designed to solve compute intense problems\n" +
-	"Currently test boilerplate to check functionality\n" + 
-	"Beat the randomness function\n\n")
-'''
-
-
 ROUND_COUNT = 25000
 
 #Data for graph
@@ -156,7 +137,7 @@ def getMinMaxMove(choice, game):
 	#print(moveProbabiltyScore)
 	s = np.array(moveProbabiltyScore)
 	sort_index = np.argsort(s)
-	print("Loop check: " + str(sort_index[choice]))
+	#print("Loop check: " + str(sort_index[choice]))
 	#print(sort_index)
 	#print(sort_index[choice])
 	return sort_index[choice]
@@ -166,14 +147,24 @@ def getMinMaxMove(choice, game):
 
 def minMaxAI(gameboard):
 	game = GameField()
+	game.board = gameboard
 	loopCheck = -1
 	valid_move = False
-	while not valid_move:
-		loopCheck += 1;
+	#minMaxAI gets called multiple times trough while loop???
+	#print("SingleCall")
+	for x in range(0, 7):
+		loopCheck += 1
 		minMaxMove = -2
-		valid_move = game.turn(getMinMaxMove(loopCheck, gameboard))
-		#print(f"Please choose a number between 1 and X | " + str(valid_move) + " is not valid.")
+		#print("while false loopCheck =  " + str(loopCheck) + " for loop = " + str(x))
+		valid_move = game.turn(getMinMaxMove(loopCheck, game))
+		#print(valid_move)
+		if(valid_move):
+			return loopCheck
+		if(loopCheck > 100):
+			game.print_board()
+			return
+	
+	return False
 	#print("return " + str(loopCheck))
-	return loopCheck
 	user = 0
 	print("ERROR ------ beyond return")
