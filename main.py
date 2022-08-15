@@ -363,7 +363,7 @@ def checkAIQuality(y: int, idx: int):
 	qual_check_wins = 0;
 	qual_check_draws = 0;
 	qual_check_losses = 0;
-	logging.debug("Starting quality check on generation " + str(y+1))
+	#logging.debug("Starting quality check on generation " + str(y+1))
 	#Performance wise only 20% of the population gets testet
 	for x in range(int(POP_COUNT/10)-1, 0, -1):
 		game = GameField()
@@ -373,7 +373,7 @@ def checkAIQuality(y: int, idx: int):
 		firstMoveNoise = np.random.randint(2,5)
 		firstMovePlayed = False
 
-		print("Checking agent " + str(x))
+		#print("Checking agent " + str(x))
 		while not game_over:
 			valid_move = False
 			bannedOutputs = 0
@@ -456,7 +456,7 @@ def checkAIQuality(y: int, idx: int):
 	file_object = open("dumbed_saves/" + sys.argv[1] + "_GEN_"+str(y+1) +"_min_max_progress.csv", 'a')
 	file_object.write(str(roundsCompleted)+";" +str(qual_check_wins)+";"+str(qual_check_draws)+";"+str(qual_check_losses)+"\n")
 	file_object.close()
-	print("Generation " + str(y+1) + " wins: " + str(qual_check_wins) + " draws: " + str(qual_check_draws) + " losses: " + str(qual_check_losses))
+	print("Generation" + str(y+1) + ": wins: " + str(qual_check_wins) + " draws: " + str(qual_check_draws) + " losses: " + str(qual_check_losses))
 
 
 
@@ -488,6 +488,7 @@ for b in range(ROUND_COUNT-1, 0, -1):
 			executor.map(worker, range(0, GHOSTGAMESPERROUND))
 
 		#Play against external minmax algorithm
+		#Major performance issues with this function
 		checkAIQuality(y,1)
 
 
