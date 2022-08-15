@@ -74,13 +74,13 @@ randomuzationStrengthBiases = 0.1
 #Reward is exponential default 1.75
 FITNESS_REWARD = 1.75
 #Population / Probability = real probability
-SNAPSHOT_PROBABILITY = 120
+SNAPSHOT_PROBABILITY = POP_COUNT/0.8
 #Games each round for each agent
 GAMESPERROUND = 20
 GHOSTGAMESPERROUND = 5
 PLAYERTOMOVE = 100000
-SHOWAFTER = 1000000
-SHOWEVERY = 20000
+SHOWAFTER = 100
+SHOWEVERY = 10
 
 #AI vs AI
 WINFITNESS = 4
@@ -96,7 +96,7 @@ LOSEFITNESSGHOST = 0.2
 EXPORTEVERYXMOVE = 25
 #1 = >= Durchschnitt 1.1 = 110% von normaler Qualität
 EXPORTQUALITY = 1
-EXPORTAFTER = 0
+EXPORTAFTER = 2
 EXPORTAMOUNT = 2
 
 
@@ -392,12 +392,12 @@ for b in range(ROUND_COUNT-1, 0, -1):
 
 	#New approach (and fitnessOfRound2 > GHOSTGAMESPERROUND + GHOSTGAMESPERROUND/3)
 	for g1 in range(len(genetics1.agents)-1, -1, -1):
-		if(GHOSTGAMESPERROUND*2 + GAMESPERROUND*2.2 <= genetics1.agents[g1].fitness and np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
+		if(GHOSTGAMESPERROUND*2 + GAMESPERROUND*2.7 <= genetics1.agents[g1].fitness and np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
 			genetics1.copyAgenttoGhost(g1)
 
 	#New approach (and fitnessOfRound > GHOSTGAMESPERROUND + GHOSTGAMESPERROUND/3)
 	for g2 in range(len(genetics2.agents)-1, -1, -1):
-		if(GHOSTGAMESPERROUND*2 + GAMESPERROUND*2.2 <= genetics2.agents[g2].fitness and np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
+		if(GHOSTGAMESPERROUND*2 + GAMESPERROUND*2.7 <= genetics2.agents[g2].fitness and np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
 			genetics2.copyAgenttoGhost(g2)
 
 
@@ -413,8 +413,8 @@ for b in range(ROUND_COUNT-1, 0, -1):
 		genetic.roundClose(randomizationAmount, randomizationStrength)
 		genetics2.resetFitness()
 	else:'''
-	genetics1.roundClose(randomizationAmount, randomuzationStrengthWeights, randomuzationStrengthBiases)
-	genetics2.roundClose(randomizationAmount, randomuzationStrengthWeights, randomuzationStrengthBiases)
+	genetics1.roundClose(randomizationAmount, randomuzationStrengthWeights, randomuzationStrengthBiases, GAMESPERROUND + GHOSTGAMESPERROUND)
+	genetics2.roundClose(randomizationAmount, randomuzationStrengthWeights, randomuzationStrengthBiases, GAMESPERROUND + GHOSTGAMESPERROUND)
 
 
 

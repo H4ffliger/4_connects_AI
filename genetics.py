@@ -89,7 +89,7 @@ class Genetics():
 
 
 
-	def roundClose(self, randomizationAmount, randomuzationStrengthWeights, randomuzationStrengthBiases):
+	def roundClose(self, randomizationAmount, randomuzationStrengthWeights, randomuzationStrengthBiases, GPR):
 		#start_time = time.time()
 		totalFitness = 0
 		self.newAgents = []
@@ -102,7 +102,7 @@ class Genetics():
 			#Fitness calculation
 			#devide by 5 to get smaller fitness
 			#Agents with fitness 10/5 = 2 **2 = 4 20 / 5 = 4 **2 = 16 
-			self.agents[i].fitness = self.agents[i].fitness/20
+			self.agents[i].fitness = self.agents[i].fitness/GPR
 			self.agents[i].fitness = math.pow(self.agents[i].fitness,self.FITNESS_REWARD)
 			#Just in case every agent has a score of 0
 			#self.agents[i].fitness += 1
