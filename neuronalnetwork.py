@@ -52,7 +52,7 @@ class NeuralNetwork:
 		self.activation1 = Activation_ReLU()
 		self.denses.append(Layer_Dense(42, 42))
 		self.denses.append(Layer_Dense(42, 42))
-		#self.denses.append(Layer_Dense(42, 42))
+		self.denses.append(Layer_Dense(42, 42))
 		self.denses.append(Layer_Dense(42, aOutputs))
 		self.activation2 = Activation_Softmax()
 
@@ -61,12 +61,12 @@ class NeuralNetwork:
 		self.activation1.forward(self.denses[0].output)
 		self.denses[1].forward(self.activation1.output)
 		self.activation1.forward(self.denses[1].output)
-		#self.denses[2].forward(self.activation1.output)
-		#self.activation1.forward(self.denses[2].output)
 		self.denses[2].forward(self.activation1.output)
 		self.activation1.forward(self.denses[2].output)
 		self.denses[3].forward(self.activation1.output)
-		self.activation2.forward(self.denses[3].output)
+		self.activation1.forward(self.denses[3].output)
+		self.denses[4].forward(self.activation1.output)
+		self.activation2.forward(self.denses[4].output)
 		self.output = self.activation2.output
 	
 

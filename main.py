@@ -59,7 +59,7 @@ print("Version 0.01\n"+
 gameSize = 6*7
 
 #Genetic Algorithm
-POP_COUNT = 200
+POP_COUNT = 400
 GHOSTAGENTS_POP = POP_COUNT*15
 #ROUND_COUNT 0 = 1'000'000
 ROUND_COUNT = 250000000
@@ -68,16 +68,16 @@ AGENT_INPUTS = gameSize
 #Output needs to be at least 2
 AGENT_OUTPUTS = 6 #ToDo:Check if not one to small
 #Mutation 0.05 = 5% on 5% of weights
-randomizationAmount = 0.05
-randomuzationStrengthWeights = 0.05
-randomuzationStrengthBiases = 0.1
+randomizationAmount = 0.01
+randomuzationStrengthWeights = 0.02
+randomuzationStrengthBiases = 0.05
 #Reward is exponential default 1.75
-FITNESS_REWARD = 1.75
+FITNESS_REWARD = 1.5
 #Population / Probability = real probability
 SNAPSHOT_PROBABILITY = POP_COUNT/0.8
 #Games each round for each agent
 GAMESPERROUND = 20
-GHOSTGAMESPERROUND = 5
+GHOSTGAMESPERROUND = 10
 PLAYERTOMOVE = 100000
 SHOWAFTER = 100
 SHOWEVERY = 10
@@ -159,7 +159,7 @@ def gameRoundGhost(y: int, idx: int):
 		game_over = False
 		userToPlay = 0
 		#First move throws off the AI for the first x 100 moves
-		firstMoveNoise = 3 #np.random.randint(0,7)
+		firstMoveNoise = np.random.randint(2,5)
 		firstMovePlayed = False
 
 
@@ -260,7 +260,7 @@ def gameRoundAI(y: int, idx: int):
 		game_over = False
 		userToPlay = 0
 		#First move throws off the AI for the first x 100 moves
-		firstMoveNoise = 3 #np.random.randint(0,7)
+		firstMoveNoise = np.random.randint(2,5)
 		firstMovePlayed = False
 
 
@@ -392,12 +392,12 @@ for b in range(ROUND_COUNT-1, 0, -1):
 
 	#New approach (and fitnessOfRound2 > GHOSTGAMESPERROUND + GHOSTGAMESPERROUND/3)
 	for g1 in range(len(genetics1.agents)-1, -1, -1):
-		if(GHOSTGAMESPERROUND*2 + GAMESPERROUND*2.7 <= genetics1.agents[g1].fitness and np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
+		if(GHOSTGAMESPERROUND*2 + GAMESPERROUND*3 <= genetics1.agents[g1].fitness and np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
 			genetics1.copyAgenttoGhost(g1)
 
 	#New approach (and fitnessOfRound > GHOSTGAMESPERROUND + GHOSTGAMESPERROUND/3)
 	for g2 in range(len(genetics2.agents)-1, -1, -1):
-		if(GHOSTGAMESPERROUND*2 + GAMESPERROUND*2.7 <= genetics2.agents[g2].fitness and np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
+		if(GHOSTGAMESPERROUND*2 + GAMESPERROUND*3 <= genetics2.agents[g2].fitness and np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
 			genetics2.copyAgenttoGhost(g2)
 
 
@@ -413,8 +413,8 @@ for b in range(ROUND_COUNT-1, 0, -1):
 		genetic.roundClose(randomizationAmount, randomizationStrength)
 		genetics2.resetFitness()
 	else:'''
-	genetics1.roundClose(randomizationAmount, randomuzationStrengthWeights, randomuzationStrengthBiases, GAMESPERROUND + GHOSTGAMESPERROUND)
-	genetics2.roundClose(randomizationAmount, randomuzationStrengthWeights, randomuzationStrengthBiases, GAMESPERROUND + GHOSTGAMESPERROUND)
+	genetics1.roundClose(randomizationAmount, randomuzationStrengthWeights, randomuzationStrengthBiases, GAMESPERROUND + GHOSTGAMESPERROUND + POP_COUNT/40)
+	genetics2.roundClose(randomizationAmount, randomuzationStrengthWeights, randomuzationStrengthBiases, GAMESPERROUND + GHOSTGAMESPERROUND + POP_COUNT/40)
 
 
 
