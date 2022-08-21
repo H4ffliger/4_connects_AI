@@ -61,7 +61,7 @@ gameSize = 6*7
 
 #Genetic Algorithm
 POP_COUNT = 400
-GHOSTAGENTS_POP = POP_COUNT*15
+GHOSTAGENTS_POP = POP_COUNT
 #ROUND_COUNT 0 = 1'000'000
 ROUND_COUNT = 250000000
 #Individual agents
@@ -71,11 +71,11 @@ AGENT_OUTPUTS = 6 #ToDo:Check if not one to small
 #Mutation 0.05 = 5% on 5% of weights
 randomizationAmount = 0.01
 randomuzationStrengthWeights = 0.02
-randomuzationStrengthBiases = 0.05
+randomuzationStrengthBiases = 0.03
 #Reward is exponential default 1.75
 FITNESS_REWARD = 1.5
 #Population / Probability = real probability
-SNAPSHOT_PROBABILITY = POP_COUNT/0.8
+SNAPSHOT_PROBABILITY = POP_COUNT*10
 #Games each round for each agent
 GAMESPERROUND = 20
 GHOSTGAMESPERROUND = 10
@@ -85,7 +85,7 @@ SHOWEVERY = 1000
 #AI vs AI
 WINFITNESS = 4
 DRAWFITNESS = 0.5
-LOSEFITNESS = -0.2 # experiment with -0.5
+LOSEFITNESS = 0.2 # experiment with -0.5
 
 #AI vs Ghost (Ghost doesnt get fitness thats why AI gets only half of it)
 WINFITNESSGHOST = 8
@@ -115,7 +115,7 @@ genetics1 = Genetics(POP_COUNT, GHOSTAGENTS_POP, AGENT_INPUTS, AGENT_OUTPUTS, FI
 genetics2 = Genetics(POP_COUNT, GHOSTAGENTS_POP, AGENT_INPUTS, AGENT_OUTPUTS, FITNESS_REWARD)
 
 #Copy random to ghosts
-for i in range(0, 10):
+for i in range(0, 2):
 	genetics1.copyAgenttoGhost(i)
 	genetics2.copyAgenttoGhost(i)
 
@@ -365,7 +365,7 @@ def checkAIQuality(y: int, idx: int):
 	qual_check_losses = 0;
 	#logging.debug("Starting quality check on generation " + str(y+1))
 	#Performance wise only 20% of the population gets testet
-	for x in range(int(POP_COUNT/10)-1, 0, -1):
+	for x in range(int(POP_COUNT/20)-1, 0, -1):
 		game = GameField()
 		game_over = False
 		userToPlay = 0
@@ -501,12 +501,12 @@ for b in range(ROUND_COUNT-1, 0, -1):
 
 	#New approach (and fitnessOfRound2 > GHOSTGAMESPERROUND + GHOSTGAMESPERROUND/3)
 	for g1 in range(len(genetics1.agents)-1, -1, -1):
-		if(GHOSTGAMESPERROUND*2 + GAMESPERROUND*3 <= genetics1.agents[g1].fitness and np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
+		if(GHOSTGAMESPERROUND*2 + GAMESPERROUND*3.2 <= genetics1.agents[g1].fitness and np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
 			genetics1.copyAgenttoGhost(g1)
 
 	#New approach (and fitnessOfRound > GHOSTGAMESPERROUND + GHOSTGAMESPERROUND/3)
 	for g2 in range(len(genetics2.agents)-1, -1, -1):
-		if(GHOSTGAMESPERROUND*2 + GAMESPERROUND*3 <= genetics2.agents[g2].fitness and np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
+		if(GHOSTGAMESPERROUND*2 + GAMESPERROUND*3.2 <= genetics2.agents[g2].fitness and np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
 			genetics2.copyAgenttoGhost(g2)
 
 
@@ -514,18 +514,8 @@ for b in range(ROUND_COUNT-1, 0, -1):
 		genetics1.savetoFile("genetics1-Test-v1-g-"+str(roundsCompleted), EXPORTQUALITY, EXPORTAMOUNT)
 		genetics2.savetoFile("genetics2-Test-v1-g-"+str(roundsCompleted), EXPORTQUALITY, EXPORTAMOUNT)
 	#7
-	'''if(fitnessOfRound >= (WINFITNESS*GAMESPERROUND/2 + WINFITNESS * GHOSTGAMESPERROUND/2)):
-		genetics2.roundClose(randomizationAmount, randomizationStrength)
-		genetics.resetFitness()
-		#4
-	elif(fitnessOfRound < WINFITNESS*GAMESPERROUND/2 + WINFITNESS * GHOSTGAMESPERROUND/2):
-		genetic.roundClose(randomizationAmount, randomizationStrength)
-		genetics2.resetFitness()
-	else:'''
 	genetics1.roundClose(randomizationAmount, randomuzationStrengthWeights, randomuzationStrengthBiases, GAMESPERROUND + GHOSTGAMESPERROUND + POP_COUNT/40)
 	genetics2.roundClose(randomizationAmount, randomuzationStrengthWeights, randomuzationStrengthBiases, GAMESPERROUND + GHOSTGAMESPERROUND + POP_COUNT/40)
-
-
 
 	roundsCompleted += 1
 	file_object = open("dumbed_saves/" + sys.argv[1] + ".csv", 'a')
