@@ -104,6 +104,8 @@ class Genetics():
 			#Agents with fitness 10/5 = 2 **2 = 4 20 / 5 = 4 **2 = 16
 			#self.agents[i].fitness = self.agents[i].fitness + 100
 			self.agents[i].fitness = self.agents[i].fitness/GPR
+			if(self.agents[i].fitness < 1):
+				self.agents[i].fitness = 1
 			self.agents[i].fitness = math.pow(self.agents[i].fitness,self.FITNESS_REWARD)
 			#Just in case every agent has a score of 0
 			#self.agents[i].fitness += 1

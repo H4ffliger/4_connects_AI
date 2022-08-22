@@ -73,7 +73,7 @@ randomizationAmount = 0.01
 randomuzationStrengthWeights = 0.02
 randomuzationStrengthBiases = 0.03
 #Reward is exponential default 1.75
-FITNESS_REWARD = 1.5
+FITNESS_REWARD = 1
 #Population / Probability = real probability
 SNAPSHOT_PROBABILITY = POP_COUNT*10
 #Games each round for each agent
@@ -162,8 +162,8 @@ def gameRoundGhost(y: int, idx: int):
 		game_over = False
 		userToPlay = 0
 		#First move throws off the AI for the first x 100 moves
-		firstMoveNoise = np.random.randint(2,5)
-		firstMovePlayed = False
+		#firstMoveNoise = np.random.randint(2,5)
+		#firstMovePlayed = True
 
 
 		while not game_over:
@@ -173,10 +173,10 @@ def gameRoundGhost(y: int, idx: int):
 
 			while not valid_move:
 				#y == 0 > AI gets second move
-				if(firstMovePlayed == False):
-					firstMovePlayed = True;
-					chosen_move = firstMoveNoise
-				elif(y == 0):
+				#if(firstMovePlayed == False):
+				#	firstMovePlayed = True;
+				#	chosen_move = firstMoveNoise
+				if(y == 0):
 					#userToPay 0 = Ghost gets first move
 					if(userToPlay == 0):
 						chosen_move = getGhostMove(enemy, game.board, bannedOutputs)
@@ -263,8 +263,8 @@ def gameRoundAI(y: int, idx: int):
 		game_over = False
 		userToPlay = 0
 		#First move throws off the AI for the first x 100 moves
-		firstMoveNoise = np.random.randint(2,5)
-		firstMovePlayed = False
+		#firstMoveNoise = np.random.randint(2,5)
+		#firstMovePlayed = False
 
 
 		while not game_over:
@@ -274,10 +274,10 @@ def gameRoundAI(y: int, idx: int):
 
 			while not valid_move:
 				#y == 0 > AI gets second move
-				if(firstMovePlayed == False):
-					firstMovePlayed = True;
-					chosen_move = firstMoveNoise
-				elif(y == 0):
+				#if(firstMovePlayed == False):
+				#	firstMovePlayed = True;
+				#	chosen_move = firstMoveNoise
+				if(y == 0):
 					#userToPay 0 = Ghost gets first move
 					if(userToPlay == 0):
 						chosen_move = getAIMove(enemy, game.board, bannedOutputs)
@@ -370,8 +370,8 @@ def checkAIQuality(y: int, idx: int):
 		game_over = False
 		userToPlay = 0
 		#First move throws off the AI for the first x 100 moves
-		firstMoveNoise = np.random.randint(2,5)
-		firstMovePlayed = False
+		#firstMoveNoise = np.random.randint(2,5)
+		#firstMovePlayed = False
 
 		#print("Checking agent " + str(x))
 		while not game_over:
@@ -380,10 +380,10 @@ def checkAIQuality(y: int, idx: int):
 
 			while not valid_move:
 				#y == 0 > AI gets second move
-				if(firstMovePlayed == False):
-					firstMovePlayed = True;
-					chosen_move = firstMoveNoise
-				elif(y == 0):
+				#if(firstMovePlayed == False):
+				#	firstMovePlayed = True;
+				#	chosen_move = firstMoveNoise
+				if(y == 0):
 					#userToPay 0 = Ghost gets first move
 					if(userToPlay == 0):
 						chosen_move = minMaxAI(game.board)
@@ -453,7 +453,7 @@ def checkAIQuality(y: int, idx: int):
 						qual_check_draws += 1
 				game_over = True
 				valid_move = True
-	file_object = open("dumbed_saves/" + sys.argv[1] + "_GEN_"+str(y+1) +"_min_max_progress.csv", 'a')
+	file_object = open("dumbed_saves/" + sys.argv[1] + "_GEN_"+str(2-y) +"_min_max_progress.csv", 'a')
 	file_object.write(str(roundsCompleted)+";" +str(qual_check_wins)+";"+str(qual_check_draws)+";"+str(qual_check_losses)+"\n")
 	file_object.close()
 	print("Generation" + str(y+1) + ": wins: " + str(qual_check_wins) + " draws: " + str(qual_check_draws) + " losses: " + str(qual_check_losses))
@@ -522,4 +522,4 @@ for b in range(ROUND_COUNT-1, 0, -1):
 	file_object.write(str(roundsCompleted)+";"+str(fitnessOfRound1)+ ";" + str(fitnessOfRound2)+ ";" +str(len(genetics1.ghostAgents))+";"+str(len(genetics2.ghostAgents))+"\n")
 	file_object.close()
 
-	print("Round: " + str(roundsCompleted) + "|| Fitness genetics1(2nd to play): " + str(fitnessOfRound1) + " || Fitness genetics2: " + str(fitnessOfRound2) +" || Amount of GhostAgents: " + str(len(genetics1.ghostAgents)) + " || Amount of GhostAgents2: " + str(len(genetics2.ghostAgents)))
+	print("Round: " + str(roundsCompleted) + "|| Fitness genetics1(1st to play): " + str(fitnessOfRound1) + " || Fitness genetics2: " + str(fitnessOfRound2) +" || Amount of GhostAgents: " + str(len(genetics1.ghostAgents)) + " || Amount of GhostAgents2: " + str(len(genetics2.ghostAgents)))
