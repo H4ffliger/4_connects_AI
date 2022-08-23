@@ -14,6 +14,9 @@ import pyfiglet
 import tracemalloc
 #List add
 from operator import add
+import random
+
+
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -68,7 +71,7 @@ gameSize = gameW*gameH
 POP_COUNT = 100
 GHOSTAGENTS_POP = POP_COUNT
 #ROUND_COUNT 0 = 1'000'000
-ROUND_COUNT = 5
+ROUND_COUNT = 0
 #Individual agents
 AGENT_INPUTS = 4*4+2
 #Output needs to be at least 2
@@ -149,7 +152,6 @@ def getAIMove(userToPlay, board, indexMove):
 				moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
 	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
 	return sortedPicks[indexMove]
-
 
 def getAI2Move(userToPlay, board, indexMove):
 	moveProbabiltyScore = [0] * gameW

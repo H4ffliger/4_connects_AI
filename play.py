@@ -8,6 +8,9 @@ import pyfiglet
 import pickle
 import sys
 
+#List add
+from operator import add
+
 
 #Introduction
 ascii_banner = pyfiglet.figlet_format("GNeuroNetWK")
@@ -20,7 +23,9 @@ print("Version 0.01\n"+
 	"Beat the randomness function\n\n")
 
 #Game Specific
-gameSize = 5*5
+gameW = 7
+gameH = 6
+gameSize = gameW*gameH
 
 #Genetic Algorithm
 POP_COUNT = 100
@@ -75,13 +80,49 @@ for i in range(0, 10):
 bannedOutputs = 0
 
 def getAIMove(userToPlay, board, indexMove):
-	moveProbabiltyScore = genetics.thinkParticular(userToPlay, board.flatten()).flatten()
+	moveProbabiltyScore = [0] * gameW
+	for ai_height in range(gameH-4, -1, -1):
+		for ai_width in range(gameW-4, -1, -1):
+			#Create field of inputs for the neural network
+			rows = board[ai_height:ai_height+4]
+			viewfield = []
+			for x in range(0,4):
+				viewfield.extend(rows[x][ai_width:ai_width+4])
+
+			moveProbabiltyScoreOffset = [0] * ai_width
+			#If all fields are zero then skip -> better performance
+			if (np.any(viewfield)):
+				viewfield.insert(0, ai_width)
+				viewfield.insert(0, ai_height)
+				moveProbabiltyScorePartly = genetics1.thinkParticular(userToPlay, viewfield).flatten()
+				moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
+				moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
+				moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
+				moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
 	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
 	return sortedPicks[indexMove]
 
-
 def getAI2Move(userToPlay, board, indexMove):
-	moveProbabiltyScore = genetics2.thinkParticular(userToPlay, board.flatten()).flatten()
+	moveProbabiltyScore = [0] * gameW
+	for ai_height in range(gameH-4, -1, -1):
+		for ai_width in range(gameW-4, -1, -1):
+			#Create field of inputs for the neural network
+			rows = board[ai_height:ai_height+4]
+			viewfield = []
+			for x in range(0,4):
+				viewfield.extend(rows[x][ai_width:ai_width+4])
+
+			moveProbabiltyScoreOffset = [0] * ai_width
+
+			#If all fields are zero then skip -> better performance
+			if (np.any(viewfield)):
+				viewfield.insert(0, ai_width)
+				viewfield.insert(0, ai_height)
+				moveProbabiltyScorePartly = genetics2.thinkParticular(userToPlay, viewfield).flatten()
+				moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
+				moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
+				moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
+				moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
 	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
 	return sortedPicks[indexMove]
 

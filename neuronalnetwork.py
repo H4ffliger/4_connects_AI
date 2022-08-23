@@ -1,6 +1,5 @@
 import numpy as np
 from copy import deepcopy
-from numba import jit, njit
 
 
 
@@ -69,7 +68,6 @@ class NeuralNetwork:
 		self.activation2.forward(self.denses[4].output)
 		self.output = self.activation2.output
 	
-
 	def randomize(self, randomizationAmount, randomizationStrengthWeights, randomizationStrengthBiases):
 		for index, dense in enumerate(self.denses):
 			for index2, weight in enumerate(self.denses[index].weights):
