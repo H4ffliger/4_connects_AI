@@ -79,9 +79,9 @@ AGENT_INPUTS = 4*4+2
 #Output needs to be at least 2
 AGENT_OUTPUTS = 4 #ToDo:Check if not one to small
 #Mutation 0.05 = 5% on 5% of weights
-randomizationAmount = 0.01
-randomuzationStrengthWeights = 0.02
-randomuzationStrengthBiases = 0.03
+randomizationAmount = 0.05
+randomuzationStrengthWeights = 0.05
+randomuzationStrengthBiases = 0.02
 #Reward is exponential default 1.75
 FITNESS_REWARD = 1.5
 #Population / Probability = real probability
@@ -596,8 +596,8 @@ for b in range(ROUND_COUNT-1, -1, -1):
 		genetics1.savetoFile("genetics1-Test-v1-g-"+str(roundsCompleted), EXPORTQUALITY, EXPORTAMOUNT)
 		genetics2.savetoFile("genetics2-Test-v1-g-"+str(roundsCompleted), EXPORTQUALITY, EXPORTAMOUNT)
 	#7
-	genetics1.roundClose(randomizationAmount, randomuzationStrengthWeights, randomuzationStrengthBiases, GAMESPERROUND + GHOSTGAMESPERROUND + POP_COUNT/40)
-	genetics2.roundClose(randomizationAmount, randomuzationStrengthWeights, randomuzationStrengthBiases, GAMESPERROUND + GHOSTGAMESPERROUND + POP_COUNT/40)
+	genetics1.roundClose(randomizationAmount, randomuzationStrengthWeights, randomuzationStrengthBiases)
+	genetics2.roundClose(randomizationAmount, randomuzationStrengthWeights, randomuzationStrengthBiases)
 
 	roundsCompleted += 1
 	file_object = open("dumbed_saves/" + sys.argv[1] + ".csv", 'a')
