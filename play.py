@@ -23,8 +23,8 @@ print("Version 0.01\n"+
 	"Beat the randomness function\n\n")
 
 #Game Specific
-gameW = 7
-gameH = 6
+gameW = 5
+gameH = 4
 gameSize = gameW*gameH
 
 #Genetic Algorithm
@@ -140,12 +140,17 @@ for b in range(ROUND_COUNT-1, 0, -1):
 			game = GameField()
 			game_over = False
 			userToPlay = 0
+			firstMoveNoise = np.random.randint(0,gameW-1)
+			firstMovePlayed = False
 			while not game_over:
 				debugMoves = 0
 				valid_move = False
 				bannedOutputs = 0					
 				while not valid_move:
-					if(userToPlay == 0):
+					if(firstMovePlayed == False):
+						firstMovePlayed = True;
+						aiPickOrder = firstMoveNoise
+					elif(userToPlay == 0):
 						print(game.print_board())
 						aiPickOrder = int(input(f"{game.which_turn()}'s Turn - pick a column (0-X): "))-1
 						user_move = aiPickOrder

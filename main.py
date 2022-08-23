@@ -15,6 +15,8 @@ import tracemalloc
 #List add
 from operator import add
 import random
+#game copy min max
+from copy import deepcopy
 
 
 
@@ -63,12 +65,12 @@ print("Version 0.03\n"+
 
 #Game Specific
 
-gameW = 7
-gameH = 6
+gameW = 5
+gameH = 4
 gameSize = gameW*gameH
 
 #Genetic Algorithm
-POP_COUNT = 100
+POP_COUNT = 200
 GHOSTAGENTS_POP = POP_COUNT
 #ROUND_COUNT 0 = 1'000'000
 ROUND_COUNT = 0
@@ -81,7 +83,7 @@ randomizationAmount = 0.01
 randomuzationStrengthWeights = 0.02
 randomuzationStrengthBiases = 0.03
 #Reward is exponential default 1.75
-FITNESS_REWARD = 1
+FITNESS_REWARD = 1.5
 #Population / Probability = real probability
 SNAPSHOT_PROBABILITY = POP_COUNT*10
 #Games each round for each agent
@@ -142,7 +144,7 @@ def getAIMove(userToPlay, board, indexMove):
 
 			moveProbabiltyScoreOffset = [0] * ai_width
 			#If all fields are zero then skip -> better performance
-			if (np.any(viewfield)):
+			if not (np.any(viewfield)):
 				viewfield.insert(0, ai_width)
 				viewfield.insert(0, ai_height)
 				moveProbabiltyScorePartly = genetics1.thinkParticular(userToPlay, viewfield).flatten()
@@ -166,7 +168,7 @@ def getAI2Move(userToPlay, board, indexMove):
 			moveProbabiltyScoreOffset = [0] * ai_width
 
 			#If all fields are zero then skip -> better performance
-			if (np.any(viewfield)):
+			if not (np.any(viewfield)):
 				viewfield.insert(0, ai_width)
 				viewfield.insert(0, ai_height)
 				moveProbabiltyScorePartly = genetics2.thinkParticular(userToPlay, viewfield).flatten()
@@ -189,7 +191,7 @@ def getGhostMove(userToPlay, board, indexMove):
 
 			moveProbabiltyScoreOffset = [0] * ai_width
 			#If all fields are zero then skip -> better performance
-			if (np.any(viewfield)):
+			if not (np.any(viewfield)):
 				viewfield.insert(0, ai_width)
 				viewfield.insert(0, ai_height)
 				moveProbabiltyScorePartly = genetics1.thinkParticularGhost(userToPlay, viewfield).flatten()
@@ -212,7 +214,7 @@ def getGhost2Move(userToPlay, board, indexMove):
 
 			moveProbabiltyScoreOffset = [0] * ai_width
 			#If all fields are zero then skip -> better performance
-			if (np.any(viewfield)):
+			if not (np.any(viewfield)):
 				viewfield.insert(0, ai_width)
 				viewfield.insert(0, ai_height)
 				moveProbabiltyScorePartly = genetics2.thinkParticularGhost(userToPlay, viewfield).flatten()
@@ -242,8 +244,8 @@ def gameRoundGhost(y: int, idx: int):
 		game_over = False
 		userToPlay = 0
 		#First move throws off the AI for the first x 100 moves
-		firstMoveNoise = np.random.randint(0,6)
-		firstMovePlayed = True
+		firstMoveNoise = np.random.randint(0,gameW-1)
+		firstMovePlayed = False
 
 
 		while not game_over:
@@ -343,7 +345,7 @@ def gameRoundAI(y: int, idx: int):
 		game_over = False
 		userToPlay = 0
 		#First move throws off the AI for the first x 100 moves
-		firstMoveNoise = np.random.randint(0,6)
+		firstMoveNoise = np.random.randint(0,gameW-1)
 		firstMovePlayed = False
 
 
@@ -363,13 +365,13 @@ def gameRoundAI(y: int, idx: int):
 						chosen_move = getAIMove(enemy, game.board, bannedOutputs)
 					else:
 						chosen_move = getAI2Move(x, game.board, bannedOutputs)
+
 				else:
 					if(userToPlay == 0):
 						chosen_move = getAIMove(x, game.board, bannedOutputs)
 
 					else:
 						chosen_move = getAI2Move(enemy, game.board, bannedOutputs)
-
 
 
 				valid_move = game.turn(chosen_move)
@@ -450,7 +452,7 @@ def checkAIQuality(y: int, idx: int):
 		game_over = False
 		userToPlay = 0
 		#First move throws off the AI for the first x 100 moves
-		firstMoveNoise = np.random.randint(0,6)
+		firstMoveNoise = np.random.randint(0,gameW-1)
 		firstMovePlayed = False
 
 		#print("Checking agent " + str(x))
@@ -466,7 +468,7 @@ def checkAIQuality(y: int, idx: int):
 				elif(y == 0):
 					#userToPay 0 = Ghost gets first move
 					if(userToPlay == 0):
-						chosen_move = minMaxAI(game.board)
+						chosen_move = minMaxAI(deepcopy(game))
 						#chosen_move = getGhostMove(enemy, game.board, bannedOutputs)
 					else:
 						chosen_move = getAI2Move(x, game.board, bannedOutputs)
@@ -475,7 +477,7 @@ def checkAIQuality(y: int, idx: int):
 						chosen_move = getAIMove(x, game.board, bannedOutputs)
 					else:
 						#chosen_move = getGhost2Move(enemy, game.board, bannedOutputs)
-						chosen_move = minMaxAI(game.board)
+						chosen_move = minMaxAI(deepcopy(game))
 
 				valid_move = game.turn(chosen_move)
 				if(valid_move == False and game_over == False):
@@ -500,10 +502,10 @@ def checkAIQuality(y: int, idx: int):
 				#Ghosts
 				# y == 0 then gen2
 				# y == 1 then gen1
-				#y == 0 and usertoplay == 0 AI win
-				#y == 0 and usertoplay == 1 AI lose
-				#y == 1 and usertoplay == 0 AI lose
-				#y == 1 and usertoplay == 1 AI win
+				#y == 0 and usertoplay == 1 AI win minmax loss
+				#y == 0 and usertoplay == 0 AI lose
+				#y == 1 and usertoplay == 1 AI lose
+				#y == 1 and usertoplay == 0 AI win
 				if(y == 0):
 					if(userToPlay == 0):
 						qual_check_losses += 1
@@ -536,7 +538,7 @@ def checkAIQuality(y: int, idx: int):
 	file_object = open("dumbed_saves/" + sys.argv[1] + "_GEN_"+str(2-y) +"_min_max_progress.csv", 'a')
 	file_object.write(str(roundsCompleted)+";" +str(qual_check_wins)+";"+str(qual_check_draws)+";"+str(qual_check_losses)+"\n")
 	file_object.close()
-	print("Generation" + str(y+1) + ": wins: " + str(qual_check_wins) + " draws: " + str(qual_check_draws) + " losses: " + str(qual_check_losses))
+	print("Generation" + str(2-y) + ": wins: " + str(qual_check_wins) + " draws: " + str(qual_check_draws) + " losses: " + str(qual_check_losses))
 
 
 
@@ -581,12 +583,12 @@ for b in range(ROUND_COUNT-1, -1, -1):
 
 	#New approach (and fitnessOfRound2 > GHOSTGAMESPERROUND + GHOSTGAMESPERROUND/3)
 	for g1 in range(len(genetics1.agents)-1, -1, -1):
-		if(GHOSTGAMESPERROUND*2 + GAMESPERROUND*3.2 <= genetics1.agents[g1].fitness and np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
+		if(GHOSTGAMESPERROUND*2 + GAMESPERROUND*2.3 <= genetics1.agents[g1].fitness and np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
 			genetics1.copyAgenttoGhost(g1)
 
 	#New approach (and fitnessOfRound > GHOSTGAMESPERROUND + GHOSTGAMESPERROUND/3)
 	for g2 in range(len(genetics2.agents)-1, -1, -1):
-		if(GHOSTGAMESPERROUND*2 + GAMESPERROUND*3.2 <= genetics2.agents[g2].fitness and np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
+		if(GHOSTGAMESPERROUND*2 + GAMESPERROUND*2.3 <= genetics2.agents[g2].fitness and np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
 			genetics2.copyAgenttoGhost(g2)
 
 

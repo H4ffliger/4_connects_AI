@@ -12,7 +12,7 @@ if(ROUND_COUNT==0):
 	ROUND_COUNT = 1000000
 
 depth = 1
-gameFieldSize = 7
+gameFieldSize = 5
 
 #Balancing a win is 100 less worth than a loss
 WINNINGSCOREADDITION = 0
@@ -33,7 +33,7 @@ def getMinMaxMove(choice, game):
 	gamesToPlay3 = []
 	gamesToPlay4 = []
 	gamesToPlay5 = []
-	bestPick = np.random.randint(4, 5)
+	bestPick = np.random.randint(3, 4)
 	bestPickLossesScore = 100000
 	#Me to play
 	depth1Score = []
@@ -42,15 +42,17 @@ def getMinMaxMove(choice, game):
 	depth4Score = []
 	depth5Score = []
 
-	moveProbabiltyScore = [2,2,2,2,2,2,2]
+	moveProbabiltyScore = [2] * gameFieldSize
 
 
-
+	game = GameField()
 	#Me to play
 	#print("Called multible times")
 	for i1 in range(gameFieldSize):
 		#MetoPlay
-		gamesToPlay.append(deepcopy(game))
+		#game.print_board()
+		gamesToPlay.append(game)
+
 
 		gamesToPlay[i1].turn(i1)
 		if(gamesToPlay[i1].check_winner()):
@@ -91,7 +93,7 @@ def getMinMaxMove(choice, game):
 							moveProbabiltyScore[moveProbOption] += WINNINGSCOREADDITION		
 				except:
 					print("Invalid move prediction3")
-				'''
+				
 				#Enemy to play 2
 				for i4 in range(gameFieldSize):
 					gamesToPlay3.append(deepcopy(gamesToPlay2[len(gamesToPlay2)-1]))
@@ -107,6 +109,7 @@ def getMinMaxMove(choice, game):
 						#if(moveProbabiltyScore[moveProbOption] >= LOSINGSCOREADDITION2):
 						#	moveProbabiltyScore[moveProbOption] += LOSINGSCOREADDITION2				
 					
+					'''
 					#Me to play 3
 					for i5 in range(gameFieldSize):
 						gamesToPlay4.append(deepcopy(gamesToPlay3[len(gamesToPlay3)-1]))
@@ -120,7 +123,6 @@ def getMinMaxMove(choice, game):
 									moveProbabiltyScore[moveProbOption] += WINNINGSCOREADDITION2	
 						except:
 							print("Invalid move prediction5")
-
 						#Enemy to play 3
 						for i6 in range(gameFieldSize):
 							gamesToPlay5.append(deepcopy(gamesToPlay4[len(gamesToPlay4)-1]))
@@ -140,31 +142,33 @@ def getMinMaxMove(choice, game):
 	#print("Loop check: " + str(sort_index[choice]))
 	#print(sort_index)
 	#print(sort_index[choice])
+	print(moveProbabiltyScore)
 	return sort_index[choice]
 
 
 
 
-def minMaxAI(gameboard):
-	game = GameField()
-	game.board = gameboard
+def minMaxAI(game):
 	loopCheck = -1
 	valid_move = False
+	moveMinMax = -1
 	#minMaxAI gets called multiple times trough while loop???
 	#print("SingleCall")
-	for x in range(0, 7):
+	for x in range(0, gameFieldSize):
 		loopCheck += 1
 		minMaxMove = -2
 		#print("while false loopCheck =  " + str(loopCheck) + " for loop = " + str(x))
-		valid_move = game.turn(getMinMaxMove(loopCheck, game))
+		moveMinMax =getMinMaxMove(loopCheck, game)
+		valid_move = game.turn(moveMinMax)
 		#print(valid_move)
 		if(valid_move):
-			return loopCheck
+			return moveMinMax
+		print(str(x) + " " + str(loopCheck))
 		if(loopCheck > 100):
 			game.print_board()
-			return
-	
-	return False
+			return 
+	print("Wrong move")
+	return moveMinMax
 	#print("return " + str(loopCheck))
 	user = 0
 	print("ERROR ------ beyond return")

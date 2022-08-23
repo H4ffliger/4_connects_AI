@@ -1,7 +1,7 @@
 import numpy as np
 
-BOARD_COLS = 7
-BOARD_ROWS = 6
+BOARD_COLS = 5
+BOARD_ROWS = 4
 
 # Game board object
 class GameField():

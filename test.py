@@ -1,4 +1,5 @@
 from operator import add
+import numpy as np
 def square(n):
     print("Test")
 
@@ -18,13 +19,6 @@ test_list.extend(insert_list)
 
 print(test_list)
 
+viewfield = [0]*10
 
-
-7 * 6
-
-
-| | | | | | | |
- _ _ _ _      
-       _ _ _ _ 
-
-       7-4 = 3
+print(np.any(viewfield))
