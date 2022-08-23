@@ -48,12 +48,12 @@ class NeuralNetwork:
 	def __init__(self, aInputs, aOutputs):
 		self.fitness = 0
 		self.denses = []
-		self.denses.append(Layer_Dense(aInputs,42))
+		self.denses.append(Layer_Dense(aInputs,18))
 		self.activation1 = Activation_ReLU()
-		self.denses.append(Layer_Dense(42, 42))
-		self.denses.append(Layer_Dense(42, 42))
-		self.denses.append(Layer_Dense(42, 42))
-		self.denses.append(Layer_Dense(42, aOutputs))
+		self.denses.append(Layer_Dense(18, 18))
+		self.denses.append(Layer_Dense(18, 18))
+		self.denses.append(Layer_Dense(18, 18))
+		self.denses.append(Layer_Dense(18, aOutputs))
 		self.activation2 = Activation_Softmax()
 
 	def think(self, inputs):

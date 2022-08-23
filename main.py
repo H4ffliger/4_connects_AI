@@ -68,7 +68,7 @@ gameSize = gameW*gameH
 POP_COUNT = 100
 GHOSTAGENTS_POP = POP_COUNT
 #ROUND_COUNT 0 = 1'000'000
-ROUND_COUNT = 250000000
+ROUND_COUNT = 5
 #Individual agents
 AGENT_INPUTS = 4*4+2
 #Output needs to be at least 2
@@ -82,8 +82,8 @@ FITNESS_REWARD = 1
 #Population / Probability = real probability
 SNAPSHOT_PROBABILITY = POP_COUNT*10
 #Games each round for each agent
-GAMESPERROUND = 20
-GHOSTGAMESPERROUND = 10
+GAMESPERROUND = 10
+GHOSTGAMESPERROUND = 4
 SHOWAFTER = 100000000
 SHOWEVERY = 1000
 
@@ -138,13 +138,15 @@ def getAIMove(userToPlay, board, indexMove):
 				viewfield.extend(rows[x][ai_width:ai_width+4])
 
 			moveProbabiltyScoreOffset = [0] * ai_width
-			viewfield.insert(0, ai_width)
-			viewfield.insert(0, ai_height)
-			moveProbabiltyScorePartly = genetics1.thinkParticular(userToPlay, viewfield).flatten()
-			moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
-			moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
-			moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
-			moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
+			#If all fields are zero then skip -> better performance
+			if (np.any(viewfield)):
+				viewfield.insert(0, ai_width)
+				viewfield.insert(0, ai_height)
+				moveProbabiltyScorePartly = genetics1.thinkParticular(userToPlay, viewfield).flatten()
+				moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
+				moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
+				moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
+				moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
 	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
 	return sortedPicks[indexMove]
 
@@ -160,13 +162,16 @@ def getAI2Move(userToPlay, board, indexMove):
 				viewfield.extend(rows[x][ai_width:ai_width+4])
 
 			moveProbabiltyScoreOffset = [0] * ai_width
-			viewfield.insert(0, ai_width)
-			viewfield.insert(0, ai_height)
-			moveProbabiltyScorePartly = genetics2.thinkParticular(userToPlay, viewfield).flatten()
-			moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
-			moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
-			moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
-			moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
+
+			#If all fields are zero then skip -> better performance
+			if (np.any(viewfield)):
+				viewfield.insert(0, ai_width)
+				viewfield.insert(0, ai_height)
+				moveProbabiltyScorePartly = genetics2.thinkParticular(userToPlay, viewfield).flatten()
+				moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
+				moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
+				moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
+				moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
 	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
 	return sortedPicks[indexMove]
 
@@ -181,13 +186,15 @@ def getGhostMove(userToPlay, board, indexMove):
 				viewfield.extend(rows[x][ai_width:ai_width+4])
 
 			moveProbabiltyScoreOffset = [0] * ai_width
-			viewfield.insert(0, ai_width)
-			viewfield.insert(0, ai_height)
-			moveProbabiltyScorePartly = genetics1.thinkParticularGhost(userToPlay, viewfield).flatten()
-			moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
-			moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
-			moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
-			moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
+			#If all fields are zero then skip -> better performance
+			if (np.any(viewfield)):
+				viewfield.insert(0, ai_width)
+				viewfield.insert(0, ai_height)
+				moveProbabiltyScorePartly = genetics1.thinkParticularGhost(userToPlay, viewfield).flatten()
+				moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
+				moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
+				moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
+				moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
 	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
 	return sortedPicks[indexMove]
 
@@ -202,13 +209,15 @@ def getGhost2Move(userToPlay, board, indexMove):
 				viewfield.extend(rows[x][ai_width:ai_width+4])
 
 			moveProbabiltyScoreOffset = [0] * ai_width
-			viewfield.insert(0, ai_width)
-			viewfield.insert(0, ai_height)
-			moveProbabiltyScorePartly = genetics2.thinkParticularGhost(userToPlay, viewfield).flatten()
-			moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
-			moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
-			moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
-			moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
+			#If all fields are zero then skip -> better performance
+			if (np.any(viewfield)):
+				viewfield.insert(0, ai_width)
+				viewfield.insert(0, ai_height)
+				moveProbabiltyScorePartly = genetics2.thinkParticularGhost(userToPlay, viewfield).flatten()
+				moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
+				moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
+				moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
+				moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
 	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
 	return sortedPicks[indexMove]
 
@@ -231,8 +240,8 @@ def gameRoundGhost(y: int, idx: int):
 		game_over = False
 		userToPlay = 0
 		#First move throws off the AI for the first x 100 moves
-		#firstMoveNoise = np.random.randint(2,5)
-		#firstMovePlayed = True
+		firstMoveNoise = np.random.randint(0,6)
+		firstMovePlayed = True
 
 
 		while not game_over:
@@ -242,10 +251,10 @@ def gameRoundGhost(y: int, idx: int):
 
 			while not valid_move:
 				#y == 0 > AI gets second move
-				#if(firstMovePlayed == False):
-				#	firstMovePlayed = True;
-				#	chosen_move = firstMoveNoise
-				if(y == 0):
+				if(firstMovePlayed == False):
+					firstMovePlayed = True;
+					chosen_move = firstMoveNoise
+				elif(y == 0):
 					#userToPay 0 = Ghost gets first move
 					if(userToPlay == 0):
 						chosen_move = getGhostMove(enemy, game.board, bannedOutputs)
@@ -332,8 +341,8 @@ def gameRoundAI(y: int, idx: int):
 		game_over = False
 		userToPlay = 0
 		#First move throws off the AI for the first x 100 moves
-		#firstMoveNoise = np.random.randint(2,5)
-		#firstMovePlayed = False
+		firstMoveNoise = np.random.randint(0,6)
+		firstMovePlayed = False
 
 
 		while not game_over:
@@ -343,10 +352,10 @@ def gameRoundAI(y: int, idx: int):
 
 			while not valid_move:
 				#y == 0 > AI gets second move
-				#if(firstMovePlayed == False):
-				#	firstMovePlayed = True;
-				#	chosen_move = firstMoveNoise
-				if(y == 0):
+				if(firstMovePlayed == False):
+					firstMovePlayed = True;
+					chosen_move = firstMoveNoise
+				elif(y == 0):
 					#userToPay 0 = Ghost gets first move
 					if(userToPlay == 0):
 						chosen_move = getAIMove(enemy, game.board, bannedOutputs)
@@ -434,13 +443,13 @@ def checkAIQuality(y: int, idx: int):
 	qual_check_losses = 0;
 	#logging.debug("Starting quality check on generation " + str(y+1))
 	#Performance wise only 20% of the population gets testet
-	for x in range(int(POP_COUNT/20)-1, -1, -1):
+	for x in range(int(POP_COUNT/10)-1, -1, -1):
 		game = GameField()
 		game_over = False
 		userToPlay = 0
 		#First move throws off the AI for the first x 100 moves
-		#firstMoveNoise = np.random.randint(2,5)
-		#firstMovePlayed = False
+		firstMoveNoise = np.random.randint(0,6)
+		firstMovePlayed = False
 
 		#print("Checking agent " + str(x))
 		while not game_over:
@@ -449,10 +458,10 @@ def checkAIQuality(y: int, idx: int):
 
 			while not valid_move:
 				#y == 0 > AI gets second move
-				#if(firstMovePlayed == False):
-				#	firstMovePlayed = True;
-				#	chosen_move = firstMoveNoise
-				if(y == 0):
+				if(firstMovePlayed == False):
+					firstMovePlayed = True;
+					chosen_move = firstMoveNoise
+				elif(y == 0):
 					#userToPay 0 = Ghost gets first move
 					if(userToPlay == 0):
 						chosen_move = minMaxAI(game.board)
@@ -537,24 +546,24 @@ for b in range(ROUND_COUNT-1, -1, -1):
 	for y in range(0,2):
 		#Testing
 		#Doble amount of fitness due to double reward 
-		#for x in range(0, GAMESPERROUND):
-		#	gameRoundAI(y,1)
+		for x in range(0, GAMESPERROUND):
+			gameRoundAI(y,1)
 
-		with ThreadPoolExecutor() as executor:
-			worker = partial(gameRoundAI, y)
-			executor.map(worker, range(0, GAMESPERROUND))
+		#with ThreadPoolExecutor() as executor:
+		#	worker = partial(gameRoundAI, y)
+		#	executor.map(worker, range(0, GAMESPERROUND))
 
 		
 
 
 
 		#Debug Testing gameRound(y,1)
-		#for x in range(0, GHOSTGAMESPERROUND):
-		#	gameRoundGhost(y,1)
+		for x in range(0, GHOSTGAMESPERROUND):
+			gameRoundGhost(y,1)
 
-		with ThreadPoolExecutor() as executor:
-			worker = partial(gameRoundGhost, y)
-			executor.map(worker, range(0, GHOSTGAMESPERROUND))
+		#with ThreadPoolExecutor() as executor:
+		#	worker = partial(gameRoundGhost, y)
+		#	executor.map(worker, range(0, GHOSTGAMESPERROUND))
 
 		#Play against external minmax algorithm
 		#Major performance issues with this function
