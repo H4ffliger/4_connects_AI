@@ -28,11 +28,12 @@ class Genetics():
 
 
 
-	def thinkParticular(self, index,inputs):
+	def thinkParticular(self, index, inputs):
+		#print(inputs)
 		self.agents[index].think(inputs)
 		return self.agents[index].output
 
-	def thinkParticularGhost(self, index,inputs):
+	def thinkParticularGhost(self, index, inputs):
 		self.ghostAgents[index].think(inputs)
 		return self.ghostAgents[index].output
 

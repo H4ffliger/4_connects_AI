@@ -12,6 +12,8 @@ from minmax import minMaxAI
 import pyfiglet
 #Analyzer
 import tracemalloc
+#List add
+from operator import add
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -50,24 +52,27 @@ tracemalloc.start()
 ascii_banner = pyfiglet.figlet_format("GNeuroNetWK")
 print(ascii_banner)
 
-print("Version 0.02\n"+
+print("Version 0.03\n"+
 	"Genetic neuronal network developed by Huffliger \n" +
 	"Designed to solve compute intense problems\n" +
 	"Currently test boilerplate to check functionality\n" + 
 	"Beat the game 4 connects with external minmax score progress check\n\n")
 
 #Game Specific
-gameSize = 6*7
+
+gameW = 7
+gameH = 6
+gameSize = gameW*gameH
 
 #Genetic Algorithm
-POP_COUNT = 400
+POP_COUNT = 100
 GHOSTAGENTS_POP = POP_COUNT
 #ROUND_COUNT 0 = 1'000'000
 ROUND_COUNT = 250000000
 #Individual agents
-AGENT_INPUTS = gameSize
+AGENT_INPUTS = 4*4+2
 #Output needs to be at least 2
-AGENT_OUTPUTS = 6 #ToDo:Check if not one to small
+AGENT_OUTPUTS = 4 #ToDo:Check if not one to small
 #Mutation 0.05 = 5% on 5% of weights
 randomizationAmount = 0.01
 randomuzationStrengthWeights = 0.02
@@ -123,23 +128,87 @@ for i in range(0, 2):
 bannedOutputs = 0
 
 def getAIMove(userToPlay, board, indexMove):
-	moveProbabiltyScore = genetics1.thinkParticular(userToPlay, board.flatten()).flatten()
+	moveProbabiltyScore = [0] * gameW
+	for ai_height in range(gameH-4, -1, -1):
+		for ai_width in range(gameW-4, -1, -1):
+			#Create field of inputs for the neural network
+			rows = board[ai_height:ai_height+4]
+			viewfield = []
+			for x in range(0,4):
+				viewfield.extend(rows[x][ai_width:ai_width+4])
+
+			moveProbabiltyScoreOffset = [0] * ai_width
+			viewfield.insert(0, ai_width)
+			viewfield.insert(0, ai_height)
+			moveProbabiltyScorePartly = genetics1.thinkParticular(userToPlay, viewfield).flatten()
+			moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
+			moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
+			moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
+			moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
 	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
 	return sortedPicks[indexMove]
 
 
 def getAI2Move(userToPlay, board, indexMove):
-	moveProbabiltyScore = genetics2.thinkParticular(userToPlay, board.flatten()).flatten()
+	moveProbabiltyScore = [0] * gameW
+	for ai_height in range(gameH-4, -1, -1):
+		for ai_width in range(gameW-4, -1, -1):
+			#Create field of inputs for the neural network
+			rows = board[ai_height:ai_height+4]
+			viewfield = []
+			for x in range(0,4):
+				viewfield.extend(rows[x][ai_width:ai_width+4])
+
+			moveProbabiltyScoreOffset = [0] * ai_width
+			viewfield.insert(0, ai_width)
+			viewfield.insert(0, ai_height)
+			moveProbabiltyScorePartly = genetics2.thinkParticular(userToPlay, viewfield).flatten()
+			moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
+			moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
+			moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
+			moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
 	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
 	return sortedPicks[indexMove]
 
 def getGhostMove(userToPlay, board, indexMove):
-	moveProbabiltyScore = genetics1.thinkParticularGhost(userToPlay, board.flatten()).flatten()
+	moveProbabiltyScore = [0] * gameW
+	for ai_height in range(gameH-4, -1, -1):
+		for ai_width in range(gameW-4, -1, -1):
+			#Create field of inputs for the neural network
+			rows = board[ai_height:ai_height+4]
+			viewfield = []
+			for x in range(0,4):
+				viewfield.extend(rows[x][ai_width:ai_width+4])
+
+			moveProbabiltyScoreOffset = [0] * ai_width
+			viewfield.insert(0, ai_width)
+			viewfield.insert(0, ai_height)
+			moveProbabiltyScorePartly = genetics1.thinkParticularGhost(userToPlay, viewfield).flatten()
+			moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
+			moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
+			moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
+			moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
 	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
 	return sortedPicks[indexMove]
 
 def getGhost2Move(userToPlay, board, indexMove):
-	moveProbabiltyScore = genetics2.thinkParticularGhost(userToPlay, board.flatten()).flatten()
+	moveProbabiltyScore = [0] * gameW
+	for ai_height in range(gameH-4, -1, -1):
+		for ai_width in range(gameW-4, -1, -1):
+			#Create field of inputs for the neural network
+			rows = board[ai_height:ai_height+4]
+			viewfield = []
+			for x in range(0,4):
+				viewfield.extend(rows[x][ai_width:ai_width+4])
+
+			moveProbabiltyScoreOffset = [0] * ai_width
+			viewfield.insert(0, ai_width)
+			viewfield.insert(0, ai_height)
+			moveProbabiltyScorePartly = genetics2.thinkParticularGhost(userToPlay, viewfield).flatten()
+			moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
+			moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
+			moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
+			moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
 	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
 	return sortedPicks[indexMove]
 
@@ -155,7 +224,7 @@ def gameRoundGhost(y: int, idx: int):
 	else:
 		enemy = np.random.randint(0, len(genetics2.ghostAgents))
 
-	for x in range(POP_COUNT-1, 0, -1):
+	for x in range(POP_COUNT-1, -1, -1):
 
 
 		game = GameField()
@@ -250,7 +319,7 @@ def gameRoundGhost(y: int, idx: int):
 
 def gameRoundAI(y: int, idx: int):
 
-	for x in range(POP_COUNT-1, 0, -1):
+	for x in range(POP_COUNT-1, -1, -1):
 
 		#All fight random enemies
 		if(y == 0):
@@ -365,7 +434,7 @@ def checkAIQuality(y: int, idx: int):
 	qual_check_losses = 0;
 	#logging.debug("Starting quality check on generation " + str(y+1))
 	#Performance wise only 20% of the population gets testet
-	for x in range(int(POP_COUNT/20)-1, 0, -1):
+	for x in range(int(POP_COUNT/20)-1, -1, -1):
 		game = GameField()
 		game_over = False
 		userToPlay = 0
@@ -463,7 +532,7 @@ def checkAIQuality(y: int, idx: int):
 
 
 #Main loop
-for b in range(ROUND_COUNT-1, 0, -1):
+for b in range(ROUND_COUNT-1, -1, -1):
 	#PlayAgainstGhost
 	for y in range(0,2):
 		#Testing
