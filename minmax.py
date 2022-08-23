@@ -142,7 +142,7 @@ def getMinMaxMove(choice, game):
 	#print("Loop check: " + str(sort_index[choice]))
 	#print(sort_index)
 	#print(sort_index[choice])
-	print(moveProbabiltyScore)
+	#print(moveProbabiltyScore)
 	return sort_index[choice]
 
 
@@ -163,10 +163,7 @@ def minMaxAI(game):
 		#print(valid_move)
 		if(valid_move):
 			return moveMinMax
-		print(str(x) + " " + str(loopCheck))
-		if(loopCheck > 100):
-			game.print_board()
-			return 
+		#print(str(x) + " " + str(loopCheck))
 	print("Wrong move")
 	return moveMinMax
 	#print("return " + str(loopCheck))
