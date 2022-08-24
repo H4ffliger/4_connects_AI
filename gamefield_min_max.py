@@ -6,7 +6,7 @@ BOARD_ROWS = 4
 # Game board object
 class GameField():
     def __init__(self):
-        self.board = np.array([[-1 for c in range(BOARD_COLS)] for r in range(BOARD_ROWS)])
+        self.board = np.array([[0 for c in range(BOARD_COLS)] for r in range(BOARD_ROWS)])
         self.turns = 0
         self.last_move = [-1, -1] # [r, c]
 
@@ -18,11 +18,11 @@ class GameField():
 
         for i in range(len(self.board)):
             for y in range(len(self.board[0])):
-                if (self.board[i][y] == -1):
+                if (self.board[i][y] == 0):
                     stringed[i][y] = " "
-                if (self.board[i][y] == 1):
+                if (self.board[i][y] == -1):
                     stringed[i][y] = "O"
-                if (self.board[i][y] == 2):
+                if (self.board[i][y] == 1):
                     stringed[i][y] = "X"
 
         print("\n")
@@ -43,7 +43,7 @@ class GameField():
         print(f"{'-' * 42}\n")
 
     def which_turn(self):
-        players = [1, 2]
+        players = [-1, 1]
         return players[self.turns % 2]
     
     def in_bounds(self, r, c):
@@ -52,7 +52,7 @@ class GameField():
     def turn(self, column):
         # Search bottom up for an open slot
         for i in range(BOARD_ROWS-1, -1, -1):
-            if self.board[i][column] == -1:
+            if self.board[i][column] == 0:
                 self.board[i][column] = self.which_turn()
                 self.last_move = [i, column]
 

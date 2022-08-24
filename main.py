@@ -79,18 +79,18 @@ AGENT_INPUTS = 4*4+2
 #Output needs to be at least 2
 AGENT_OUTPUTS = 4 #ToDo:Check if not one to small
 #Mutation 0.05 = 5% on 5% of weights
-randomizationAmount = 0.05
-randomuzationStrengthWeights = 0.05
-randomuzationStrengthBiases = 0.02
+randomizationAmount = 0.07
+randomuzationStrengthWeights = 0.1
+randomuzationStrengthBiases = 0.05
 #Reward is exponential default 1.75
-FITNESS_REWARD = 1.5
+FITNESS_REWARD = 1 #Temporary disabled
 #Population / Probability = real probability
-SNAPSHOT_PROBABILITY = POP_COUNT*10
+SNAPSHOT_PROBABILITY = POP_COUNT*8
 #Games each round for each agent
 GAMESPERROUND = 10
 GHOSTGAMESPERROUND = 4
-SHOWAFTER = 100000000
-SHOWEVERY = 1000
+SHOWAFTER = 1000000
+SHOWEVERY = 20000
 
 #AI vs AI
 WINFITNESS = 4
@@ -256,7 +256,7 @@ def gameRoundGhost(y: int, idx: int):
 			while not valid_move:
 				#y == 0 > AI gets second move
 				if(firstMovePlayed == False):
-					firstMovePlayed = True;
+					firstMovePlayed = True
 					chosen_move = firstMoveNoise
 				elif(y == 0):
 					#userToPay 0 = Ghost gets first move
@@ -320,7 +320,7 @@ def gameRoundGhost(y: int, idx: int):
 
 
 			# End the game if there is a tie
-			if not any(-1 in x for x in game.board):
+			if not any(0 in x for x in game.board):
 				if(game_over == False):
 					if(y == 0):
 						genetics2.calculateFitnessParticular(x, DRAWFITNESSGHOST)
@@ -357,7 +357,7 @@ def gameRoundAI(y: int, idx: int):
 			while not valid_move:
 				#y == 0 > AI gets second move
 				if(firstMovePlayed == False):
-					firstMovePlayed = True;
+					firstMovePlayed = True
 					chosen_move = firstMoveNoise
 				elif(y == 0):
 					#userToPay 0 = Ghost gets first move
@@ -428,7 +428,7 @@ def gameRoundAI(y: int, idx: int):
 
 
 			# End the game if there is a tie
-			if not any(-1 in x for x in game.board):
+			if not any(0 in x for x in game.board):
 				if(game_over == False):
 					if(y == 0):
 						genetics2.calculateFitnessParticular(x, DRAWFITNESS)
@@ -441,11 +441,11 @@ def gameRoundAI(y: int, idx: int):
 
 
 # Change to do => don't train on this data (don't cloe the round /generations)
-
+#ToDo: Check why we get wrong moves many times
 def checkAIQuality(y: int, idx: int):
-	qual_check_wins = 0;
-	qual_check_draws = 0;
-	qual_check_losses = 0;
+	qual_check_wins = 0
+	qual_check_draws = 0
+	qual_check_losses = 0
 	#logging.debug("Starting quality check on generation " + str(y+1))
 	#Performance wise only 20% of the population gets testet
 	for x in range(int(POP_COUNT/10)-1, -1, -1):
@@ -464,7 +464,7 @@ def checkAIQuality(y: int, idx: int):
 			while not valid_move:
 				#y == 0 > AI gets second move
 				if(firstMovePlayed == False):
-					firstMovePlayed = True;
+					firstMovePlayed = True
 					chosen_move = firstMoveNoise
 				elif(y == 0):
 					#userToPay 0 = Ghost gets first move
@@ -528,7 +528,7 @@ def checkAIQuality(y: int, idx: int):
 
 
 			# End the game if there is a tie
-			if not any(-1 in x for x in game.board):
+			if not any(0 in x for x in game.board):
 				if(game_over == False):
 					if(y == 0):
 						qual_check_draws += 1
@@ -537,7 +537,7 @@ def checkAIQuality(y: int, idx: int):
 				game_over = True
 				valid_move = True
 	file_object = open("dumbed_saves/" + sys.argv[1] + "_GEN_"+str(2-y) +"_min_max_progress.csv", 'a')
-	file_object.write(str(roundsCompleted)+";" +str(qual_check_wins)+";"+str(qual_check_draws)+";"+str(qual_check_losses)+"\n")
+	file_object.write(str(roundsCompleted)+"," +str(qual_check_wins)+","+str(qual_check_draws)+","+str(qual_check_losses)+"\n")
 	file_object.close()
 	print("Generation" + str(2-y) + ": wins: " + str(qual_check_wins) + " draws: " + str(qual_check_draws) + " losses: " + str(qual_check_losses))
 
@@ -584,12 +584,12 @@ for b in range(ROUND_COUNT-1, -1, -1):
 
 	#New approach (and fitnessOfRound2 > GHOSTGAMESPERROUND + GHOSTGAMESPERROUND/3)
 	for g1 in range(len(genetics1.agents)-1, -1, -1):
-		if(GHOSTGAMESPERROUND*1.5 + GAMESPERROUND*1.5 <= genetics1.agents[g1].fitness and np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
+		if(GHOSTGAMESPERROUND*1.2 + GAMESPERROUND*1.5 <= genetics1.agents[g1].fitness and np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
 			genetics1.copyAgenttoGhost(g1)
 
 	#New approach (and fitnessOfRound > GHOSTGAMESPERROUND + GHOSTGAMESPERROUND/3)
 	for g2 in range(len(genetics2.agents)-1, -1, -1):
-		if(GHOSTGAMESPERROUND*1.5 + GAMESPERROUND*1.5 <= genetics2.agents[g2].fitness and np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
+		if(GHOSTGAMESPERROUND*1.2 + GAMESPERROUND*1.5 <= genetics2.agents[g2].fitness and np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
 			genetics2.copyAgenttoGhost(g2)
 
 
@@ -602,7 +602,7 @@ for b in range(ROUND_COUNT-1, -1, -1):
 
 	roundsCompleted += 1
 	file_object = open("dumbed_saves/" + sys.argv[1] + ".csv", 'a')
-	file_object.write(str(roundsCompleted)+";"+str(fitnessOfRound1)+ ";" + str(fitnessOfRound2)+ ";" +str(len(genetics1.ghostAgents))+";"+str(len(genetics2.ghostAgents))+"\n")
+	file_object.write(str(roundsCompleted)+","+str(fitnessOfRound1)+ "," + str(fitnessOfRound2)+ "," +str(len(genetics1.ghostAgents))+";"+str(len(genetics2.ghostAgents))+"\n")
 	file_object.close()
 
 	print("Round: " + str(roundsCompleted) + "|| Fitness genetics1(1st to play): " + str(fitnessOfRound1) + " || Fitness genetics2: " + str(fitnessOfRound2) +" || Amount of GhostAgents: " + str(len(genetics1.ghostAgents)) + " || Amount of GhostAgents2: " + str(len(genetics2.ghostAgents)))

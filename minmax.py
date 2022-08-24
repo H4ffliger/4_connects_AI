@@ -158,13 +158,15 @@ def minMaxAI(game):
 		loopCheck += 1
 		minMaxMove = -2
 		#print("while false loopCheck =  " + str(loopCheck) + " for loop = " + str(x))
-		moveMinMax =getMinMaxMove(loopCheck, game)
+		moveMinMax = getMinMaxMove(loopCheck, game)
 		valid_move = game.turn(moveMinMax)
 		#print(valid_move)
 		if(valid_move):
 			return moveMinMax
 		#print(str(x) + " " + str(loopCheck))
-	print("Wrong move")
+	#Check why error is called 40-50 times with 20 games
+	#print("Wrong move")
+	#game.print_board()
 	return moveMinMax
 	#print("return " + str(loopCheck))
 	user = 0

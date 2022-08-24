@@ -106,8 +106,8 @@ class Genetics():
 			#devide by 5 to get smaller fitness
 			#Agents with fitness 10/5 = 2 **2 = 4 20 / 5 = 4 **2 = 16
 			#self.agents[i].fitness = self.agents[i].fitness + 100
-			self.agents[i].fitness = self.agents[i].fitness/(totalFitness/300)
-			self.agents[i].fitness = math.pow(self.agents[i].fitness,self.FITNESS_REWARD)
+			self.agents[i].fitness = self.agents[i].fitness/(totalFitness/1000)
+			#self.agents[i].fitness = math.pow(self.agents[i].fitness,self.FITNESS_REWARD)
 			#Just in case every agent has a score of 0
 			#self.agents[i].fitness += 1
 

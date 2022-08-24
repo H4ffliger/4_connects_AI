@@ -22,3 +22,7 @@ print(test_list)
 viewfield = [0]*10
 
 print(np.any(viewfield))
+
+for x in range(0,100):
+    if(np.random.uniform(0,1)< 0.05):
+        print("Smaller ")
