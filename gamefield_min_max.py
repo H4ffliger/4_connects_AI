@@ -20,9 +20,9 @@ class GameField():
             for y in range(len(self.board[0])):
                 if (self.board[i][y] == 0):
                     stringed[i][y] = " "
-                if (self.board[i][y] == -1):
-                    stringed[i][y] = "O"
                 if (self.board[i][y] == 1):
+                    stringed[i][y] = "O"
+                if (self.board[i][y] == 2):
                     stringed[i][y] = "X"
 
         print("\n")
@@ -43,7 +43,7 @@ class GameField():
         print(f"{'-' * 42}\n")
 
     def which_turn(self):
-        players = [-1, 1]
+        players = [1, 2]
         return players[self.turns % 2]
     
     def in_bounds(self, r, c):
@@ -121,9 +121,9 @@ def GameBoardF():
         print(game.board)
 
         # End the game if there is a tie
-        if not any(-1 in x for x in game.board):
+        if not any(0 in x for x in game.board):
             print("The game is a draw..")
-            return
+            return False
 
 
 if __name__ == '__main__':

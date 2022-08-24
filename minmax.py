@@ -164,9 +164,7 @@ def minMaxAI(game):
 		if(valid_move):
 			return moveMinMax
 		#print(str(x) + " " + str(loopCheck))
-	#Check why error is called 40-50 times with 20 games
-	#print("Wrong move")
-	#game.print_board()
+	print("Wrong move")
 	return moveMinMax
 	#print("return " + str(loopCheck))
 	user = 0

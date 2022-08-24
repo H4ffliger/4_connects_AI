@@ -21,7 +21,7 @@ from copy import deepcopy
 
 
 import logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 '''
 import linecache
 import os
@@ -87,8 +87,8 @@ FITNESS_REWARD = 1 #Temporary disabled
 #Population / Probability = real probability
 SNAPSHOT_PROBABILITY = POP_COUNT*8
 #Games each round for each agent
-GAMESPERROUND = 10
-GHOSTGAMESPERROUND = 4
+GAMESPERROUND = 2
+GHOSTGAMESPERROUND = 1
 SHOWAFTER = 1000000
 SHOWEVERY = 20000
 
@@ -276,7 +276,7 @@ def gameRoundGhost(y: int, idx: int):
 				valid_move = game.turn(chosen_move)
 				if(valid_move == False and game_over == False):
 					bannedOutputs += 1
-					if(chosen_move == -1 or bannedOutputs >= AGENT_OUTPUTS):
+					if(chosen_move == -1 or bannedOutputs >= gameW):
 						if(y == 0):
 							genetics2.calculateFitnessParticular(x, DRAWFITNESSGHOST)
 						else:
@@ -377,7 +377,7 @@ def gameRoundAI(y: int, idx: int):
 				valid_move = game.turn(chosen_move)
 				if(valid_move == False and game_over == False):
 					bannedOutputs += 1
-					if(chosen_move == -1 or bannedOutputs >= AGENT_OUTPUTS):
+					if(chosen_move == -1 or bannedOutputs >= gameW):
 						if(y == 0):
 							genetics2.calculateFitnessParticular(x, DRAWFITNESS)
 							#genetics1.calculateFitnessParticular(enemy, DRAWFITNESS)
@@ -481,15 +481,18 @@ def checkAIQuality(y: int, idx: int):
 						chosen_move = minMaxAI(deepcopy(game))
 
 				valid_move = game.turn(chosen_move)
+					
 				if(valid_move == False and game_over == False):
+					
 					bannedOutputs += 1
-					if(chosen_move == -1 or bannedOutputs >= AGENT_OUTPUTS):
+					if(chosen_move == -1 or bannedOutputs >= gameW):
 						if(y == 0):
 							qual_check_draws += 1
 						else:
 							qual_check_draws += 1
 						game_over = True
 						valid_move = True
+						return
 				if(x > POP_COUNT-2 and b % SHOWEVERY == 1 and b < ROUND_COUNT - SHOWAFTER):
 					time.sleep(0.3)
 					print(game.print_board())
