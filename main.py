@@ -244,7 +244,7 @@ def gameRoundGhost(y: int, idx: int):
 		game_over = False
 		userToPlay = 0
 		#First move throws off the AI for the first x 100 moves
-		firstMoveNoise = np.random.randint(0,gameW-1)
+		firstMoveNoise = np.random.randint(0,gameW)
 		firstMovePlayed = False
 
 
@@ -345,7 +345,7 @@ def gameRoundAI(y: int, idx: int):
 		game_over = False
 		userToPlay = 0
 		#First move throws off the AI for the first x 100 moves
-		firstMoveNoise = np.random.randint(0,gameW-1)
+		firstMoveNoise = np.random.randint(0,gameW)
 		firstMovePlayed = False
 
 
@@ -453,7 +453,7 @@ def checkAIQuality(y: int, idx: int):
 		game_over = False
 		userToPlay = 0
 		#First move throws off the AI for the first x 100 moves
-		firstMoveNoise = np.random.randint(0,gameW-1)
+		firstMoveNoise = np.random.randint(0,gameW)
 		firstMovePlayed = False
 
 		#print("Checking agent " + str(x))

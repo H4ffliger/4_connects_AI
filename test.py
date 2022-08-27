@@ -24,5 +24,23 @@ viewfield = [0]*10
 
 print(np.any(viewfield))
 
-for x in range(0,4):
-    print(x)
+x1 = 0
+x2 = 0
+x3 = 0
+x4 = 0
+gameW = 5
+for y in range(0, 10000):
+    x = np.random.randint(0,gameW-1)
+    if(x == 0):
+        x1 += 1
+    if(x == 1):
+        x2 += 1
+    if(x == 2):
+        x3 += 1
+    if(x == 3):
+        x4 += 1
+
+print("1: " + str(x1))
+print("2: " + str(x2))
+print("3: " + str(x3))
+print("4: " + str(x4))
