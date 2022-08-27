@@ -85,12 +85,12 @@ randomuzationStrengthBiases = 0.05
 #Reward is exponential default 1.75
 FITNESS_REWARD = 1 #Temporary disabled
 #Population / Probability = real probability
-SNAPSHOT_PROBABILITY = POP_COUNT*8
+SNAPSHOT_PROBABILITY = POP_COUNT*10
 #Games each round for each agent
 GAMESPERROUND = 5
 GHOSTGAMESPERROUND = 3
-SHOWAFTER = 0
-SHOWEVERY = 1
+SHOWAFTER = 10000000
+SHOWEVERY = 10000
 
 #AI vs AI
 WINFITNESS = 4
@@ -168,14 +168,14 @@ def getAI2Move(userToPlay, board, indexMove):
 			moveProbabiltyScoreOffset = [0] * ai_width
 
 			#If all fields are zero then skip -> better performance
-			if not (np.any(viewfield)):
-				viewfield.insert(0, ai_width)
-				viewfield.insert(0, ai_height)
-				moveProbabiltyScorePartly = genetics2.thinkParticular(userToPlay, viewfield).flatten()
-				moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
-				moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
-				moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
-				moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
+			#if not (np.any(viewfield)):
+			viewfield.insert(0, ai_width)
+			viewfield.insert(0, ai_height)
+			moveProbabiltyScorePartly = genetics2.thinkParticular(userToPlay, viewfield).flatten()
+			moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
+			moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
+			moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
+			moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
 	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
 	return sortedPicks[indexMove]
 
@@ -191,14 +191,14 @@ def getGhostMove(userToPlay, board, indexMove):
 
 			moveProbabiltyScoreOffset = [0] * ai_width
 			#If all fields are zero then skip -> better performance
-			if not (np.any(viewfield)):
-				viewfield.insert(0, ai_width)
-				viewfield.insert(0, ai_height)
-				moveProbabiltyScorePartly = genetics1.thinkParticularGhost(userToPlay, viewfield).flatten()
-				moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
-				moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
-				moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
-				moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
+			#if not (np.any(viewfield)):
+			viewfield.insert(0, ai_width)
+			viewfield.insert(0, ai_height)
+			moveProbabiltyScorePartly = genetics1.thinkParticularGhost(userToPlay, viewfield).flatten()
+			moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
+			moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
+			moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
+			moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
 	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
 	return sortedPicks[indexMove]
 
@@ -214,14 +214,14 @@ def getGhost2Move(userToPlay, board, indexMove):
 
 			moveProbabiltyScoreOffset = [0] * ai_width
 			#If all fields are zero then skip -> better performance
-			if not (np.any(viewfield)):
-				viewfield.insert(0, ai_width)
-				viewfield.insert(0, ai_height)
-				moveProbabiltyScorePartly = genetics2.thinkParticularGhost(userToPlay, viewfield).flatten()
-				moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
-				moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
-				moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
-				moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
+			#if not (np.any(viewfield)):
+			viewfield.insert(0, ai_width)
+			viewfield.insert(0, ai_height)
+			moveProbabiltyScorePartly = genetics2.thinkParticularGhost(userToPlay, viewfield).flatten()
+			moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
+			moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
+			moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
+			moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
 	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
 	return sortedPicks[indexMove]
 

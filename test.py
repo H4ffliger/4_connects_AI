@@ -4,6 +4,7 @@ def square(n):
     print("Test")
 
 
+
 my_list = [2,3,4,5,6,7,8,9]
 my_list2 = [2,3,4,5,6, 0, 0, 0]
 result = map(square, my_list)
@@ -23,6 +24,5 @@ viewfield = [0]*10
 
 print(np.any(viewfield))
 
-for x in range(0,100):
-    if(np.random.uniform(0,1)< 0.05):
-        print("Smaller ")
+for x in range(0,4):
+    print(x)
