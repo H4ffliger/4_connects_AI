@@ -103,7 +103,7 @@ DRAWFITNESSGHOST = 0.5
 LOSEFITNESSGHOST = 0.2
 
 
-EXPORTEVERYXMOVE = 25
+EXPORTEVERYXMOVE = 10
 #1 = >= Durchschnitt 1.1 = 110% von normaler Qualität
 EXPORTQUALITY = 1
 EXPORTAFTER = 2
@@ -154,17 +154,29 @@ def getAIMove(userToPlay, board, indexMove):
 			moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
 			moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
 			moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
-	#Check manual change
-	#moveProbabiltyScore[0] += 0.25
-	#moveProbabiltyScore[len(moveProbabiltyScore)-1] += 0.25
-	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
+			moveProbabiltyScoreOverall.append(moveProbabiltyScore)
 
+	# Average the colums so that the edges of the game don't have lower values
+	moveProbabiltyScoreSum = [0] * gameW
+	moveProbabiltyScoreSumCount = [0] * gameW
+	moveProbabiltyScoreAverage = [0] * gameW
+	for i in range(len(moveProbabiltyScoreOverall)-1, -1, -1):
+		for s in range(len(moveProbabiltyScoreOverall[i])-1, -1, -1):
+			if(moveProbabiltyScoreOverall[i][s] != 0):
+				moveProbabiltyScoreSum[s] += moveProbabiltyScoreOverall[i][s]
+				moveProbabiltyScoreSumCount[s] += 1
+	for i in range(len(moveProbabiltyScoreSum)-1, -1, -1):
+		moveProbabiltyScoreAverage[i] = moveProbabiltyScoreSum[i] / moveProbabiltyScoreSumCount[i]
+
+	sortedPicks = sorted(range(len(moveProbabiltyScoreAverage)), key=lambda k: moveProbabiltyScoreAverage[k])
 	return sortedPicks[indexMove]
 
 def getAI2Move(userToPlay, board, indexMove):
-	moveProbabiltyScore = [0] * gameW
+	#Append all scores to this list
+	moveProbabiltyScoreOverall = []
 	for ai_height in range(gameH-4, -1, -1):
 		for ai_width in range(gameW-4, -1, -1):
+			moveProbabiltyScore = [0] * gameW
 			#Create field of inputs for the neural network
 			rows = board[ai_height:ai_height+4]
 			viewfield = []
@@ -182,16 +194,28 @@ def getAI2Move(userToPlay, board, indexMove):
 			moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
 			moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
 			moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
-	#Check manual change
-	#moveProbabiltyScore[0] += 0.25
-	#moveProbabiltyScore[len(moveProbabiltyScore)-1] += 0.25
-	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
+			moveProbabiltyScoreOverall.append(moveProbabiltyScore)
+	# Average the colums so that the edges of the game don't have lower values
+	moveProbabiltyScoreSum = [0] * gameW
+	moveProbabiltyScoreSumCount = [0] * gameW
+	moveProbabiltyScoreAverage = [0] * gameW
+	for i in range(len(moveProbabiltyScoreOverall)-1, -1, -1):
+		for s in range(len(moveProbabiltyScoreOverall[i])-1, -1, -1):
+			if(moveProbabiltyScoreOverall[i][s] != 0):
+				moveProbabiltyScoreSum[s] += moveProbabiltyScoreOverall[i][s]
+				moveProbabiltyScoreSumCount[s] += 1
+	for i in range(len(moveProbabiltyScoreSum)-1, -1, -1):
+		moveProbabiltyScoreAverage[i] = moveProbabiltyScoreSum[i] / moveProbabiltyScoreSumCount[i]
+
+	sortedPicks = sorted(range(len(moveProbabiltyScoreAverage)), key=lambda k: moveProbabiltyScoreAverage[k])
 	return sortedPicks[indexMove]
 
 def getGhostMove(userToPlay, board, indexMove):
-	moveProbabiltyScore = [0] * gameW
+	#Append all scores to this list
+	moveProbabiltyScoreOverall = []
 	for ai_height in range(gameH-4, -1, -1):
 		for ai_width in range(gameW-4, -1, -1):
+			moveProbabiltyScore = [0] * gameW
 			#Create field of inputs for the neural network
 			rows = board[ai_height:ai_height+4]
 			viewfield = []
@@ -208,16 +232,28 @@ def getGhostMove(userToPlay, board, indexMove):
 			moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
 			moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
 			moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
-	#Check manual change
-	#moveProbabiltyScore[0] += 0.25
-	#moveProbabiltyScore[len(moveProbabiltyScore)-1] += 0.25
-	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
+			moveProbabiltyScoreOverall.append(moveProbabiltyScore)
+	# Average the colums so that the edges of the game don't have lower values
+	moveProbabiltyScoreSum = [0] * gameW
+	moveProbabiltyScoreSumCount = [0] * gameW
+	moveProbabiltyScoreAverage = [0] * gameW
+	for i in range(len(moveProbabiltyScoreOverall)-1, -1, -1):
+		for s in range(len(moveProbabiltyScoreOverall[i])-1, -1, -1):
+			if(moveProbabiltyScoreOverall[i][s] != 0):
+				moveProbabiltyScoreSum[s] += moveProbabiltyScoreOverall[i][s]
+				moveProbabiltyScoreSumCount[s] += 1
+	for i in range(len(moveProbabiltyScoreSum)-1, -1, -1):
+		moveProbabiltyScoreAverage[i] = moveProbabiltyScoreSum[i] / moveProbabiltyScoreSumCount[i]
+
+	sortedPicks = sorted(range(len(moveProbabiltyScoreAverage)), key=lambda k: moveProbabiltyScoreAverage[k])
 	return sortedPicks[indexMove]
 
 def getGhost2Move(userToPlay, board, indexMove):
-	moveProbabiltyScore = [0] * gameW
+	#Append all scores to this list
+	moveProbabiltyScoreOverall = []
 	for ai_height in range(gameH-4, -1, -1):
 		for ai_width in range(gameW-4, -1, -1):
+			moveProbabiltyScore = [0] * gameW
 			#Create field of inputs for the neural network
 			rows = board[ai_height:ai_height+4]
 			viewfield = []
@@ -234,10 +270,20 @@ def getGhost2Move(userToPlay, board, indexMove):
 			moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
 			moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
 			moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
-	#Check manual change
-	#moveProbabiltyScore[0] += 0.25
-	#moveProbabiltyScore[len(moveProbabiltyScore)-1] += 0.25
-	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
+			moveProbabiltyScoreOverall.append(moveProbabiltyScore)
+	# Average the colums so that the edges of the game don't have lower values
+	moveProbabiltyScoreSum = [0] * gameW
+	moveProbabiltyScoreSumCount = [0] * gameW
+	moveProbabiltyScoreAverage = [0] * gameW
+	for i in range(len(moveProbabiltyScoreOverall)-1, -1, -1):
+		for s in range(len(moveProbabiltyScoreOverall[i])-1, -1, -1):
+			if(moveProbabiltyScoreOverall[i][s] != 0):
+				moveProbabiltyScoreSum[s] += moveProbabiltyScoreOverall[i][s]
+				moveProbabiltyScoreSumCount[s] += 1
+	for i in range(len(moveProbabiltyScoreSum)-1, -1, -1):
+		moveProbabiltyScoreAverage[i] = moveProbabiltyScoreSum[i] / moveProbabiltyScoreSumCount[i]
+
+	sortedPicks = sorted(range(len(moveProbabiltyScoreAverage)), key=lambda k: moveProbabiltyScoreAverage[k])
 	return sortedPicks[indexMove]
 
 def getStack2Move(userToPlay, board, indexMove):

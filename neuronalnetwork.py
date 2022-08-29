@@ -69,7 +69,8 @@ class NeuralNetwork:
 		#print(self.denses[4].output)
 		#print(self.activation2.output)
 		#For higher output and non normalized values on first and last field
-		self.output = self.denses[4].output
+		#Reversed for test ToDo: Remove
+		self.output = self.activation2.output
 	
 	def randomize(self, randomizationAmount, randomizationStrengthWeights, randomizationStrengthBiases):
 		for index, dense in enumerate(self.denses):

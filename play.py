@@ -57,9 +57,11 @@ genetics2 = Genetics(1, 1, AGENT_INPUTS, AGENT_OUTPUTS, 1)
 bannedOutputs = 0
 
 def getAIMove(userToPlay, board, indexMove):
-	moveProbabiltyScore = [0] * gameW
+	#Append all scores to this list
+	moveProbabiltyScoreOverall = []
 	for ai_height in range(gameH-4, -1, -1):
 		for ai_width in range(gameW-4, -1, -1):
+			moveProbabiltyScore = [0] * gameW
 			#Create field of inputs for the neural network
 			rows = board[ai_height:ai_height+4]
 			viewfield = []
@@ -68,7 +70,7 @@ def getAIMove(userToPlay, board, indexMove):
 
 			moveProbabiltyScoreOffset = [0] * ai_width
 			#If all fields are zero then skip -> better performance
-			#if (np.any(viewfield)):
+			#if not (np.any(viewfield)):
 			viewfield.insert(0, ai_width)
 			viewfield.insert(0, ai_height)
 			moveProbabiltyScorePartly = genetics1.thinkParticular(userToPlay, viewfield).flatten()
@@ -76,17 +78,31 @@ def getAIMove(userToPlay, board, indexMove):
 			moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
 			moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
 			moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
-	#Check manual change
-	#moveProbabiltyScore[0] += 0.25
-	#moveProbabiltyScore[len(moveProbabiltyScore)-1] += 0.25
-	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
+			moveProbabiltyScoreOverall.append(moveProbabiltyScore)
+
+	# Average the colums so that the edges of the game don't have lower values
+	moveProbabiltyScoreSum = [0] * gameW
+	moveProbabiltyScoreSumCount = [0] * gameW
+	moveProbabiltyScoreAverage = [0] * gameW
+	for i in range(len(moveProbabiltyScoreOverall)-1, -1, -1):
+		for s in range(len(moveProbabiltyScoreOverall[i])-1, -1, -1):
+			if(moveProbabiltyScoreOverall[i][s] != 0):
+				moveProbabiltyScoreSum[s] += moveProbabiltyScoreOverall[i][s]
+				moveProbabiltyScoreSumCount[s] += 1
+	for i in range(len(moveProbabiltyScoreSum)-1, -1, -1):
+		moveProbabiltyScoreAverage[i] = moveProbabiltyScoreSum[i] / moveProbabiltyScoreSumCount[i]
+
+	sortedPicks = sorted(range(len(moveProbabiltyScoreAverage)), key=lambda k: moveProbabiltyScoreAverage[k])
 	return sortedPicks[indexMove]
 
 
+
 def getAI2Move(userToPlay, board, indexMove):
-	moveProbabiltyScore = [0] * gameW
+	#Append all scores to this list
+	moveProbabiltyScoreOverall = []
 	for ai_height in range(gameH-4, -1, -1):
 		for ai_width in range(gameW-4, -1, -1):
+			moveProbabiltyScore = [0] * gameW
 			#Create field of inputs for the neural network
 			rows = board[ai_height:ai_height+4]
 			viewfield = []
@@ -99,18 +115,29 @@ def getAI2Move(userToPlay, board, indexMove):
 			#if not (np.any(viewfield)):
 			viewfield.insert(0, ai_width)
 			viewfield.insert(0, ai_height)
-			print(viewfield)
 			moveProbabiltyScorePartly = genetics2.thinkParticular(userToPlay, viewfield).flatten()
 			moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
 			moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
 			moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
 			moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
-	#Check manual change
-	#moveProbabiltyScore[0] += 0.25
-	#moveProbabiltyScore[len(moveProbabiltyScore)-1] += 0.25
-	print(moveProbabiltyScore)
-	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
-	#Check manual change
+			moveProbabiltyScoreOverall.append(moveProbabiltyScore)
+	# Average the colums so that the edges of the game don't have lower values
+	moveProbabiltyScoreSum = [0] * gameW
+	moveProbabiltyScoreSumCount = [0] * gameW
+	moveProbabiltyScoreAverage = [0] * gameW
+	for i in range(len(moveProbabiltyScoreOverall)-1, -1, -1):
+		for s in range(len(moveProbabiltyScoreOverall[i])-1, -1, -1):
+			if(moveProbabiltyScoreOverall[i][s] != 0):
+				moveProbabiltyScoreSum[s] += moveProbabiltyScoreOverall[i][s]
+				moveProbabiltyScoreSumCount[s] += 1
+	for i in range(len(moveProbabiltyScoreSum)-1, -1, -1):
+		moveProbabiltyScoreAverage[i] = moveProbabiltyScoreSum[i] / moveProbabiltyScoreSumCount[i]
+
+	
+	for i in range(len(moveProbabiltyScoreAverage)-1, -1, -1):
+		moveProbabiltyScoreAverage[i] = (moveProbabiltyScoreAverage[i]*10)**8 / 10
+	print(moveProbabiltyScoreAverage)
+	sortedPicks = sorted(range(len(moveProbabiltyScoreAverage)), key=lambda k: moveProbabiltyScoreAverage[k])
 	return sortedPicks[indexMove]
 
 
