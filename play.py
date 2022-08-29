@@ -76,8 +76,12 @@ def getAIMove(userToPlay, board, indexMove):
 			moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
 			moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
 			moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
+	#Check manual change
+	#moveProbabiltyScore[0] += 0.25
+	#moveProbabiltyScore[len(moveProbabiltyScore)-1] += 0.25
 	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
 	return sortedPicks[indexMove]
+
 
 def getAI2Move(userToPlay, board, indexMove):
 	moveProbabiltyScore = [0] * gameW
@@ -101,9 +105,14 @@ def getAI2Move(userToPlay, board, indexMove):
 			moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
 			moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
 			moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
-	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
+	#Check manual change
+	#moveProbabiltyScore[0] += 0.25
+	#moveProbabiltyScore[len(moveProbabiltyScore)-1] += 0.25
 	print(moveProbabiltyScore)
+	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
+	#Check manual change
 	return sortedPicks[indexMove]
+
 
 filehandler = open("dumbed_saves/" + sys.argv[1], 'rb') 
 genetics2.agents[0] = pickle.load(filehandler)

@@ -66,7 +66,10 @@ class NeuralNetwork:
 		self.activation1.forward(self.denses[3].output)
 		self.denses[4].forward(self.activation1.output)
 		self.activation2.forward(self.denses[4].output)
-		self.output = self.activation2.output
+		#print(self.denses[4].output)
+		#print(self.activation2.output)
+		#For higher output and non normalized values on first and last field
+		self.output = self.denses[4].output
 	
 	def randomize(self, randomizationAmount, randomizationStrengthWeights, randomizationStrengthBiases):
 		for index, dense in enumerate(self.denses):
