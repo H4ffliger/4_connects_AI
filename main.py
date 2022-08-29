@@ -79,13 +79,13 @@ AGENT_INPUTS = 4*4+2
 #Output needs to be at least 2
 AGENT_OUTPUTS = 4 #ToDo:Check if not one to small
 #Mutation 0.05 = 5% on 5% of weights
-randomizationAmount = 0.07
+randomizationAmount = 0.1
 randomizationStrengthWeights = 0.05
 randomizationStrengthBiases = 0.05
 #Reward is exponential default 1.75
 FITNESS_REWARD = 1 #Temporary disabled
 #Population / Probability = real probability
-SNAPSHOT_PROBABILITY = POP_COUNT*12 # Tiefer setzen, dafür Anforderungen erhöhen
+SNAPSHOT_PROBABILITY = POP_COUNT*10 # Tiefer setzen, dafür Anforderungen erhöhen
 #Games each round for each agent
 GAMESPERROUND = 5
 GHOSTGAMESPERROUND = 3
@@ -103,7 +103,7 @@ DRAWFITNESSGHOST = 0.5
 LOSEFITNESSGHOST = 0.2
 
 
-EXPORTEVERYXMOVE = 10
+EXPORTEVERYXMOVE = 25
 #1 = >= Durchschnitt 1.1 = 110% von normaler Qualität
 EXPORTQUALITY = 1
 EXPORTAFTER = 2
@@ -647,15 +647,22 @@ for b in range(ROUND_COUNT-1, -1, -1):
 	#Copy agents to ghost agenst (if fitness is greater than 30 then only good trained versions get new enemies)
 
 	#New approach (and fitnessOfRound2 > GHOSTGAMESPERROUND + GHOSTGAMESPERROUND/3)
+	possibleCopyNumber = 0
 	for g1 in range(len(genetics1.agents)-1, -1, -1):
-		if(GHOSTGAMESPERROUND*1.2 + GAMESPERROUND*1.5 <= genetics1.agents[g1].fitness and np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
-			genetics1.copyAgenttoGhost(g1)
+		if(GHOSTGAMESPERROUND*1.3 + GAMESPERROUND*1.6 <= genetics1.agents[g1].fitness):
+			possibleCopyNumber += 1
+			if(np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
+				genetics1.copyAgenttoGhost(g1)
+	logging.debug("Possible amount of copies: " + str(possibleCopyNumber))
 
 	#New approach (and fitnessOfRound > GHOSTGAMESPERROUND + GHOSTGAMESPERROUND/3)
+	possibleCopyNumber = 0
 	for g2 in range(len(genetics2.agents)-1, -1, -1):
-		if(GHOSTGAMESPERROUND*1.2 + GAMESPERROUND*1.5 <= genetics2.agents[g2].fitness and np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
-			genetics2.copyAgenttoGhost(g2)
-
+		if(GHOSTGAMESPERROUND*1.3 + GAMESPERROUND*1.6 <= genetics2.agents[g2].fitness):
+			possibleCopyNumber += 1
+			if(np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
+				genetics2.copyAgenttoGhost(g2)
+	logging.debug("Possible amount of copies: " + str(possibleCopyNumber))
 
 	if(roundsCompleted % EXPORTEVERYXMOVE == 1 and b < ROUND_COUNT - EXPORTAFTER):
 		genetics1.savetoFile("genetics1-Test-v1-g-"+str(roundsCompleted), EXPORTQUALITY, EXPORTAMOUNT)
