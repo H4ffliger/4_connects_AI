@@ -79,7 +79,7 @@ AGENT_INPUTS = 4*4+2
 #Output needs to be at least 2
 AGENT_OUTPUTS = 4 #ToDo:Check if not one to small
 #Mutation 0.05 = 5% on 5% of weights
-randomizationAmount = 0.1
+randomizationAmount = 0.05
 randomizationStrengthWeights = 0.05
 randomizationStrengthBiases = 0.05
 #Reward is exponential default 1.75
@@ -87,8 +87,8 @@ FITNESS_REWARD = 1 #Temporary disabled
 #Population / Probability = real probability
 SNAPSHOT_PROBABILITY = POP_COUNT*10 # Tiefer setzen, dafür Anforderungen erhöhen
 #Games each round for each agent
-GAMESPERROUND = 5
-GHOSTGAMESPERROUND = 3
+GAMESPERROUND = 2
+GHOSTGAMESPERROUND = 1
 SHOWAFTER = 10000000
 SHOWEVERY = 10000
 
@@ -105,9 +105,9 @@ LOSEFITNESSGHOST = 0.2
 
 EXPORTEVERYXMOVE = 25
 #1 = >= Durchschnitt 1.1 = 110% von normaler Qualität
-EXPORTQUALITY = 1
+EXPORTQUALITY = 1.3
 EXPORTAFTER = 2
-EXPORTAMOUNT = 2
+EXPORTAMOUNT = 10
 
 
 #Data for graph
@@ -611,6 +611,24 @@ def checkAIQuality(y: int, idx: int):
 
 #Main loop
 for b in range(ROUND_COUNT-1, -1, -1):
+
+	#Setting for tuning the mutation
+	switch(roundsCompleted):
+		case 100:
+			randomizationStrengthWeights = 0.02
+			randomizationStrengthBiases = 0.02
+			break;
+		case 200:
+			randomizationStrengthWeights = 0.005
+			randomizationStrengthBiases = 0.005
+			break;
+		case 300:
+			randomizationAmount = 0.03
+			break;
+
+
+
+
 	#PlayAgainstGhost
 	for y in range(0,2):
 		#Testing
