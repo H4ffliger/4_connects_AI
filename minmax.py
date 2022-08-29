@@ -165,8 +165,7 @@ def minMaxAI(game):
 			return moveMinMax
 		#print(str(x) + " " + str(loopCheck))
 	print("Gameboard full game is a draw")
-
-	return False
+	return False # Nach tests zu return -1 anpassen
 	#print("return " + str(loopCheck))
 	user = 0
 	print("ERROR ------ beyond return")

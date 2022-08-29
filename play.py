@@ -36,45 +36,22 @@ ROUND_COUNT = 25000
 AGENT_INPUTS = gameSize
 #Output needs to be at least 2
 AGENT_OUTPUTS = 5
-#Mutation 0.05 = 5% on 5% of weights
-randomizationAmount = 1
-randomuzationStrengthWeights = 0.03
-randomuzationStrengthBiases = 0.1
-#Reward is exponential default 1.75
-FITNESS_REWARD = 1
-#Population / Probability = real probability
-SNAPSHOT_PROBABILITY = 4
 #Games each round for each agent
 GAMESPERROUND = 1
-SHOWAFTER = 200
-SHOWEVERY = 50
-
-
-EXPORTEVERYXMOVE = 10
-#1 = >= Durchschnitt 1.1 = 110% von normaler Qualität
-EXPORTQUALITY = 1.2
-EXPORTAFTER = 10
-EXPORTAMOUNT = 5
 
 
 #Data for graph
 roundsCompleted = 0
-fitnessOfRound = 0
 
-#Export
 
 
 if(ROUND_COUNT==0):
 	ROUND_COUNT = 1000000
 
 #InitializePopulation
-genetics = Genetics(POP_COUNT, GHOSTAGENTS_POP, AGENT_INPUTS, AGENT_OUTPUTS, FITNESS_REWARD)
-genetics2 = Genetics(POP_COUNT, GHOSTAGENTS_POP, AGENT_INPUTS, AGENT_OUTPUTS, FITNESS_REWARD)
+genetics = Genetics(1, 1, AGENT_INPUTS, AGENT_OUTPUTS, 1)
+genetics2 = Genetics(1, 1, AGENT_INPUTS, AGENT_OUTPUTS, 1)
 
-#Copy random to ghosts
-for i in range(0, 10):
-	genetics.copyAgenttoGhost(i)
-	genetics2.copyAgenttoGhost(i)
 
 #AIPickStuff
 bannedOutputs = 0
@@ -91,14 +68,14 @@ def getAIMove(userToPlay, board, indexMove):
 
 			moveProbabiltyScoreOffset = [0] * ai_width
 			#If all fields are zero then skip -> better performance
-			if (np.any(viewfield)):
-				viewfield.insert(0, ai_width)
-				viewfield.insert(0, ai_height)
-				moveProbabiltyScorePartly = genetics1.thinkParticular(userToPlay, viewfield).flatten()
-				moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
-				moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
-				moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
-				moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
+			#if (np.any(viewfield)):
+			viewfield.insert(0, ai_width)
+			viewfield.insert(0, ai_height)
+			moveProbabiltyScorePartly = genetics1.thinkParticular(userToPlay, viewfield).flatten()
+			moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
+			moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
+			moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
+			moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
 	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
 	return sortedPicks[indexMove]
 
@@ -115,17 +92,18 @@ def getAI2Move(userToPlay, board, indexMove):
 			moveProbabiltyScoreOffset = [0] * ai_width
 
 			#If all fields are zero then skip -> better performance
-			if (np.any(viewfield)):
-				viewfield.insert(0, ai_width)
-				viewfield.insert(0, ai_height)
-				moveProbabiltyScorePartly = genetics2.thinkParticular(userToPlay, viewfield).flatten()
-				moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
-				moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
-				moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
-				moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
+			#if not (np.any(viewfield)):
+			viewfield.insert(0, ai_width)
+			viewfield.insert(0, ai_height)
+			print(viewfield)
+			moveProbabiltyScorePartly = genetics2.thinkParticular(userToPlay, viewfield).flatten()
+			moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
+			moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
+			moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
+			moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
 	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
+	print(moveProbabiltyScore)
 	return sortedPicks[indexMove]
-
 
 filehandler = open("dumbed_saves/" + sys.argv[1], 'rb') 
 genetics2.agents[0] = pickle.load(filehandler)
@@ -153,11 +131,9 @@ for b in range(ROUND_COUNT-1, 0, -1):
 					if(userToPlay == 0):
 						print(game.print_board())
 						aiPickOrder = int(input(f"{game.which_turn()}'s Turn - pick a column (0-X): "))-1
-						user_move = aiPickOrder
 					else:
 						aiPickOrder = getAI2Move(0, game.board, bannedOutputs)
 					
-					user_move = aiPickOrder
 					valid_move = game.turn(aiPickOrder)
 					if(valid_move == False):
 						bannedOutputs += 1

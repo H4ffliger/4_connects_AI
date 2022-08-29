@@ -85,7 +85,7 @@ randomuzationStrengthBiases = 0.05
 #Reward is exponential default 1.75
 FITNESS_REWARD = 1 #Temporary disabled
 #Population / Probability = real probability
-SNAPSHOT_PROBABILITY = POP_COUNT*12
+SNAPSHOT_PROBABILITY = POP_COUNT*12 # Tiefer setzen, dafür Anforderungen erhöhen
 #Games each round for each agent
 GAMESPERROUND = 5
 GHOSTGAMESPERROUND = 3
@@ -145,15 +145,15 @@ def getAIMove(userToPlay, board, indexMove):
 			moveProbabiltyScoreOffset = [0] * ai_width
 			#If all fields are zero then skip -> better performance
 			#if not (np.any(viewfield)):
-				viewfield.insert(0, ai_width)
-				viewfield.insert(0, ai_height)
-				moveProbabiltyScorePartly = genetics1.thinkParticular(userToPlay, viewfield).flatten()
-				moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
-				moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
-				moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
-				moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
+			viewfield.insert(0, ai_width)
+			viewfield.insert(0, ai_height)
+			moveProbabiltyScorePartly = genetics1.thinkParticular(userToPlay, viewfield).flatten()
+			moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
+			moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
+			moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
+			moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
 	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
-	return sortedPicks[indexMove]
+	return sortedPicks[len(sortedPicks)-indexMove-1] # Test for edge testing
 
 def getAI2Move(userToPlay, board, indexMove):
 	moveProbabiltyScore = [0] * gameW
@@ -177,7 +177,7 @@ def getAI2Move(userToPlay, board, indexMove):
 			moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
 			moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
 	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
-	return sortedPicks[indexMove]
+	return sortedPicks[len(sortedPicks)-indexMove-1]
 
 def getGhostMove(userToPlay, board, indexMove):
 	moveProbabiltyScore = [0] * gameW
@@ -200,7 +200,7 @@ def getGhostMove(userToPlay, board, indexMove):
 			moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
 			moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
 	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
-	return sortedPicks[indexMove]
+	return sortedPicks[len(sortedPicks)-indexMove-1]
 
 def getGhost2Move(userToPlay, board, indexMove):
 	moveProbabiltyScore = [0] * gameW
@@ -223,7 +223,7 @@ def getGhost2Move(userToPlay, board, indexMove):
 			moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
 			moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
 	sortedPicks = sorted(range(len(moveProbabiltyScore)), key=lambda k: moveProbabiltyScore[k])
-	return sortedPicks[indexMove]
+	return sortedPicks[len(sortedPicks)-indexMove-1]
 
 def getStack2Move(userToPlay, board, indexMove):
 	return minMaxAI(board)

@@ -5,7 +5,7 @@ def square(n):
 
 
 
-my_list = [[-1, -1, 1, 1], [1,1,1,1]]
+my_list = [1,2,3,4,5,6,7,0]
 
-if not any(0 in x for x in my_list):
-    print("The game is a draw..")
+sortedPicks = sorted(range(len(my_list)), key=lambda k: my_list[k])
+print(sortedPicks)
