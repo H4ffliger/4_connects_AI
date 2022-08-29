@@ -70,7 +70,7 @@ gameH = 4
 gameSize = gameW*gameH
 
 #Genetic Algorithm
-POP_COUNT = 200
+POP_COUNT = 400
 GHOSTAGENTS_POP = POP_COUNT
 #ROUND_COUNT 0 = 1'000'000
 ROUND_COUNT = 0
@@ -80,8 +80,8 @@ AGENT_INPUTS = 4*4+2
 AGENT_OUTPUTS = 4 #ToDo:Check if not one to small
 #Mutation 0.05 = 5% on 5% of weights
 randomizationAmount = 0.07
-randomuzationStrengthWeights = 0.1
-randomuzationStrengthBiases = 0.05
+randomizationStrengthWeights = 0.05
+randomizationStrengthBiases = 0.05
 #Reward is exponential default 1.75
 FITNESS_REWARD = 1 #Temporary disabled
 #Population / Probability = real probability
@@ -661,8 +661,8 @@ for b in range(ROUND_COUNT-1, -1, -1):
 		genetics1.savetoFile("genetics1-Test-v1-g-"+str(roundsCompleted), EXPORTQUALITY, EXPORTAMOUNT)
 		genetics2.savetoFile("genetics2-Test-v1-g-"+str(roundsCompleted), EXPORTQUALITY, EXPORTAMOUNT)
 	#7
-	genetics1.roundClose(randomizationAmount, randomuzationStrengthWeights, randomuzationStrengthBiases)
-	genetics2.roundClose(randomizationAmount, randomuzationStrengthWeights, randomuzationStrengthBiases)
+	genetics1.roundClose(randomizationAmount, randomizationStrengthWeights, randomizationStrengthBiases)
+	genetics2.roundClose(randomizationAmount, randomizationStrengthWeights, randomizationStrengthBiases)
 
 	roundsCompleted += 1
 	file_object = open("dumbed_saves/" + sys.argv[1] + ".csv", 'a')
