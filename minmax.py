@@ -164,8 +164,9 @@ def minMaxAI(game):
 		if(valid_move):
 			return moveMinMax
 		#print(str(x) + " " + str(loopCheck))
-	print("Wrong move")
-	return moveMinMax
+	print("Gameboard full game is a draw")
+
+	return False
 	#print("return " + str(loopCheck))
 	user = 0
 	print("ERROR ------ beyond return")

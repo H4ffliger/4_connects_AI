@@ -320,7 +320,7 @@ def gameRoundGhost(y: int, idx: int):
 
 
 			# End the game if there is a tie
-			if not any(0 in x for x in game.board):
+			if not any(0 in z for z in game.board):
 				if(game_over == False):
 					if(y == 0):
 						genetics2.calculateFitnessParticular(x, DRAWFITNESSGHOST)
@@ -428,7 +428,7 @@ def gameRoundAI(y: int, idx: int):
 
 
 			# End the game if there is a tie
-			if not any(0 in x for x in game.board):
+			if not any(0 in z for z in game.board):
 				if(game_over == False):
 					if(y == 0):
 						genetics2.calculateFitnessParticular(x, DRAWFITNESS)
@@ -531,7 +531,7 @@ def checkAIQuality(y: int, idx: int):
 
 
 			# End the game if there is a tie
-			if not any(0 in x for x in game.board):
+			if not any(0 in z for z in game.board):
 				if(game_over == False):
 					if(y == 0):
 						qual_check_draws += 1
