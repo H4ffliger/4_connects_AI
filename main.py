@@ -85,7 +85,7 @@ randomuzationStrengthBiases = 0.05
 #Reward is exponential default 1.75
 FITNESS_REWARD = 1 #Temporary disabled
 #Population / Probability = real probability
-SNAPSHOT_PROBABILITY = POP_COUNT*10
+SNAPSHOT_PROBABILITY = POP_COUNT*12
 #Games each round for each agent
 GAMESPERROUND = 5
 GHOSTGAMESPERROUND = 3
@@ -144,7 +144,7 @@ def getAIMove(userToPlay, board, indexMove):
 
 			moveProbabiltyScoreOffset = [0] * ai_width
 			#If all fields are zero then skip -> better performance
-			if not (np.any(viewfield)):
+			#if not (np.any(viewfield)):
 				viewfield.insert(0, ai_width)
 				viewfield.insert(0, ai_height)
 				moveProbabiltyScorePartly = genetics1.thinkParticular(userToPlay, viewfield).flatten()
