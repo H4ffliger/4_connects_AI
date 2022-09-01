@@ -70,10 +70,10 @@ gameH = 4
 gameSize = gameW*gameH
 
 #Genetic Algorithm
-POP_COUNT = 400
+POP_COUNT = 100
 GHOSTAGENTS_POP = POP_COUNT
 #ROUND_COUNT 0 = 1'000'000
-ROUND_COUNT = 0
+ROUND_COUNT = 1200
 #Individual agents
 AGENT_INPUTS = 4*4+2
 #Output needs to be at least 2
@@ -85,7 +85,7 @@ randomizationStrengthBiases = 0.05
 #Reward is exponential default 1.75
 FITNESS_REWARD = 1 #Temporary disabled
 #Population / Probability = real probability
-SNAPSHOT_PROBABILITY = POP_COUNT*10 # Tiefer setzen, dafür Anforderungen erhöhen
+SNAPSHOT_PROBABILITY = POP_COUNT*20 # Tiefer setzen, dafür Anforderungen erhöhen
 #Games each round for each agent
 GAMESPERROUND = 2
 GHOSTGAMESPERROUND = 1
@@ -102,8 +102,11 @@ WINFITNESSGHOST = 4
 DRAWFITNESSGHOST = 0.5
 LOSEFITNESSGHOST = 0.2
 
+#How often checks of the AI happen
+QUALITY_CHECK_RATE = 5
 
-EXPORTEVERYXMOVE = 25
+
+EXPORTEVERYXMOVE = 50
 #1 = >= Durchschnitt 1.1 = 110% von normaler Qualität
 EXPORTQUALITY = 1.3
 EXPORTAFTER = 2
@@ -509,7 +512,7 @@ def checkAIQuality(y: int, idx: int):
 	qual_check_losses = 0
 	#logging.debug("Starting quality check on generation " + str(y+1))
 	#Performance wise only 20% of the population gets testet
-	for x in range(int(POP_COUNT/10)-1, -1, -1):
+	for x in range(int(POP_COUNT/2)-1, -1, -1):
 		game = GameField()
 		game_over = False
 		userToPlay = 0
@@ -613,19 +616,15 @@ def checkAIQuality(y: int, idx: int):
 for b in range(ROUND_COUNT-1, -1, -1):
 
 	#Setting for tuning the mutation
-	switch(roundsCompleted):
-		case 100:
-			randomizationStrengthWeights = 0.02
-			randomizationStrengthBiases = 0.02
-			break;
-		case 200:
-			randomizationStrengthWeights = 0.005
-			randomizationStrengthBiases = 0.005
-			break;
-		case 300:
-			randomizationAmount = 0.03
-			break;
-
+	'''if(roundsCompleted == 100):
+		randomizationStrengthWeights = 0.02
+		randomizationStrengthBiases = 0.02
+	elif(roundsCompleted == 200):
+		randomizationStrengthWeights = 0.005
+		randomizationStrengthBiases = 0.005
+	elif(roundsCompleted == 300):
+		randomizationAmount = 0.03
+'''
 
 
 
@@ -654,7 +653,8 @@ for b in range(ROUND_COUNT-1, -1, -1):
 
 		#Play against external minmax algorithm
 		#Major performance issues with this function
-		checkAIQuality(y,1)
+		if(roundsCompleted % QUALITY_CHECK_RATE == 1):
+			checkAIQuality(y,1)
 
 
 

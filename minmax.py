@@ -93,7 +93,7 @@ def getMinMaxMove(choice, game):
 							moveProbabiltyScore[moveProbOption] += WINNINGSCOREADDITION		
 				except:
 					print("Invalid move prediction3")
-				
+				'''
 				#Enemy to play 2
 				for i4 in range(gameFieldSize):
 					gamesToPlay3.append(deepcopy(gamesToPlay2[len(gamesToPlay2)-1]))
@@ -109,7 +109,7 @@ def getMinMaxMove(choice, game):
 						#if(moveProbabiltyScore[moveProbOption] >= LOSINGSCOREADDITION2):
 						#	moveProbabiltyScore[moveProbOption] += LOSINGSCOREADDITION2				
 					
-					'''
+					
 					#Me to play 3
 					for i5 in range(gameFieldSize):
 						gamesToPlay4.append(deepcopy(gamesToPlay3[len(gamesToPlay3)-1]))
