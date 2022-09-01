@@ -70,43 +70,24 @@ gameH = 4
 gameSize = gameW*gameH
 
 #Genetic Algorithm
-POP_COUNT = 100
-GHOSTAGENTS_POP = POP_COUNT
+
 #ROUND_COUNT 0 = 1'000'000
 ROUND_COUNT = 10000
 #Individual agents
 AGENT_INPUTS = 4*4+2
 #Output needs to be at least 2
 AGENT_OUTPUTS = 4 #ToDo:Check if not one to small
-#Mutation 0.05 = 5% on 5% of weights
-randomizationAmount = 0.05
-randomizationStrengthWeights = 0.05
-randomizationStrengthBiases = 0.05
+
 #Reward is exponential default 1.75
 FITNESS_REWARD = 1 #Temporary disabled
 #Population / Probability = real probability
-SNAPSHOT_PROBABILITY = POP_COUNT*20 # Tiefer setzen, dafür Anforderungen erhöhen
 #Games each round for each agent
-GAMESPERROUND = 2
-GHOSTGAMESPERROUND = 1
 SHOWAFTER = 10000000
 SHOWEVERY = 10000
-
-#AI vs AI
-WINFITNESS = 4
-DRAWFITNESS = 0.5
-LOSEFITNESS = 0.2 # experiment with -0.5
-
-
-WINFITNESSGHOST = 4
-DRAWFITNESSGHOST = 0.5
-LOSEFITNESSGHOST = 0.2
 
 #How often checks of the AI happen
 QUALITY_CHECK_RATE = 5
 
-
-EXPORTEVERYXMOVE = 50
 #1 = >= Durchschnitt 1.1 = 110% von normaler Qualität
 EXPORTQUALITY = 1.3
 EXPORTAFTER = 2
@@ -138,8 +119,8 @@ if __name__ == '__main__':
 	parser.add_argument('-GHOSTGAMESPERROUND', type=int, default=1,help="Games per generation vs old saved AI")
 	parser.add_argument('-POP_COUNT', type=int, default=100,help="Population size")
 	parser.add_argument('-GHOSTAGENTS_POP', type=int, default=1,help="Population size of saved old AIs")
-	parser.add_argument('-SNAPSHOT_PROBABILITY', type=int, default=POP_COUNT*10,help="Probability of saving a current AI to the old saved AIs")
-	parser.add_argument('-exportRate', type=int, default=POP_COUNT*10,help="Rate at which generations genetics get exported")
+	parser.add_argument('-SNAPSHOT_PROBABILITY', type=int, default=100*10,help="Probability of saving a current AI to the old saved AIs")
+	parser.add_argument('-exportRate', type=int, default=50,help="Rate at which generations genetics get exported")
 	#FITNESS_REWARD = 1 #Temporary disabled
 	args = parser.parse_args()
 	randomizationAmount = args.randomizationAmount
