@@ -17,7 +17,7 @@ from operator import add
 import random
 #game copy min max
 from copy import deepcopy
-
+import argparse
 
 
 import logging
@@ -73,7 +73,7 @@ gameSize = gameW*gameH
 POP_COUNT = 100
 GHOSTAGENTS_POP = POP_COUNT
 #ROUND_COUNT 0 = 1'000'000
-ROUND_COUNT = 1200
+ROUND_COUNT = 10000
 #Individual agents
 AGENT_INPUTS = 4*4+2
 #Output needs to be at least 2
@@ -106,7 +106,7 @@ LOSEFITNESSGHOST = 0.2
 QUALITY_CHECK_RATE = 5
 
 
-EXPORTEVERYXMOVE = 5
+EXPORTEVERYXMOVE = 50
 #1 = >= Durchschnitt 1.1 = 110% von normaler Qualität
 EXPORTQUALITY = 1.3
 EXPORTAFTER = 2
@@ -118,6 +118,48 @@ roundsCompleted = 0
 fitnessOfRound = 0
 
 #Export
+
+
+#For automating hyperparameters
+if __name__ == '__main__':
+	parser = argparse.ArgumentParser(description='GNeuroNetWK for learning the 4 connects game')
+	#Hyphen makes argument optional
+	parser.add_argument('learning_Name', type=str, default="TESTRUN",help="Name of the GNeuroNetWK learning run")
+	parser.add_argument('-randomizationAmount', type=float, default=0.07,help="Amount of mutation which should happen with the genes")
+	parser.add_argument('-randomizationStrengthWeights', type=float, default=0.05,help="Value of how strong the Weights should be mutated")
+	parser.add_argument('-randomizationStrengthBiases', type=float, default=0.05,help="Value of how strong the Biases should be mutated")
+	parser.add_argument('-WINFITNESS', type=float, default=4,help="Reward of win vs current AI")
+	parser.add_argument('-DRAWFITNESS', type=float, default=0.5,help="Reward of draw vs current AI")
+	parser.add_argument('-LOSEFITNESS', type=float, default=0.2,help="Reward of lose vs current AI")
+	parser.add_argument('-WINFITNESSGHOST', type=float, default=4,help="Reward of win vs old saved AI")
+	parser.add_argument('-DRAWFITNESSGHOST', type=float, default=0.5,help="Reward of draw vs old saved AI")
+	parser.add_argument('-LOSEFITNESSGHOST', type=float, default=0.2,help="Reward of lose vs old saved AI")
+	parser.add_argument('-GAMESPERROUND', type=int, default=2,help="Games per generation vs a current AI")
+	parser.add_argument('-GHOSTGAMESPERROUND', type=int, default=1,help="Games per generation vs old saved AI")
+	parser.add_argument('-POP_COUNT', type=int, default=100,help="Population size")
+	parser.add_argument('-GHOSTAGENTS_POP', type=int, default=1,help="Population size of saved old AIs")
+	parser.add_argument('-SNAPSHOT_PROBABILITY', type=int, default=POP_COUNT*10,help="Probability of saving a current AI to the old saved AIs")
+	parser.add_argument('-exportRate', type=int, default=POP_COUNT*10,help="Rate at which generations genetics get exported")
+	#FITNESS_REWARD = 1 #Temporary disabled
+	args = parser.parse_args()
+	randomizationAmount = args.randomizationAmount
+	randomizationStrengthWeights = args.randomizationStrengthWeights
+	randomizationStrengthBiases = args.randomizationStrengthBiases
+	WINFITNESS = args.WINFITNESS
+	DRAWFITNESS = args.DRAWFITNESS
+	LOSEFITNESS = args.LOSEFITNESS
+	WINFITNESSGHOST = args.WINFITNESSGHOST
+	DRAWFITNESSGHOST = args.DRAWFITNESSGHOST
+	LOSEFITNESSGHOST = args.LOSEFITNESSGHOST
+	GAMESPERROUND = args.GAMESPERROUND
+	GHOSTGAMESPERROUND = args.GHOSTGAMESPERROUND
+	POP_COUNT = args.POP_COUNT
+	GHOSTAGENTS_POP = args.GHOSTAGENTS_POP
+	SNAPSHOT_PROBABILITY = args.SNAPSHOT_PROBABILITY
+	EXPORTEVERYXMOVE = args.exportRate
+
+
+
 
 
 if(ROUND_COUNT==0):
@@ -603,13 +645,10 @@ def checkAIQuality(y: int, idx: int):
 						qual_check_draws += 1
 				game_over = True
 				valid_move = True
-	file_object = open("dumbed_saves/" + sys.argv[1] + "_GEN_"+str(2-y) +"_min_max_progress.csv", 'a')
+	file_object = open("dumbed_saves/" + args.learning_Name + "_GEN_"+str(2-y) +"_min_max_progress.csv", 'a')
 	file_object.write(str(roundsCompleted)+"," +str(qual_check_wins)+","+str(qual_check_draws)+","+str(qual_check_losses)+"\n")
 	file_object.close()
 	print("Generation" + str(2-y) + ": wins: " + str(qual_check_wins) + " draws: " + str(qual_check_draws) + " losses: " + str(qual_check_losses))
-
-
-
 
 
 #Main loop
@@ -683,14 +722,14 @@ for b in range(ROUND_COUNT-1, -1, -1):
 	logging.debug("Possible amount of copies: " + str(possibleCopyNumber))
 
 	if(roundsCompleted % EXPORTEVERYXMOVE == 1 and b < ROUND_COUNT - EXPORTAFTER):
-		genetics1.savetoFile("genetics1-Test-v1-g-"+str(roundsCompleted), EXPORTQUALITY, EXPORTAMOUNT, sys.argv[1])
-		genetics2.savetoFile("genetics2-Test-v1-g-"+str(roundsCompleted), EXPORTQUALITY, EXPORTAMOUNT, sys.argv[1])
+		genetics1.savetoFile("genetics1-Test-v1-g-"+str(roundsCompleted), EXPORTQUALITY, EXPORTAMOUNT, args.learning_Name)
+		genetics2.savetoFile("genetics2-Test-v1-g-"+str(roundsCompleted), EXPORTQUALITY, EXPORTAMOUNT, args.learning_Name)
 	#7
 	genetics1.roundClose(randomizationAmount, randomizationStrengthWeights, randomizationStrengthBiases)
 	genetics2.roundClose(randomizationAmount, randomizationStrengthWeights, randomizationStrengthBiases)
 
 	roundsCompleted += 1
-	file_object = open("dumbed_saves/" + sys.argv[1] + ".csv", 'a')
+	file_object = open("dumbed_saves/" + args.learning_Name + ".csv", 'a')
 	file_object.write(str(roundsCompleted)+","+str(fitnessOfRound1)+ "," + str(fitnessOfRound2)+ "," +str(len(genetics1.ghostAgents))+";"+str(len(genetics2.ghostAgents))+"\n")
 	file_object.close()
 
