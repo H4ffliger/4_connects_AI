@@ -8,6 +8,8 @@ import math
 from concurrent.futures import ThreadPoolExecutor
 import concurrent.futures
 import logging
+import os
+
 
 
 
@@ -80,12 +82,13 @@ class Genetics():
 			self.agents[i].fitness = 0
 
 
-	def savetoFile(self, fileName, quality, amountOfSaves):
-
+	def savetoFile(self, fileName, quality, amountOfSaves, folderName):
+		folder = 'dumbed_saves/' + folderName + '/'
+		os.makedirs(folder, exist_ok=True)
 		sortedAgents = sorted(self.agents, key=lambda k: k.fitness)
 
 		for i in range(amountOfSaves):
-				with open("dumbed_saves/" + fileName + "-" + str(i) + "-q-"+ str(sortedAgents[len(sortedAgents)-i-1].fitness).replace(".", "_")  + ".txt", 'wb') as fh:
+				with open(folder  + fileName + "-" + str(i) + "-q-"+ str(sortedAgents[len(sortedAgents)-i-1].fitness).replace(".", "_")  + ".txt", 'wb') as fh:
 					pickle.dump(sortedAgents[len(sortedAgents)-i-1], fh)
 
 

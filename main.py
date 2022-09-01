@@ -106,7 +106,7 @@ LOSEFITNESSGHOST = 0.2
 QUALITY_CHECK_RATE = 5
 
 
-EXPORTEVERYXMOVE = 50
+EXPORTEVERYXMOVE = 5
 #1 = >= Durchschnitt 1.1 = 110% von normaler Qualität
 EXPORTQUALITY = 1.3
 EXPORTAFTER = 2
@@ -683,8 +683,8 @@ for b in range(ROUND_COUNT-1, -1, -1):
 	logging.debug("Possible amount of copies: " + str(possibleCopyNumber))
 
 	if(roundsCompleted % EXPORTEVERYXMOVE == 1 and b < ROUND_COUNT - EXPORTAFTER):
-		genetics1.savetoFile("genetics1-Test-v1-g-"+str(roundsCompleted), EXPORTQUALITY, EXPORTAMOUNT)
-		genetics2.savetoFile("genetics2-Test-v1-g-"+str(roundsCompleted), EXPORTQUALITY, EXPORTAMOUNT)
+		genetics1.savetoFile("genetics1-Test-v1-g-"+str(roundsCompleted), EXPORTQUALITY, EXPORTAMOUNT, sys.argv[1])
+		genetics2.savetoFile("genetics2-Test-v1-g-"+str(roundsCompleted), EXPORTQUALITY, EXPORTAMOUNT, sys.argv[1])
 	#7
 	genetics1.roundClose(randomizationAmount, randomizationStrengthWeights, randomizationStrengthBiases)
 	genetics2.roundClose(randomizationAmount, randomizationStrengthWeights, randomizationStrengthBiases)
