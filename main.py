@@ -98,8 +98,6 @@ EXPORTAMOUNT = 10
 roundsCompleted = 0
 fitnessOfRound = 0
 
-#Export
-
 
 #For automating hyperparameters
 if __name__ == '__main__':
@@ -118,7 +116,7 @@ if __name__ == '__main__':
 	parser.add_argument('-GAMESPERROUND', type=int, default=2,help="Games per generation vs a current AI")
 	parser.add_argument('-GHOSTGAMESPERROUND', type=int, default=1,help="Games per generation vs old saved AI")
 	parser.add_argument('-POP_COUNT', type=int, default=100,help="Population size")
-	parser.add_argument('-GHOSTAGENTS_POP', type=int, default=1,help="Population size of saved old AIs")
+	parser.add_argument('-GHOSTAGENTS_POP', type=int, default=100,help="Population size of saved old AIs")
 	parser.add_argument('-SNAPSHOT_PROBABILITY', type=int, default=100*10,help="Probability of saving a current AI to the old saved AIs")
 	parser.add_argument('-exportRate', type=int, default=50,help="Rate at which generations genetics get exported")
 	parser.add_argument('-ROUND_COUNT', type=int, default=3000,help="Amount of rounds to be played")
@@ -711,12 +709,23 @@ for b in range(ROUND_COUNT-1, -1, -1):
 	genetics1.roundClose(randomizationAmount, randomizationStrengthWeights, randomizationStrengthBiases)
 	genetics2.roundClose(randomizationAmount, randomizationStrengthWeights, randomizationStrengthBiases)
 
-	roundsCompleted += 1
+	if(roundsCompleted == 0):
+		file_object = open("dumbed_saves/" + args.learning_Name + ".csv", 'a')
+		file_object.write("Round_Number,Fitness_Genetics1,Fitness_Genetics2,Amount_GhostAgents1,Amount_GhostAgents2\n")
+		file_object.close()
+		file_object = open("dumbed_saves/" + args.learning_Name + "_GEN_1_min_max_progress.csv", 'a')
+		file_object.write("Round_Number,wins,draws,losses\n")
+		file_object.close()
+		file_object = open("dumbed_saves/" + args.learning_Name + "_GEN_2_min_max_progress.csv", 'a')
+		file_object.write("Round_Number,wins,draws,losses\n")
+		file_object.close()
+
 	file_object = open("dumbed_saves/" + args.learning_Name + ".csv", 'a')
 	file_object.write(str(roundsCompleted)+","+str(fitnessOfRound1)+ "," + str(fitnessOfRound2)+ "," +str(len(genetics1.ghostAgents))+";"+str(len(genetics2.ghostAgents))+"\n")
 	file_object.close()
+	roundsCompleted += 1
 
-	if(ROUND_COUNT == 0):
+	if(b == 0):
 		file_object = open("dumbed_saves/" + args.learning_Name + ".txt", 'a')
 		file_object.write("GAMESPERROUND: " + str(GAMESPERROUND) + "\n"
 			+ "GHOSTGAMESPERROUND: " + str(GHOSTGAMESPERROUND) + "\n"
@@ -726,6 +735,44 @@ for b in range(ROUND_COUNT-1, -1, -1):
 			+ "SNAPSHOT_PROBABILITY: " + str(SNAPSHOT_PROBABILITY) + "\n"
 			+ "GHOSTAGENTS_POP: " + str(GHOSTAGENTS_POP))
 		file_object.close()
+
+		#Create graphs
+		import pandas as pd
+		import plotly.express as px
+
+		#Relative view
+		df = pd.read_csv("dumbed_saves/" + args.learning_Name + ".csv")
+		df_long=pd.melt(df, id_vars='Round_Number', value_vars=['Fitness_Genetics1', 'Fitness_Genetics2'])
+		#fig = px.line(df_long, x = 'Round_Number', y = 'value',color='variable', title='TITLE')
+		fig = px.scatter(df_long, x="Round_Number", y="value",color='variable', trendline="lowess", trendline_options=dict(frac=0.015))
+		fig.data = [t for t in fig.data if t.mode == "lines"]
+		fig.update_traces(showlegend=True) #trendlines have showlegend=False by default
+		#fig.show()
+		fig.write_image("dumbed_saves/" + args.learning_Name +".png",engine='orca')
+
+		#Gen1 absolute
+		df = pd.read_csv("dumbed_saves/" + args.learning_Name + "_GEN_1_min_max_progress.csv")
+		df_long=pd.melt(df, id_vars='Round_Number', value_vars=['wins', 'draws', 'losses'])
+		#fig = px.line(df_long, x = 'Round_Number', y = 'value',color='variable', title='TITLE')
+		fig = px.scatter(df_long, x="Round_Number", y="value",color='variable', trendline="lowess", trendline_options=dict(frac=0.015))
+		fig.data = [t for t in fig.data if t.mode == "lines"]
+		fig.update_traces(showlegend=True) #trendlines have showlegend=False by default
+		#fig.show()
+		fig.write_image("dumbed_saves/" + args.learning_Name +"_GEN_1.png",engine='orca')
+		#Gen2 absolute
+		df = pd.read_csv("dumbed_saves/" + args.learning_Name + "_GEN_2_min_max_progress.csv")
+		df_long=pd.melt(df, id_vars='Round_Number', value_vars=['wins', 'draws', 'losses'])
+		#fig = px.line(df_long, x = 'Round_Number', y = 'value',color='variable', title='TITLE')
+		fig = px.scatter(df_long, x="Round_Number", y="value",color='variable', trendline="lowess", trendline_options=dict(frac=0.015))
+		fig.data = [t for t in fig.data if t.mode == "lines"]
+		fig.update_traces(showlegend=True) #trendlines have showlegend=False by default
+		#fig.show()
+		fig.write_image("dumbed_saves/" + args.learning_Name +"_GEN_2.png",engine='orca')
+
+
+
+
+
 
 
 	print("Round: " + str(roundsCompleted) + "|| Fitness genetics1(1st to play): " + str(fitnessOfRound1) + " || Fitness genetics2: " + str(fitnessOfRound2) +" || Amount of GhostAgents: " + str(len(genetics1.ghostAgents)) + " || Amount of GhostAgents2: " + str(len(genetics2.ghostAgents)))
