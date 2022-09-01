@@ -72,7 +72,7 @@ gameSize = gameW*gameH
 #Genetic Algorithm
 
 #ROUND_COUNT 0 = 1'000'000
-ROUND_COUNT = 10000
+#ROUND_COUNT = 10000
 #Individual agents
 AGENT_INPUTS = 4*4+2
 #Output needs to be at least 2
@@ -121,6 +121,7 @@ if __name__ == '__main__':
 	parser.add_argument('-GHOSTAGENTS_POP', type=int, default=1,help="Population size of saved old AIs")
 	parser.add_argument('-SNAPSHOT_PROBABILITY', type=int, default=100*10,help="Probability of saving a current AI to the old saved AIs")
 	parser.add_argument('-exportRate', type=int, default=50,help="Rate at which generations genetics get exported")
+	parser.add_argument('-ROUND_COUNT', type=int, default=3000,help="Amount of rounds to be played")
 	#FITNESS_REWARD = 1 #Temporary disabled
 	args = parser.parse_args()
 	randomizationAmount = args.randomizationAmount
@@ -138,6 +139,7 @@ if __name__ == '__main__':
 	GHOSTAGENTS_POP = args.GHOSTAGENTS_POP
 	SNAPSHOT_PROBABILITY = args.SNAPSHOT_PROBABILITY
 	EXPORTEVERYXMOVE = args.exportRate
+	ROUND_COUNT = args.ROUND_COUNT
 
 
 
@@ -713,5 +715,17 @@ for b in range(ROUND_COUNT-1, -1, -1):
 	file_object = open("dumbed_saves/" + args.learning_Name + ".csv", 'a')
 	file_object.write(str(roundsCompleted)+","+str(fitnessOfRound1)+ "," + str(fitnessOfRound2)+ "," +str(len(genetics1.ghostAgents))+";"+str(len(genetics2.ghostAgents))+"\n")
 	file_object.close()
+
+	if(ROUND_COUNT == 0):
+		file_object = open("dumbed_saves/" + args.learning_Name + ".txt", 'a')
+		file_object.write("GAMESPERROUND: " + str(GAMESPERROUND) + "\n"
+			+ "GHOSTGAMESPERROUND: " + str(GHOSTGAMESPERROUND) + "\n"
+			+ "randomizationAmount: " + str(randomizationAmount) + "\n"
+			+ "randomizationStrengthWeights: " + str(randomizationStrengthWeights) + "\n"
+			+ "randomizationStrengthBiases: " + str(randomizationStrengthBiases) + "\n"
+			+ "SNAPSHOT_PROBABILITY: " + str(SNAPSHOT_PROBABILITY) + "\n"
+			+ "GHOSTAGENTS_POP: " + str(GHOSTAGENTS_POP))
+		file_object.close()
+
 
 	print("Round: " + str(roundsCompleted) + "|| Fitness genetics1(1st to play): " + str(fitnessOfRound1) + " || Fitness genetics2: " + str(fitnessOfRound2) +" || Amount of GhostAgents: " + str(len(genetics1.ghostAgents)) + " || Amount of GhostAgents2: " + str(len(genetics2.ghostAgents)))
