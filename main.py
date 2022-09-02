@@ -774,7 +774,7 @@ for b in range(ROUND_COUNT-1, -1, -1):
 		fig.write_image(FOLER_STATS + args.learning_Name +"_GEN_2.png",engine='orca')
 
 
-		tailLenght =  ROUND_COUNT/10 # Dynamic last 10 % of the learning will be meassured
+		tailLenght =  int(ROUND_COUNT/10) # Dynamic last 10 % of the learning will be meassured
 		df = pd.read_csv(FOLER_STATS + args.learning_Name + "_GEN_1_min_max_progress.csv")
 		gen_01_win_sum = df.tail(tailLenght)['wins'].sum()/tailLenght
 		gen_01_draw_sum = df.tail(tailLenght)['draws'].sum()/tailLenght
