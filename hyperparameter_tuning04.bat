@@ -1,0 +1,3 @@
+main.py 27_randomizationStrength_01 -GAMESPERROUND 20 -GHOSTGAMESPERROUND 7 -SNAPSHOT_PROBABILITY 2000 -randomizationAmount 0.04 -randomizationStrengthWeights 0.01 -randomizationStrengthBiases 0.01 -ROUND_COUNT 2000
+main.py 27_randomizationStrength_02 -GAMESPERROUND 20 -GHOSTGAMESPERROUND 7 -SNAPSHOT_PROBABILITY 2000 -randomizationAmount 0.03 -randomizationStrengthWeights 0.01 -randomizationStrengthBiases 0.01 -ROUND_COUNT 2000
+main.py 27_randomizationStrength_03 -GAMESPERROUND 20 -GHOSTGAMESPERROUND 7 -SNAPSHOT_PROBABILITY 2000 -randomizationAmount 0.02 -randomizationStrengthWeights 0.01 -randomizationStrengthBiases 0.01 -ROUND_COUNT 2000

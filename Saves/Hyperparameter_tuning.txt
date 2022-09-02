@@ -1,0 +1,10 @@
+
+
+27_randomizationStrength_01 -> 80
+-GAMESPERROUND 20 
+-GHOSTGAMESPERROUND 7 
+-SNAPSHOT_PROBABILITY 2000 
+-randomizationAmount 0.04 
+-randomizationStrengthWeights 0.01 
+-randomizationStrengthBiases 0.01 
+-ROUND_COUNT 2000

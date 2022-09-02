@@ -18,6 +18,7 @@ import random
 #game copy min max
 from copy import deepcopy
 import argparse
+import os
 
 
 import logging
@@ -115,7 +116,7 @@ if __name__ == '__main__':
 	parser.add_argument('-LOSEFITNESSGHOST', type=float, default=0.2,help="Reward of lose vs old saved AI")
 	parser.add_argument('-GAMESPERROUND', type=int, default=2,help="Games per generation vs a current AI")
 	parser.add_argument('-GHOSTGAMESPERROUND', type=int, default=1,help="Games per generation vs old saved AI")
-	parser.add_argument('-POP_COUNT', type=int, default=100,help="Population size")
+	parser.add_argument('-POP_COUNTER', type=int, default=100,help="Population size of the current AIs")
 	parser.add_argument('-GHOSTAGENTS_POP', type=int, default=100,help="Population size of saved old AIs")
 	parser.add_argument('-SNAPSHOT_PROBABILITY', type=int, default=100*10,help="Probability of saving a current AI to the old saved AIs")
 	parser.add_argument('-exportRate', type=int, default=50,help="Rate at which generations genetics get exported")
@@ -133,14 +134,16 @@ if __name__ == '__main__':
 	LOSEFITNESSGHOST = args.LOSEFITNESSGHOST
 	GAMESPERROUND = args.GAMESPERROUND
 	GHOSTGAMESPERROUND = args.GHOSTGAMESPERROUND
-	POP_COUNT = args.POP_COUNT
+	POP_COUNT = args.POP_COUNTER
 	GHOSTAGENTS_POP = args.GHOSTAGENTS_POP
 	SNAPSHOT_PROBABILITY = args.SNAPSHOT_PROBABILITY
 	EXPORTEVERYXMOVE = args.exportRate
 	ROUND_COUNT = args.ROUND_COUNT
 
 
-
+#For a more organized hyperparameter tuning
+FOLER_STATS = 'dumbed_saves/' + args.learning_Name + '_stats/'
+os.makedirs(FOLER_STATS, exist_ok=True)
 
 
 if(ROUND_COUNT==0):
@@ -626,7 +629,7 @@ def checkAIQuality(y: int, idx: int):
 						qual_check_draws += 1
 				game_over = True
 				valid_move = True
-	file_object = open("dumbed_saves/" + args.learning_Name + "_GEN_"+str(2-y) +"_min_max_progress.csv", 'a')
+	file_object = open(FOLER_STATS + args.learning_Name + "_GEN_"+str(2-y) +"_min_max_progress.csv", 'a')
 	file_object.write(str(roundsCompleted)+"," +str(qual_check_wins)+","+str(qual_check_draws)+","+str(qual_check_losses)+"\n")
 	file_object.close()
 	print("Generation" + str(2-y) + ": wins: " + str(qual_check_wins) + " draws: " + str(qual_check_draws) + " losses: " + str(qual_check_losses))
@@ -710,23 +713,23 @@ for b in range(ROUND_COUNT-1, -1, -1):
 	genetics2.roundClose(randomizationAmount, randomizationStrengthWeights, randomizationStrengthBiases)
 
 	if(roundsCompleted == 0):
-		file_object = open("dumbed_saves/" + args.learning_Name + ".csv", 'a')
+		file_object = open(FOLER_STATS + args.learning_Name + ".csv", 'a')
 		file_object.write("Round_Number,Fitness_Genetics1,Fitness_Genetics2,Amount_GhostAgents1,Amount_GhostAgents2\n")
 		file_object.close()
-		file_object = open("dumbed_saves/" + args.learning_Name + "_GEN_1_min_max_progress.csv", 'a')
+		file_object = open(FOLER_STATS + args.learning_Name + "_GEN_1_min_max_progress.csv", 'a')
 		file_object.write("Round_Number,wins,draws,losses\n")
 		file_object.close()
-		file_object = open("dumbed_saves/" + args.learning_Name + "_GEN_2_min_max_progress.csv", 'a')
+		file_object = open(FOLER_STATS+ args.learning_Name + "_GEN_2_min_max_progress.csv", 'a')
 		file_object.write("Round_Number,wins,draws,losses\n")
 		file_object.close()
 
-	file_object = open("dumbed_saves/" + args.learning_Name + ".csv", 'a')
+	file_object = open(FOLER_STATS + args.learning_Name + ".csv", 'a')
 	file_object.write(str(roundsCompleted)+","+str(fitnessOfRound1)+ "," + str(fitnessOfRound2)+ "," +str(len(genetics1.ghostAgents))+";"+str(len(genetics2.ghostAgents))+"\n")
 	file_object.close()
 	roundsCompleted += 1
 
 	if(b == 0):
-		file_object = open("dumbed_saves/" + args.learning_Name + ".txt", 'a')
+		file_object = open(FOLER_STATS + args.learning_Name + ".txt", 'a')
 		file_object.write("GAMESPERROUND: " + str(GAMESPERROUND) + "\n"
 			+ "GHOSTGAMESPERROUND: " + str(GHOSTGAMESPERROUND) + "\n"
 			+ "randomizationAmount: " + str(randomizationAmount) + "\n"
@@ -734,6 +737,7 @@ for b in range(ROUND_COUNT-1, -1, -1):
 			+ "randomizationStrengthBiases: " + str(randomizationStrengthBiases) + "\n"
 			+ "SNAPSHOT_PROBABILITY: " + str(SNAPSHOT_PROBABILITY) + "\n"
 			+ "GHOSTAGENTS_POP: " + str(GHOSTAGENTS_POP))
+		#ToDo: Add the other parameters
 		file_object.close()
 
 		#Create graphs
@@ -741,38 +745,74 @@ for b in range(ROUND_COUNT-1, -1, -1):
 		import plotly.express as px
 
 		#Relative view
-		df = pd.read_csv("dumbed_saves/" + args.learning_Name + ".csv")
+		df = pd.read_csv(FOLER_STATS + args.learning_Name + ".csv")
 		df_long=pd.melt(df, id_vars='Round_Number', value_vars=['Fitness_Genetics1', 'Fitness_Genetics2'])
 		#fig = px.line(df_long, x = 'Round_Number', y = 'value',color='variable', title='TITLE')
 		fig = px.scatter(df_long, x="Round_Number", y="value",color='variable', trendline="lowess", trendline_options=dict(frac=0.015))
 		fig.data = [t for t in fig.data if t.mode == "lines"]
 		fig.update_traces(showlegend=True) #trendlines have showlegend=False by default
 		#fig.show()
-		fig.write_image("dumbed_saves/" + args.learning_Name +".png",engine='orca')
+		fig.write_image(FOLER_STATS + args.learning_Name +".png",engine='orca')
 
 		#Gen1 absolute
-		df = pd.read_csv("dumbed_saves/" + args.learning_Name + "_GEN_1_min_max_progress.csv")
+		df = pd.read_csv(FOLER_STATS + args.learning_Name + "_GEN_1_min_max_progress.csv")
 		df_long=pd.melt(df, id_vars='Round_Number', value_vars=['wins', 'draws', 'losses'])
 		#fig = px.line(df_long, x = 'Round_Number', y = 'value',color='variable', title='TITLE')
 		fig = px.scatter(df_long, x="Round_Number", y="value",color='variable', trendline="lowess", trendline_options=dict(frac=0.015))
 		fig.data = [t for t in fig.data if t.mode == "lines"]
 		fig.update_traces(showlegend=True) #trendlines have showlegend=False by default
 		#fig.show()
-		fig.write_image("dumbed_saves/" + args.learning_Name +"_GEN_1.png",engine='orca')
+		fig.write_image(FOLER_STATS + args.learning_Name +"_GEN_1.png",engine='orca')
 		#Gen2 absolute
-		df = pd.read_csv("dumbed_saves/" + args.learning_Name + "_GEN_2_min_max_progress.csv")
+		df = pd.read_csv(FOLER_STATS + args.learning_Name + "_GEN_2_min_max_progress.csv")
 		df_long=pd.melt(df, id_vars='Round_Number', value_vars=['wins', 'draws', 'losses'])
 		#fig = px.line(df_long, x = 'Round_Number', y = 'value',color='variable', title='TITLE')
 		fig = px.scatter(df_long, x="Round_Number", y="value",color='variable', trendline="lowess", trendline_options=dict(frac=0.015))
 		fig.data = [t for t in fig.data if t.mode == "lines"]
 		fig.update_traces(showlegend=True) #trendlines have showlegend=False by default
 		#fig.show()
-		fig.write_image("dumbed_saves/" + args.learning_Name +"_GEN_2.png",engine='orca')
+		fig.write_image(FOLER_STATS + args.learning_Name +"_GEN_2.png",engine='orca')
 
 
+		tailLenght =  ROUND_COUNT/10 # Dynamic last 10 % of the learning will be meassured
+		df = pd.read_csv(FOLER_STATS + args.learning_Name + "_GEN_1_min_max_progress.csv")
+		gen_01_win_sum = df.tail(tailLenght)['wins'].sum()/tailLenght
+		gen_01_draw_sum = df.tail(tailLenght)['draws'].sum()/tailLenght
+		gen_01_loss_sum = df.tail(tailLenght)['losses'].sum()/tailLenght
 
+		df = pd.read_csv(FOLER_STATS + args.learning_Name + "_GEN_2_min_max_progress.csv")
+		gen_02_win_sum = df.tail(tailLenght)['wins'].sum()/tailLenght
+		gen_02_draw_sum = df.tail(tailLenght)['draws'].sum()/tailLenght
+		gen_02_loss_sum = df.tail(tailLenght)['losses'].sum()/tailLenght
 
+		hyperparameter_fitness = gen_01_win_sum + gen_02_win_sum + gen_01_draw_sum/6 + gen_02_draw_sum/6 - gen_01_loss_sum - gen_02_loss_sum
 
+		#Reinforcement hyperparameter Correlation analyzer
+		if not (os.path.exists("dumbed_saves/reinforcement_hyperparameter_correlation.csv")):
+			file_object = open("dumbed_saves/reinforcement_hyperparameter_correlation.csv", 'a')
+			file_object.write("GAMESPERROUND,GHOSTGAMESPERROUND,randomizationAmount,randomizationStrengthWeights,"+
+				"randomizationStrengthBiases,SNAPSHOT_PROBABILITY,GHOSTAGENTS_POP,ROUND_COUNT,WINFITNESS,DRAWFITNESS,"+
+				"LOSEFITNESS,WINFITNESSGHOST,DRAWFITNESSGHOST,LOSEFITNESSGHOST,FITNESS_SCORE\n")
+			file_object.close()
+
+		file_object = open("dumbed_saves/reinforcement_hyperparameter_correlation.csv", 'a')
+		file_object.write(
+			str(GAMESPERROUND) + "," +
+			str(GHOSTGAMESPERROUND) + "," +
+			str(randomizationAmount) + "," +
+			str(randomizationStrengthWeights) + "," +
+			str(randomizationStrengthBiases) + "," +
+			str(SNAPSHOT_PROBABILITY) + "," +
+			str(GHOSTAGENTS_POP)  + "," +
+			str(ROUND_COUNT) + "," +
+			str(WINFITNESS) + "," +
+			str(DRAWFITNESS) + "," +
+			str(LOSEFITNESS) + "," +
+			str(WINFITNESSGHOST) + "," +
+			str(DRAWFITNESSGHOST) + "," +
+			str(LOSEFITNESSGHOST) + "," +
+			str(hyperparameter_fitness) + "\n")
+		file_object.close()
 
 
 	print("Round: " + str(roundsCompleted) + "|| Fitness genetics1(1st to play): " + str(fitnessOfRound1) + " || Fitness genetics2: " + str(fitnessOfRound2) +" || Amount of GhostAgents: " + str(len(genetics1.ghostAgents)) + " || Amount of GhostAgents2: " + str(len(genetics2.ghostAgents)))
