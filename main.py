@@ -120,7 +120,7 @@ if __name__ == '__main__':
 	parser.add_argument('-GHOSTAGENTS_POP', type=int, default=100,help="Population size of saved old AIs")
 	parser.add_argument('-SNAPSHOT_PROBABILITY', type=int, default=100*10,help="Probability of saving a current AI to the old saved AIs")
 	parser.add_argument('-exportRate', type=int, default=50,help="Rate at which generations genetics get exported")
-	parser.add_argument('-ROUND_COUNT', type=int, default=3000,help="Amount of rounds to be played")
+	parser.add_argument('-ROUND_COUNT', type=int, default=1000,help="Amount of rounds to be played")
 	#FITNESS_REWARD = 1 #Temporary disabled
 	args = parser.parse_args()
 	randomizationAmount = args.randomizationAmount

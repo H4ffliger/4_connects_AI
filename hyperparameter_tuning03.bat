@@ -1,3 +1,0 @@
-main.py 65_plays_01 -GAMESPERROUND 50 -GHOSTGAMESPERROUND 15 -SNAPSHOT_PROBABILITY 1000 -randomizationAmount 0.03 -randomizationStrengthWeights 0.03 -randomizationStrengthBiases 0.03 -ROUND_COUNT 2000
-main.py 65_plays_02 -GAMESPERROUND 50 -GHOSTGAMESPERROUND 15 -SNAPSHOT_PROBABILITY 2000 -randomizationAmount 0.03 -randomizationStrengthWeights 0.03 -randomizationStrengthBiases 0.03 -ROUND_COUNT 2000
-main.py 65_plays_03 -GAMESPERROUND 50 -GHOSTGAMESPERROUND 15 -SNAPSHOT_PROBABILITY 3000 -randomizationAmount 0.03 -randomizationStrengthWeights 0.03 -randomizationStrengthBiases 0.03 -ROUND_COUNT 2000
