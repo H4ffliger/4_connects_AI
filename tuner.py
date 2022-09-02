@@ -19,8 +19,9 @@ if __name__ == '__main__':
 
 data = pd.read_csv(args.csv_file)
 #print(data)
-#data = data.corr()
-print(data['FITNESS_SCORE'])
+print(data)
+data = data.corr()
+print(data["FITNESS_SCORE"])
 
 '''
 df = pd.read_csv(csv_file)
