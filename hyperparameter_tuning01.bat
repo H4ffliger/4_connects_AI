@@ -1,10 +1,14 @@
 
-start /b main.py a36 -GAMESPERROUND 3 -GHOSTGAMESPERROUND 1 -SNAPSHOT_PROBABILITY 6 -randomizationAmount 0.02 -ROUND_COUNT 1000 -GHOSTAGENTS_POP 100
-start /b main.py a37 -GAMESPERROUND 3 -GHOSTGAMESPERROUND 1 -SNAPSHOT_PROBABILITY 10 -randomizationAmount 0.02 -ROUND_COUNT 1000 -GHOSTAGENTS_POP 100
-start /b main.py a38 -GAMESPERROUND 3 -GHOSTGAMESPERROUND 1 -SNAPSHOT_PROBABILITY 7 -randomizationAmount 0.02 -ROUND_COUNT 1000 -GHOSTAGENTS_POP 100
-start /b main.py a39 -GAMESPERROUND 3 -GHOSTGAMESPERROUND 1 -SNAPSHOT_PROBABILITY 5 -randomizationAmount 0.02 -ROUND_COUNT 1000 -GHOSTAGENTS_POP 100
-start /b main.py a40 -GAMESPERROUND 3 -GHOSTGAMESPERROUND 1 -SNAPSHOT_PROBABILITY 2 -randomizationAmount 0.02 -ROUND_COUNT 1000 -GHOSTAGENTS_POP 100
-start /b main.py a41 -GAMESPERROUND 3 -GHOSTGAMESPERROUND 1 -SNAPSHOT_PROBABILITY 12 -randomizationAmount 0.02 -ROUND_COUNT 1000 -GHOSTAGENTS_POP 100
+start /b main.py 20_pop_400_agents_01
+start /b main.py 20_pop_400_agents_02
+start /b main.py 20_pop_400_agents_03
+start /b main.py 20_pop_400_agents_04
+start /b main.py 20_pop_400_agents_05
+start /b main.py 20_pop_400_agents_06
+start /b main.py 20_pop_400_agents_07
+start /b main.py 20_pop_400_agents_08
+start /b main.py 20_pop_400_agents_09
+start /b main.py 20_pop_400_agents_10
 
 
 # ToDo SNAPSHOT_PROBABILITY nicht random sonden alle x runden

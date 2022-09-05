@@ -14,6 +14,9 @@ os.makedirs(FOLER_HTML, exist_ok=True)
 FOLER_IMG = 'dumbed_saves/visualizer/images/'
 os.makedirs(FOLER_IMG, exist_ok=True)
 
+file_css = open(FOLER_HTML +"mystyles.css", 'w')
+file_css.write('body {background-color: #515151;font-family: "Lucida Console", "Courier New", monospace;}h2{text-align: center;}div{background-color: #404040;margin: 5px;}img{	width: 30%;	padding-right: 1%;	padding-left: 1%;}')
+file_css.close()
 
 #csvFileList = []
 def find_files(root, extensions):
@@ -22,44 +25,55 @@ def find_files(root, extensions):
 
 
 def vizualizer():
-	logging.info("Writing index.html file")
-	file_object = open(FOLER_HTML +"index.html", 'w')
-	file_object.write('<link rel="stylesheet" type="text/css" href="mystyles.css" media="screen" />\n')
-	file_object.write('<meta http-equiv="refresh" content="20" />\n')
-	file_object.write('<h2>GNeuroNetWK visualizer</h2>\n')
+	global initialized
+	if(initialized == False):
+		logging.info("Writing index.html file")
+		file_object = open(FOLER_HTML +"index.html", 'w')
+		file_object.write('<link rel="stylesheet" type="text/css" href="mystyles.css" media="screen" />\n')
+		file_object.write('<meta http-equiv="refresh" content="10" />\n')
+		file_object.write('<h2>GNeuroNetWK visualizer</h2>\n')
 
+	logging.info("Updating graphs")
 	for csvs in find_files('dumbed_saves', ['csv']):
 		csvs_sting = str(csvs)
 		csvs_name = csvs_sting.split("\\")
 		logging.debug("Analyzing: " + csvs_sting)
 		if(csvs_sting.__contains__("GEN_1_min_max_progress.csv")):
-			file_object.write('<div class="w3-container">')
-			file_object.write('<h3>' + csvs_name[1] +'</h3>')
+			if(initialized == False):
+				file_object.write('<div class="w3-container">')
+				file_object.write('<h3>' + csvs_name[1] +'</h3>')
 			df = pd.read_csv(csvs_sting)
 			df_long=pd.melt(df, id_vars='Round_Number', value_vars=['wins', 'draws', 'losses'])
-			fig = px.scatter(df_long, x="Round_Number", y="value",color='variable', trendline="lowess", trendline_options=dict(frac=args.trendline_dict))
+			fig = px.scatter(df_long, x="Round_Number", y="value",color='variable', trendline="rolling", trendline_options=dict(window=5), title="Player 1")
 			fig.data = [t for t in fig.data if t.mode == "lines"]
 			fig.update_traces(showlegend=True) #trendlines have showlegend=False by default
-			fig.write_image(FOLER_IMG + csvs_name[1] + "01.png",engine='orca')
-			file_object.write('<img src="images/' + csvs_name[1] + '01.png" alt="Statistics">')
+			if(initialized == False):
+				fig.write_image(FOLER_IMG + csvs_name[1] + "01.png",engine='orca')
+				file_object.write('<img src="images/' + csvs_name[1] + '01.png" alt="Statistics">')
 		if(csvs_sting.__contains__("GEN_2_min_max_progress.csv")):
 			df = pd.read_csv(csvs_sting)
 			df_long=pd.melt(df, id_vars='Round_Number', value_vars=['wins', 'draws', 'losses'])
-			fig = px.scatter(df_long, x="Round_Number", y="value",color='variable', trendline="lowess", trendline_options=dict(frac=args.trendline_dict))
+			fig = px.scatter(df_long, x="Round_Number", y="value",color='variable', trendline="rolling", trendline_options=dict(window=5), title="Player 2")
 			fig.data = [t for t in fig.data if t.mode == "lines"]
 			fig.update_traces(showlegend=True) #trendlines have showlegend=False by default
 			fig.write_image(FOLER_IMG + csvs_name[1] + "02.png",engine='orca')
-			file_object.write('<img src="images/' + csvs_name[1] + '02.png" alt="Statistics">')
+			if(initialized == False):
+				file_object.write('<img src="images/' + csvs_name[1] + '02.png" alt="Statistics">')
 		if(csvs_sting.__contains__("visualizer.csv")):
 			df = pd.read_csv(csvs_sting)
 			df_long=pd.melt(df, id_vars='Round_Number', value_vars=['Absolute_Fitness'])
-			fig = px.scatter(df_long, x="Round_Number", y="value",color='variable', trendline="lowess", trendline_options=dict(frac=args.trendline_dict))
+			fig = px.scatter(df_long, x="Round_Number", y="value",color='variable', trendline="rolling", trendline_options=dict(window=5), title="Overall fitness")
+			#fig = px.scatter(df_long, x="Round_Number", y="value",color='variable', trendline="lowess", trendline_options=dict(frac=args.trendline_dict))
 			fig.data = [t for t in fig.data if t.mode == "lines"]
 			fig.update_traces(showlegend=True) #trendlines have showlegend=False by default
 			fig.write_image(FOLER_IMG + csvs_name[1] + "03.png",engine='orca')
-			file_object.write('<img src="images/' + csvs_name[1] + '03.png" alt="Statistics">')
-			file_object.write('</div>\n')
-	file_object.close()
+			if(initialized == False):
+				file_object.write('<img src="images/' + csvs_name[1] + '03.png" alt="Statistics">')
+				file_object.write('</div>\n')
+	
+	if(initialized == False):
+		file_object.close()
+		initialized = True
 
 	logging.info("Images created waiting: " + str(args.refreshtime))
 	time.sleep(args.refreshtime)
@@ -68,12 +82,12 @@ def vizualizer():
 			
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='GNeuroNetWK web visualizer\n Open /dumbed_saves/visualizer/index.html')
-	parser.add_argument('-refreshtime', type=int, default=10,help="Refresh time of graphs in seconds. May vary depending on amout of graphs to generate")
+	parser.add_argument('-refreshtime', type=int, default=7,help="Refresh time of graphs in seconds. May vary depending on amout of graphs to generate")
 	parser.add_argument('-trendline_dict', type=int, default=0.015,help="Trendline trigger/smooting (default 0.015)")
 	args = parser.parse_args()
 
 
-
+initialized = False
 vizualizer()
 
 
