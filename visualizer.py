@@ -47,8 +47,8 @@ def vizualizer():
 			fig = px.scatter(df_long, x="Round_Number", y="value",color='variable', trendline="rolling", trendline_options=dict(window=5), title="Player 1")
 			fig.data = [t for t in fig.data if t.mode == "lines"]
 			fig.update_traces(showlegend=True) #trendlines have showlegend=False by default
+			fig.write_image(FOLER_IMG + csvs_name[1] + "01.png",engine='orca')
 			if(initialized == False):
-				fig.write_image(FOLER_IMG + csvs_name[1] + "01.png",engine='orca')
 				file_object.write('<img src="images/' + csvs_name[1] + '01.png" alt="Statistics">')
 		if(csvs_sting.__contains__("GEN_2_min_max_progress.csv")):
 			df = pd.read_csv(csvs_sting)
