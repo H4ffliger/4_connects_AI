@@ -45,19 +45,17 @@ def getMinMaxMove(choice, game):
 	moveProbabiltyScore = [2] * gameFieldSize
 
 
-	game = GameField()
 	#Me to play
 	#print("Called multible times")
 	for i1 in range(gameFieldSize):
 		#MetoPlay
-		#game.print_board()
-		gamesToPlay.append(game)
-
-
-		gamesToPlay[i1].turn(i1)
-		if(gamesToPlay[i1].check_winner()):
-			return i1
-
+		gamesToPlay.append(deepcopy(game))
+		try:
+			gamesToPlay[i1].turn(i1)
+			if(gamesToPlay[i1].check_winner()):
+				return i1
+		except:
+			print("Invalid move prediction1")
 		#Enemy to play 1
 		for i2 in range(gameFieldSize):
 			#print(str(i)+ " : "+ str(y))
@@ -79,7 +77,7 @@ def getMinMaxMove(choice, game):
 						
 			except:
 				print("Invalid move prediction2")
-
+				'''
 		   #Me to play 2
 			for i3 in range(gameFieldSize):
 				gamesToPlay2.append(deepcopy(gamesToPlay1[len(gamesToPlay1)-1]))
@@ -93,7 +91,7 @@ def getMinMaxMove(choice, game):
 							moveProbabiltyScore[moveProbOption] += WINNINGSCOREADDITION		
 				except:
 					print("Invalid move prediction3")
-				'''
+				
 				#Enemy to play 2
 				for i4 in range(gameFieldSize):
 					gamesToPlay3.append(deepcopy(gamesToPlay2[len(gamesToPlay2)-1]))
@@ -109,7 +107,6 @@ def getMinMaxMove(choice, game):
 						#if(moveProbabiltyScore[moveProbOption] >= LOSINGSCOREADDITION2):
 						#	moveProbabiltyScore[moveProbOption] += LOSINGSCOREADDITION2				
 					
-					
 					#Me to play 3
 					for i5 in range(gameFieldSize):
 						gamesToPlay4.append(deepcopy(gamesToPlay3[len(gamesToPlay3)-1]))
@@ -123,6 +120,7 @@ def getMinMaxMove(choice, game):
 									moveProbabiltyScore[moveProbOption] += WINNINGSCOREADDITION2	
 						except:
 							print("Invalid move prediction5")
+
 						#Enemy to play 3
 						for i6 in range(gameFieldSize):
 							gamesToPlay5.append(deepcopy(gamesToPlay4[len(gamesToPlay4)-1]))
@@ -133,38 +131,34 @@ def getMinMaxMove(choice, game):
 								#print("Losing in 3 on line " + str(i4+1) + " if enemy sets " + str(i2+1) + ", (me) " + str(i3+1) + " enemy " + str(i4+1))
 								moveProbOption = i1
 								moveProbabiltyScore[moveProbOption] += LOSINGSCOREADDITION #Not sure if LOSINGADITION3 is better
-							'''
-		
+								'''		
 	#print("Unsorted list")
 	#print(moveProbabiltyScore)
 	s = np.array(moveProbabiltyScore)
 	sort_index = np.argsort(s)
-	#print("Loop check: " + str(sort_index[choice]))
 	#print(sort_index)
 	#print(sort_index[choice])
-	#print(moveProbabiltyScore)
 	return sort_index[choice]
 
 
 
-
-def minMaxAI(game):
+def minMaxAI(localGame):
 	loopCheck = -1
 	valid_move = False
-	moveMinMax = -1
 	#minMaxAI gets called multiple times trough while loop???
 	#print("SingleCall")
 	for x in range(0, gameFieldSize):
-		loopCheck += 1
 		minMaxMove = -2
 		#print("while false loopCheck =  " + str(loopCheck) + " for loop = " + str(x))
-		moveMinMax = getMinMaxMove(loopCheck, game)
-		valid_move = game.turn(moveMinMax)
+		moveMinMax = getMinMaxMove(x, localGame)
+		valid_move = localGame.turn(moveMinMax)
+		#print(valid_move)
 		#print(valid_move)
 		if(valid_move):
 			return moveMinMax
 		#print(str(x) + " " + str(loopCheck))
-	print("Gameboard full game is a draw")
+	#print("Gameboard full game is a draw: " + str(loopCheck))
+	#localGame.print_board()
 	return False # Nach tests zu return -1 anpassen
 	#print("return " + str(loopCheck))
 	user = 0

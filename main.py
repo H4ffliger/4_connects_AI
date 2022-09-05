@@ -23,7 +23,10 @@ import os
 
 import logging
 logging.basicConfig(level=logging.INFO)
+
+
 '''
+Performance checks
 import linecache
 import os
 import tracemalloc
@@ -64,8 +67,8 @@ print("Version 0.03\n"+
 	"Currently test boilerplate to check functionality\n" + 
 	"Beat the game 4 connects with external minmax score progress check\n\n")
 
-#Game Specific
 
+#Game Specific
 gameW = 5
 gameH = 4
 gameSize = gameW*gameH
@@ -105,22 +108,22 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='GNeuroNetWK for learning the 4 connects game')
 	#Hyphen makes argument optional
 	parser.add_argument('learning_Name', type=str, default="TESTRUN",help="Name of the GNeuroNetWK learning run")
-	parser.add_argument('-randomizationAmount', type=float, default=0.07,help="Amount of mutation which should happen with the genes")
-	parser.add_argument('-randomizationStrengthWeights', type=float, default=0.05,help="Value of how strong the Weights should be mutated")
-	parser.add_argument('-randomizationStrengthBiases', type=float, default=0.05,help="Value of how strong the Biases should be mutated")
+	parser.add_argument('-randomizationAmount', type=float, default=0.02,help="Amount of mutation which should happen with the genes")
+	parser.add_argument('-randomizationStrengthWeights', type=float, default=0.03,help="Value of how strong the Weights should be mutated")
+	parser.add_argument('-randomizationStrengthBiases', type=float, default=0.03,help="Value of how strong the Biases should be mutated")
 	parser.add_argument('-WINFITNESS', type=float, default=4,help="Reward of win vs current AI")
-	parser.add_argument('-DRAWFITNESS', type=float, default=0.5,help="Reward of draw vs current AI")
-	parser.add_argument('-LOSEFITNESS', type=float, default=0.2,help="Reward of lose vs current AI")
+	parser.add_argument('-DRAWFITNESS', type=float, default=0.6,help="Reward of draw vs current AI")
+	parser.add_argument('-LOSEFITNESS', type=float, default=-0.5,help="Reward of lose vs current AI")
 	parser.add_argument('-WINFITNESSGHOST', type=float, default=4,help="Reward of win vs old saved AI")
-	parser.add_argument('-DRAWFITNESSGHOST', type=float, default=0.5,help="Reward of draw vs old saved AI")
-	parser.add_argument('-LOSEFITNESSGHOST', type=float, default=0.2,help="Reward of lose vs old saved AI")
-	parser.add_argument('-GAMESPERROUND', type=int, default=2,help="Games per generation vs a current AI")
-	parser.add_argument('-GHOSTGAMESPERROUND', type=int, default=1,help="Games per generation vs old saved AI")
+	parser.add_argument('-DRAWFITNESSGHOST', type=float, default=0.2,help="Reward of draw vs old saved AI")
+	parser.add_argument('-LOSEFITNESSGHOST', type=float, default=-0.5,help="Reward of lose vs old saved AI")
+	parser.add_argument('-GAMESPERROUND', type=int, default=20,help="Games per generation vs a current AI")
+	parser.add_argument('-GHOSTGAMESPERROUND', type=int, default=7,help="Games per generation vs old saved AI")
 	parser.add_argument('-POP_COUNTER', type=int, default=100,help="Population size of the current AIs")
 	parser.add_argument('-GHOSTAGENTS_POP', type=int, default=100,help="Population size of saved old AIs")
-	parser.add_argument('-SNAPSHOT_PROBABILITY', type=int, default=100*10,help="Probability of saving a current AI to the old saved AIs")
+	parser.add_argument('-SNAPSHOT_PROBABILITY', type=int, default=10,help="Probability of saving a current AI to the old saved AIs")
 	parser.add_argument('-exportRate', type=int, default=50,help="Rate at which generations genetics get exported")
-	parser.add_argument('-ROUND_COUNT', type=int, default=1000,help="Amount of rounds to be played")
+	parser.add_argument('-ROUND_COUNT', type=int, default=2000,help="Amount of rounds to be played")
 	#FITNESS_REWARD = 1 #Temporary disabled
 	args = parser.parse_args()
 	randomizationAmount = args.randomizationAmount
@@ -154,7 +157,7 @@ genetics1 = Genetics(POP_COUNT, GHOSTAGENTS_POP, AGENT_INPUTS, AGENT_OUTPUTS, FI
 genetics2 = Genetics(POP_COUNT, GHOSTAGENTS_POP, AGENT_INPUTS, AGENT_OUTPUTS, FITNESS_REWARD)
 
 #Copy random to ghosts
-for i in range(0, 2):
+for i in range(0, 1):
 	genetics1.copyAgenttoGhost(i)
 	genetics2.copyAgenttoGhost(i)
 
@@ -315,9 +318,6 @@ def getGhost2Move(userToPlay, board, indexMove):
 	sortedPicks = sorted(range(len(moveProbabiltyScoreAverage)), key=lambda k: moveProbabiltyScoreAverage[k])
 	return sortedPicks[indexMove]
 
-def getStack2Move(userToPlay, board, indexMove):
-	return minMaxAI(board)
-
 
 def gameRoundGhost(y: int, idx: int):
 
@@ -333,7 +333,7 @@ def gameRoundGhost(y: int, idx: int):
 		game = GameField()
 		game_over = False
 		userToPlay = 0
-		#First move throws off the AI for the first x 100 moves
+		#First move throws off the AI for the first x 100 generations
 		firstMoveNoise = np.random.randint(0,gameW)
 		firstMovePlayed = False
 
@@ -434,7 +434,7 @@ def gameRoundAI(y: int, idx: int):
 		game = GameField()
 		game_over = False
 		userToPlay = 0
-		#First move throws off the AI for the first x 100 moves
+		#First move throws off the AI for the first x 100 generations
 		firstMoveNoise = np.random.randint(0,gameW)
 		firstMovePlayed = False
 
@@ -542,7 +542,7 @@ def checkAIQuality(y: int, idx: int):
 		game = GameField()
 		game_over = False
 		userToPlay = 0
-		#First move throws off the AI for the first x 100 moves
+		#First move throws off the AI for the first x 100 generations
 		firstMoveNoise = np.random.randint(0,gameW)
 		firstMovePlayed = False
 
@@ -632,24 +632,13 @@ def checkAIQuality(y: int, idx: int):
 	file_object = open(FOLER_STATS + args.learning_Name + "_GEN_"+str(2-y) +"_min_max_progress.csv", 'a')
 	file_object.write(str(roundsCompleted)+"," +str(qual_check_wins)+","+str(qual_check_draws)+","+str(qual_check_losses)+"\n")
 	file_object.close()
-	print("Generation" + str(2-y) + ": wins: " + str(qual_check_wins) + " draws: " + str(qual_check_draws) + " losses: " + str(qual_check_losses))
+	print("Generation" + str(2-y) + ": wins: " + str(qual_check_wins) + " draws: " + str(qual_check_draws) + " losses: " + str(qual_check_losses))	
+	return qual_check_wins + (qual_check_draws/6)  - qual_check_losses
 
 
 #Main loop
 for b in range(ROUND_COUNT-1, -1, -1):
-
-	#Setting for tuning the mutation
-	'''if(roundsCompleted == 100):
-		randomizationStrengthWeights = 0.02
-		randomizationStrengthBiases = 0.02
-	elif(roundsCompleted == 200):
-		randomizationStrengthWeights = 0.005
-		randomizationStrengthBiases = 0.005
-	elif(roundsCompleted == 300):
-		randomizationAmount = 0.03
-'''
-
-
+	hyperParameterScore = 0
 
 	#PlayAgainstGhost
 	for y in range(0,2):
@@ -675,9 +664,16 @@ for b in range(ROUND_COUNT-1, -1, -1):
 		#	executor.map(worker, range(0, GHOSTGAMESPERROUND))
 
 		#Play against external minmax algorithm
-		#Major performance issues with this function
+		#Major performance issues with this _RATE == 1):
+			
 		if(roundsCompleted % QUALITY_CHECK_RATE == 1):
-			checkAIQuality(y,1)
+			hyperParameterScore += checkAIQuality(y,1)
+			if(y == 1):
+				hyperParameterScore = hyperParameterScore / 2
+				file_object = open(FOLER_STATS + args.learning_Name + "_visualizer.csv", 'a')
+				file_object.write(str(roundsCompleted)+ "," + str(hyperParameterScore) + "\n")
+				file_object.close()
+				#Saving graph for hyperparamer
 
 
 
@@ -688,22 +684,25 @@ for b in range(ROUND_COUNT-1, -1, -1):
 	#Copy agents to ghost agenst (if fitness is greater than 30 then only good trained versions get new enemies)
 
 	#New approach (and fitnessOfRound2 > GHOSTGAMESPERROUND + GHOSTGAMESPERROUND/3)
-	possibleCopyNumber = 0
-	for g1 in range(len(genetics1.agents)-1, -1, -1):
-		if(GHOSTGAMESPERROUND*1.3 + GAMESPERROUND*1.6 <= genetics1.agents[g1].fitness):
-			possibleCopyNumber += 1
-			if(np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
-				genetics1.copyAgenttoGhost(g1)
-	logging.debug("Possible amount of copies: " + str(possibleCopyNumber))
+	bestAgentIndex = 0
+	bestAgentScore = 0
+	#Copy best agent to history
+	if(b % SNAPSHOT_PROBABILITY == 0):
+		for g1 in range(len(genetics1.agents)-1, -1, -1):
+			if(genetics1.agents[g1].fitness > bestAgentScore):
+				bestAgentScore = genetics1.agents[g1].fitness
+				bestAgentIndex = g1
+		genetics1.copyAgenttoGhost(bestAgentIndex)
 
-	#New approach (and fitnessOfRound > GHOSTGAMESPERROUND + GHOSTGAMESPERROUND/3)
-	possibleCopyNumber = 0
-	for g2 in range(len(genetics2.agents)-1, -1, -1):
-		if(GHOSTGAMESPERROUND*1.3 + GAMESPERROUND*1.6 <= genetics2.agents[g2].fitness):
-			possibleCopyNumber += 1
-			if(np.random.randint(0,SNAPSHOT_PROBABILITY) == 0):
-				genetics2.copyAgenttoGhost(g2)
-	logging.debug("Possible amount of copies: " + str(possibleCopyNumber))
+	bestAgentIndex = 0
+	bestAgentScore = 0
+	#Copy best agent to history
+	if(b % SNAPSHOT_PROBABILITY == 0):
+		for g2 in range(len(genetics2.agents)-1, -1, -1):
+			if(genetics1.agents[g2].fitness > bestAgentScore):
+				bestAgentScore = genetics2.agents[g2].fitness
+				bestAgentIndex = g2
+		genetics2.copyAgenttoGhost(bestAgentIndex)
 
 	if(roundsCompleted % EXPORTEVERYXMOVE == 1 and b < ROUND_COUNT - EXPORTAFTER):
 		genetics1.savetoFile("genetics1-Test-v1-g-"+str(roundsCompleted), EXPORTQUALITY, EXPORTAMOUNT, args.learning_Name)
@@ -715,6 +714,9 @@ for b in range(ROUND_COUNT-1, -1, -1):
 	if(roundsCompleted == 0):
 		file_object = open(FOLER_STATS + args.learning_Name + ".csv", 'a')
 		file_object.write("Round_Number,Fitness_Genetics1,Fitness_Genetics2,Amount_GhostAgents1,Amount_GhostAgents2\n")
+		file_object.close()
+		file_object = open(FOLER_STATS + args.learning_Name + "_visualizer.csv", 'a')
+		file_object.write("Round_Number,Absolute_Fitness\n")
 		file_object.close()
 		file_object = open(FOLER_STATS + args.learning_Name + "_GEN_1_min_max_progress.csv", 'a')
 		file_object.write("Round_Number,wins,draws,losses\n")

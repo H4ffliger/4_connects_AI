@@ -1,24 +1,14 @@
-start /b main.py 01 -GAMESPERROUND 20 -GHOSTGAMESPERROUND 7 -SNAPSHOT_PROBABILITY 1000 -randomizationAmount 0.05 -randomizationStrengthWeights 0.05 -randomizationStrengthBiases 0.05
-start /b main.py 02 -GAMESPERROUND 20 -GHOSTGAMESPERROUND 7 -SNAPSHOT_PROBABILITY 2000 -randomizationAmount 0.05 -randomizationStrengthWeights 0.05 -randomizationStrengthBiases 0.05
-start /b main.py 03 -GAMESPERROUND 20 -GHOSTGAMESPERROUND 7 -SNAPSHOT_PROBABILITY 2000 -randomizationAmount 0.03 -randomizationStrengthWeights 0.02 -randomizationStrengthBiases 0.02
-start /b main.py 04 -GAMESPERROUND 2 -GHOSTGAMESPERROUND 1 -SNAPSHOT_PROBABILITY 1000 -randomizationAmount 0.05 -randomizationStrengthWeights 0.05 -randomizationStrengthBiases 0.05
-start /b main.py 05 -GAMESPERROUND 2 -GHOSTGAMESPERROUND 1 -SNAPSHOT_PROBABILITY 1000 -randomizationAmount 0.02 -randomizationStrengthWeights 0.05 -randomizationStrengthBiases 0.05
-start /b main.py 06 -GAMESPERROUND 2 -GHOSTGAMESPERROUND 1 -SNAPSHOT_PROBABILITY 1000 -randomizationAmount 0.02 -randomizationStrengthWeights 0.02 -randomizationStrengthBiases 0.02
-start /b main.py 07 -GAMESPERROUND 50 -GHOSTGAMESPERROUND 15 -SNAPSHOT_PROBABILITY 1000 -randomizationAmount 0.03 -randomizationStrengthWeights 0.03 -randomizationStrengthBiases 0.03
-start /b main.py 08 -GAMESPERROUND 50 -GHOSTGAMESPERROUND 15 -SNAPSHOT_PROBABILITY 2000 -randomizationAmount 0.03 -randomizationStrengthWeights 0.03 -randomizationStrengthBiases 0.03
-start /b main.py 09 -GAMESPERROUND 50 -GHOSTGAMESPERROUND 15 -SNAPSHOT_PROBABILITY 3000 -randomizationAmount 0.03 -randomizationStrengthWeights 0.03 -randomizationStrengthBiases 0.03
-start /b main.py 10 -GAMESPERROUND 20 -GHOSTGAMESPERROUND 7 -SNAPSHOT_PROBABILITY 2000 -randomizationAmount 0.04 -randomizationStrengthWeights 0.01 -randomizationStrengthBiases 0.01
-start /b main.py 11 -GAMESPERROUND 20 -GHOSTGAMESPERROUND 7 -SNAPSHOT_PROBABILITY 2000 -randomizationAmount 0.03 -randomizationStrengthWeights 0.01 -randomizationStrengthBiases 0.01
-start /b main.py 12 -GAMESPERROUND 20 -GHOSTGAMESPERROUND 7 -SNAPSHOT_PROBABILITY 2000 -randomizationAmount 0.02 -randomizationStrengthWeights 0.01 -randomizationStrengthBiases 0.01
-start /b main.py 13 -GAMESPERROUND 20 -GHOSTGAMESPERROUND 7 -SNAPSHOT_PROBABILITY 1000 -randomizationAmount 0.05 -randomizationStrengthWeights 0.05 -randomizationStrengthBiases 0.05 -WINFITNESS 4 -DRAWFITNESS 0.5 -LOSEFITNESS -0.5 -WINFITNESSGHOST 4 -DRAWFITNESSGHOST 0.5 -LOSEFITNESSGHOST -0.5
-start /b main.py 14 -GAMESPERROUND 20 -GHOSTGAMESPERROUND 7 -SNAPSHOT_PROBABILITY 1000 -randomizationAmount 0.05 -randomizationStrengthWeights 0.05 -randomizationStrengthBiases 0.05 2000 -WINFITNESS 8 -DRAWFITNESS 2 -LOSEFITNESS 0 -WINFITNESSGHOST 4 -DRAWFITNESSGHOST 0.2 -LOSEFITNESSGHOST -1
-start /b main.py 15 -GAMESPERROUND 20 -GHOSTGAMESPERROUND 7 -SNAPSHOT_PROBABILITY 1000 -randomizationAmount 0.05 -randomizationStrengthWeights 0.05 -randomizationStrengthBiases 0.05 2000 -WINFITNESS 4 -DRAWFITNESS 1 -LOSEFITNESS -1 -WINFITNESSGHOST 4 -DRAWFITNESSGHOST 1 -LOSEFITNESSGHOST -1
-start /b main.py 16 -GAMESPERROUND 2 -GHOSTGAMESPERROUND 1 -SNAPSHOT_PROBABILITY 1000 -randomizationAmount 0.02 -WINFITNESS 4 -DRAWFITNESS 0.5 -LOSEFITNESS -0.5 -WINFITNESSGHOST 4 -DRAWFITNESSGHOST 0.5 -LOSEFITNESSGHOST -0.5
-start /b main.py 17 -GAMESPERROUND 2 -GHOSTGAMESPERROUND 1 -SNAPSHOT_PROBABILITY 1000 -randomizationAmount 0.02 -WINFITNESS 8 -DRAWFITNESS 1 -LOSEFITNESS -1 -WINFITNESSGHOST 4 -DRAWFITNESSGHOST 0.5 -LOSEFITNESSGHOST -0.5
-start /b main.py 18 -GAMESPERROUND 2 -GHOSTGAMESPERROUND 1 -SNAPSHOT_PROBABILITY 1000 -randomizationAmount 0.02-WINFITNESS 4 -DRAWFITNESS 0.5 -LOSEFITNESS -1 -WINFITNESSGHOST 4 -DRAWFITNESSGHOST 0.5 -LOSEFITNESSGHOST -2
-start /b main.py 19 -GAMESPERROUND 2 -GHOSTGAMESPERROUND 1 -SNAPSHOT_PROBABILITY 2000 -randomizationAmount 0.03 -randomizationStrengthWeights 0.02 -randomizationStrengthBiases 0.02
-start /b main.py 20 -GAMESPERROUND 2 -GHOSTGAMESPERROUND 1 -SNAPSHOT_PROBABILITY 3000 -randomizationAmount 0.02 -randomizationStrengthWeights 0.02 -randomizationStrengthBiases 0.02
-start /b main.py 21 -GAMESPERROUND 2 -GHOSTGAMESPERROUND 1 -SNAPSHOT_PROBABILITY 500 -randomizationAmount 0.02 -randomizationStrengthWeights 0.02 -randomizationStrengthBiases 0.02
-start /b main.py 22 -GAMESPERROUND 2 -GHOSTGAMESPERROUND 1 -SNAPSHOT_PROBABILITY 1000 -randomizationAmount 0.1 -randomizationStrengthWeights 0.01 -randomizationStrengthBiases 0.01
-start /b main.py 23 -GAMESPERROUND 2 -GHOSTGAMESPERROUND 1 -SNAPSHOT_PROBABILITY 1000 -randomizationAmount 0.01 -randomizationStrengthWeights 0.2 -randomizationStrengthBiases 0.2
-start /b main.py 24 -GAMESPERROUND 2 -GHOSTGAMESPERROUND 1 -SNAPSHOT_PROBABILITY 1000 -randomizationAmount 0.1 -randomizationStrengthWeights 0.1 -randomizationStrengthBiases 0.1
+
+start /b main.py a36 -GAMESPERROUND 3 -GHOSTGAMESPERROUND 1 -SNAPSHOT_PROBABILITY 6 -randomizationAmount 0.02 -ROUND_COUNT 1000 -GHOSTAGENTS_POP 100
+start /b main.py a37 -GAMESPERROUND 3 -GHOSTGAMESPERROUND 1 -SNAPSHOT_PROBABILITY 10 -randomizationAmount 0.02 -ROUND_COUNT 1000 -GHOSTAGENTS_POP 100
+start /b main.py a38 -GAMESPERROUND 3 -GHOSTGAMESPERROUND 1 -SNAPSHOT_PROBABILITY 7 -randomizationAmount 0.02 -ROUND_COUNT 1000 -GHOSTAGENTS_POP 100
+start /b main.py a39 -GAMESPERROUND 3 -GHOSTGAMESPERROUND 1 -SNAPSHOT_PROBABILITY 5 -randomizationAmount 0.02 -ROUND_COUNT 1000 -GHOSTAGENTS_POP 100
+start /b main.py a40 -GAMESPERROUND 3 -GHOSTGAMESPERROUND 1 -SNAPSHOT_PROBABILITY 2 -randomizationAmount 0.02 -ROUND_COUNT 1000 -GHOSTAGENTS_POP 100
+start /b main.py a41 -GAMESPERROUND 3 -GHOSTGAMESPERROUND 1 -SNAPSHOT_PROBABILITY 12 -randomizationAmount 0.02 -ROUND_COUNT 1000 -GHOSTAGENTS_POP 100
+
+
+# ToDo SNAPSHOT_PROBABILITY nicht random sonden alle x runden
+# ghostpop grösse als nächstes anpassen
+# Tensorboard101
+#optuna
+# statisktik gesammtwert

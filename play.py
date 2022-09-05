@@ -7,6 +7,8 @@ import time
 import pyfiglet
 import pickle
 import sys
+from minmax import minMaxAI
+from copy import deepcopy
 
 #List add
 from operator import add
@@ -95,8 +97,6 @@ def getAIMove(userToPlay, board, indexMove):
 	sortedPicks = sorted(range(len(moveProbabiltyScoreAverage)), key=lambda k: moveProbabiltyScoreAverage[k])
 	return sortedPicks[indexMove]
 
-
-
 def getAI2Move(userToPlay, board, indexMove):
 	#Append all scores to this list
 	moveProbabiltyScoreOverall = []
@@ -133,16 +133,17 @@ def getAI2Move(userToPlay, board, indexMove):
 	for i in range(len(moveProbabiltyScoreSum)-1, -1, -1):
 		moveProbabiltyScoreAverage[i] = moveProbabiltyScoreSum[i] / moveProbabiltyScoreSumCount[i]
 
-	
 	for i in range(len(moveProbabiltyScoreAverage)-1, -1, -1):
 		moveProbabiltyScoreAverage[i] = (moveProbabiltyScoreAverage[i]*10)**8 / 10
 	print(moveProbabiltyScoreAverage)
+
 	sortedPicks = sorted(range(len(moveProbabiltyScoreAverage)), key=lambda k: moveProbabiltyScoreAverage[k])
 	return sortedPicks[indexMove]
 
 
 filehandler = open("dumbed_saves/" + sys.argv[1], 'rb') 
 genetics2.agents[0] = pickle.load(filehandler)
+print(genetics2)
 
 #Main loop
 for b in range(ROUND_COUNT-1, 0, -1):	
@@ -167,13 +168,15 @@ for b in range(ROUND_COUNT-1, 0, -1):
 					if(userToPlay == 0):
 						print(game.print_board())
 						aiPickOrder = int(input(f"{game.which_turn()}'s Turn - pick a column (0-X): "))-1
+						
 					else:
-						aiPickOrder = getAI2Move(0, game.board, bannedOutputs)
+						aiPickOrder = minMaxAI(deepcopy(game))
+						#aiPickOrder = getAI2Move(0, game.board, bannedOutputs)
 					
 					valid_move = game.turn(aiPickOrder)
 					if(valid_move == False):
 						bannedOutputs += 1
-						if(aiPickOrder == -1 or bannedOutputs >=AGENT_OUTPUTS ):
+						if(aiPickOrder == -1 or bannedOutputs >= AGENT_OUTPUTS ):
 							print("Game is a draw!")
 							game_over = True
 							valid_move = True

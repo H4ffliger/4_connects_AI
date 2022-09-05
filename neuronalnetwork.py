@@ -33,7 +33,7 @@ class Activation_ReLU:
 		self.output = np.maximum(0, inputs)
 
 
-# Alle minus Zahlen werden positiv gemacht und die positiven werden erhöht.
+
 class Activation_Softmax:
 	def forward(self, inputs):
 #Axis = 1 = 2D Matrix, keepdims = dimensionen einhalten [] [] [] => []
