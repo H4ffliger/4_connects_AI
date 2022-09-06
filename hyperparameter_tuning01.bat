@@ -1,18 +1,10 @@
-
-start /b main.py 20_pop_400_agents_01
-start /b main.py 20_pop_400_agents_02
-start /b main.py 20_pop_400_agents_03
-start /b main.py 20_pop_400_agents_04
-start /b main.py 20_pop_400_agents_05
-start /b main.py 20_pop_400_agents_06
-start /b main.py 20_pop_400_agents_07
-start /b main.py 20_pop_400_agents_08
-start /b main.py 20_pop_400_agents_09
-start /b main.py 20_pop_400_agents_10
-
-
-# ToDo SNAPSHOT_PROBABILITY nicht random sonden alle x runden
-# ghostpop grösse als nächstes anpassen
-# Tensorboard101
-#optuna
-# statisktik gesammtwert
+start /b main.py 7_games_per_round_100_pop_size_01 -POP_COUNTER 100 -GAMESPERROUND 5 -GHOSTGAMESPERROUND 2
+start /b main.py 7_games_per_round_100_pop_size_02 -POP_COUNTER 100 -GAMESPERROUND 5 -GHOSTGAMESPERROUND 2
+start /b main.py 7_games_per_round_100_pop_size_03 -POP_COUNTER 100 -GAMESPERROUND 5 -GHOSTGAMESPERROUND 2
+start /b main.py 7_games_per_round_100_pop_size_04 -POP_COUNTER 100 -GAMESPERROUND 5 -GHOSTGAMESPERROUND 2
+start /b main.py 7_games_per_round_100_pop_size_05 -POP_COUNTER 100 -GAMESPERROUND 5 -GHOSTGAMESPERROUND 2
+start /b main.py 7_games_per_round_100_pop_size_06 -POP_COUNTER 100 -GAMESPERROUND 5 -GHOSTGAMESPERROUND 2
+start /b main.py 7_games_per_round_100_pop_size_07 -POP_COUNTER 100 -GAMESPERROUND 5 -GHOSTGAMESPERROUND 2
+start /b main.py 7_games_per_round_100_pop_size_08 -POP_COUNTER 100 -GAMESPERROUND 5 -GHOSTGAMESPERROUND 2
+start /b main.py 7_games_per_round_100_pop_size_09 -POP_COUNTER 100 -GAMESPERROUND 5 -GHOSTGAMESPERROUND 2
+start /b main.py 7_games_per_round_100_pop_size_10 -POP_COUNTER 100 -GAMESPERROUND 5 -GHOSTGAMESPERROUND 2

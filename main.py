@@ -63,8 +63,8 @@ print(ascii_banner)
 
 print("Version 0.03\n"+
 	"Genetic neuronal network developed by Huffliger \n" +
-	"Designed to solve compute intense problems\n" +
-	"Currently test boilerplate to check functionality\n" + 
+	"Designed to outperform the minmax algorithm\n" +
+	"Currently testing the network\n" + 
 	"Beat the game 4 connects with external minmax score progress check\n\n")
 
 
@@ -177,8 +177,6 @@ def getAIMove(userToPlay, board, indexMove):
 				viewfield.extend(rows[x][ai_width:ai_width+4])
 
 			moveProbabiltyScoreOffset = [0] * ai_width
-			#If all fields are zero then skip -> better performance
-			#if not (np.any(viewfield)):
 			viewfield.insert(0, ai_width)
 			viewfield.insert(0, ai_height)
 			moveProbabiltyScorePartly = genetics1.thinkParticular(userToPlay, viewfield).flatten()
@@ -217,8 +215,6 @@ def getAI2Move(userToPlay, board, indexMove):
 
 			moveProbabiltyScoreOffset = [0] * ai_width
 
-			#If all fields are zero then skip -> better performance
-			#if not (np.any(viewfield)):
 			viewfield.insert(0, ai_width)
 			viewfield.insert(0, ai_height)
 			moveProbabiltyScorePartly = genetics2.thinkParticular(userToPlay, viewfield).flatten()
@@ -255,8 +251,6 @@ def getGhostMove(userToPlay, board, indexMove):
 				viewfield.extend(rows[x][ai_width:ai_width+4])
 
 			moveProbabiltyScoreOffset = [0] * ai_width
-			#If all fields are zero then skip -> better performance
-			#if not (np.any(viewfield)):
 			viewfield.insert(0, ai_width)
 			viewfield.insert(0, ai_height)
 			moveProbabiltyScorePartly = genetics1.thinkParticularGhost(userToPlay, viewfield).flatten()
@@ -293,8 +287,6 @@ def getGhost2Move(userToPlay, board, indexMove):
 				viewfield.extend(rows[x][ai_width:ai_width+4])
 
 			moveProbabiltyScoreOffset = [0] * ai_width
-			#If all fields are zero then skip -> better performance
-			#if not (np.any(viewfield)):
 			viewfield.insert(0, ai_width)
 			viewfield.insert(0, ai_height)
 			moveProbabiltyScorePartly = genetics2.thinkParticularGhost(userToPlay, viewfield).flatten()
@@ -422,7 +414,6 @@ def gameRoundGhost(y: int, idx: int):
 
 def gameRoundAI(y: int, idx: int):
 
-	#ToDo:Maybe all random enemies
 	#All fight the same enemy
 	if(y == 0):
 		enemy = np.random.randint(0, POP_COUNT)
@@ -530,14 +521,12 @@ def gameRoundAI(y: int, idx: int):
 				valid_move = True
 
 
-# Change to do => don't train on this data (don't cloe the round /generations)
-#ToDo: Check why we get wrong moves many times
 def checkAIQuality(y: int, idx: int):
 	qual_check_wins = 0
 	qual_check_draws = 0
 	qual_check_losses = 0
 	#logging.debug("Starting quality check on generation " + str(y+1))
-	#Performance wise only 20% of the population gets testet
+	#Performance wise only 50% of the population gets testet
 	for x in range(int(POP_COUNT/2)-1, -1, -1):
 		game = GameField()
 		game_over = False
@@ -642,14 +631,10 @@ for b in range(ROUND_COUNT-1, -1, -1):
 
 	#PlayAgainstGhost
 	for y in range(0,2):
-		#Testing
-		#Doble amount of fitness due to double reward 
 		for x in range(0, GAMESPERROUND):
 			gameRoundAI(y,1)
 
-		#with ThreadPoolExecutor() as executor:
-		#	worker = partial(gameRoundAI, y)
-		#	executor.map(worker, range(0, GAMESPERROUND))
+
 
 		
 
@@ -659,13 +644,10 @@ for b in range(ROUND_COUNT-1, -1, -1):
 		for x in range(0, GHOSTGAMESPERROUND):
 			gameRoundGhost(y,1)
 
-		#with ThreadPoolExecutor() as executor:
-		#	worker = partial(gameRoundGhost, y)
-		#	executor.map(worker, range(0, GHOSTGAMESPERROUND))
+
 
 		#Play against external minmax algorithm
 		#Major performance issues with this _RATE == 1):
-			
 		if(roundsCompleted % QUALITY_CHECK_RATE == 1):
 			hyperParameterScore += checkAIQuality(y,1)
 			if(y == 1):
@@ -682,7 +664,6 @@ for b in range(ROUND_COUNT-1, -1, -1):
 
 
 	#Copy agents to ghost agenst (if fitness is greater than 30 then only good trained versions get new enemies)
-
 	#New approach (and fitnessOfRound2 > GHOSTGAMESPERROUND + GHOSTGAMESPERROUND/3)
 	bestAgentIndex = 0
 	bestAgentScore = 0

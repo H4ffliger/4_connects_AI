@@ -9,6 +9,7 @@ import pickle
 import sys
 from minmax import minMaxAI
 from copy import deepcopy
+import argparse
 
 #List add
 from operator import add
@@ -17,12 +18,6 @@ from operator import add
 #Introduction
 ascii_banner = pyfiglet.figlet_format("GNeuroNetWK")
 print(ascii_banner)
-
-print("Version 0.01\n"+
-	"Genetic neuronal network developed by Huffliger \n" +
-	"Designed to solve compute intense problems\n" +
-	"Currently test boilerplate to check functionality\n" + 
-	"Beat the randomness function\n\n")
 
 #Game Specific
 gameW = 5
@@ -54,6 +49,10 @@ if(ROUND_COUNT==0):
 genetics = Genetics(1, 1, AGENT_INPUTS, AGENT_OUTPUTS, 1)
 genetics2 = Genetics(1, 1, AGENT_INPUTS, AGENT_OUTPUTS, 1)
 
+if __name__ == '__main__':
+	parser = argparse.ArgumentParser(description='GNeuroNetWK play against exported neuronal network')
+	parser.add_argument('neuronal_nwk', type=str, default="output.csv",help='path to neuronal network without "dumbed_saves"')
+	args = parser.parse_args()
 
 #AIPickStuff
 bannedOutputs = 0
@@ -141,7 +140,7 @@ def getAI2Move(userToPlay, board, indexMove):
 	return sortedPicks[indexMove]
 
 
-filehandler = open("dumbed_saves/" + sys.argv[1], 'rb') 
+filehandler = open("dumbed_saves/" + args.neuronal_nwk, 'rb') 
 genetics2.agents[0] = pickle.load(filehandler)
 print(genetics2)
 
@@ -170,8 +169,8 @@ for b in range(ROUND_COUNT-1, 0, -1):
 						aiPickOrder = int(input(f"{game.which_turn()}'s Turn - pick a column (0-X): "))-1
 						
 					else:
-						aiPickOrder = minMaxAI(deepcopy(game))
-						#aiPickOrder = getAI2Move(0, game.board, bannedOutputs)
+						#aiPickOrder = minMaxAI(deepcopy(game))
+						aiPickOrder = getAI2Move(0, game.board, bannedOutputs)
 					
 					valid_move = game.turn(aiPickOrder)
 					if(valid_move == False):
