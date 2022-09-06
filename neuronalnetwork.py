@@ -30,7 +30,8 @@ class Layer_Dense:
 class Activation_ReLU:
 	def forward(self, inputs):
 		#Kleiner als 0 = 0
-		self.output = np.maximum(0, inputs)
+		self.output = np.where(inputs > 0, inputs, inputs * 0.01)
+		#self.output = np.maximum(0, inputs)
 
 
 
@@ -83,6 +84,13 @@ class NeuralNetwork:
 
 	def copy(self):
 		return deepcopy(self)
+	def debug_network(self):
+		print(self.denses[0].weights)
+		print(self.denses[1].weights)
+		print(self.denses[2].weights)
+		print(self.denses[3].weights)
+		print(self.denses[4].weights)
+
 
 		
 

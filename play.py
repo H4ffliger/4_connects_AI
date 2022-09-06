@@ -30,9 +30,9 @@ GHOSTAGENTS_POP = 1000
 #ROUND_COUNT 0 = 1'000'000
 ROUND_COUNT = 25000
 #Individual agents
-AGENT_INPUTS = gameSize
+AGENT_INPUTS = 4*4+2
 #Output needs to be at least 2
-AGENT_OUTPUTS = 5
+AGENT_OUTPUTS = 4 #ToDo:Check if not one to small
 #Games each round for each agent
 GAMESPERROUND = 1
 
@@ -126,8 +126,8 @@ def getAI2Move(userToPlay, board, indexMove):
 		moveProbabiltyScoreAverage[i] = moveProbabiltyScoreSum[i] / moveProbabiltyScoreSumCount[i]
 
 	sortedPicks = sorted(range(len(moveProbabiltyScoreAverage)), key=lambda k: moveProbabiltyScoreAverage[k])
-	for i in range(len(moveProbabiltyScoreAverage)-1, -1, -1):
-		moveProbabiltyScoreAverage[i] = (moveProbabiltyScoreAverage[i]*10)**8 / 10
+	#for i in range(len(moveProbabiltyScoreAverage)-1, -1, -1):
+	#	moveProbabiltyScoreAverage[i] = (moveProbabiltyScoreAverage[i]*10)**8 / 10
 	print(moveProbabiltyScoreAverage)
 	return sortedPicks[indexMove]
 
@@ -137,8 +137,8 @@ def getAI2Move(userToPlay, board, indexMove):
 
 
 filehandler = open("dumbed_saves/" + args.neuronal_nwk, 'rb') 
-genetics2.agents[0] = pickle.load(filehandler)
-print(genetics2)
+genetics2.agents[0] = deepcopy(pickle.load(filehandler))
+genetics2.agents[0].debug_network()
 
 #Main loop
 for b in range(ROUND_COUNT-1, 0, -1):	
@@ -149,7 +149,7 @@ for b in range(ROUND_COUNT-1, 0, -1):
 		#Shuffle
 			game = GameField()
 			game_over = False
-			userToPlay = 1
+			userToPlay = 0
 			#firstMoveNoise = np.random.randint(0,gameW-1)
 			#firstMovePlayed = False
 			while not game_over:
