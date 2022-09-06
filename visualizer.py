@@ -15,7 +15,7 @@ FOLER_IMG = 'dumbed_saves/visualizer/images/'
 os.makedirs(FOLER_IMG, exist_ok=True)
 
 file_css = open(FOLER_HTML +"mystyles.css", 'w')
-file_css.write('body {background-color: #515151;font-family: "Lucida Console", "Courier New", monospace;}h2{text-align: center;}div{background-color: #404040;margin: 5px;}img{	width: 30%;	padding-right: 1%;	padding-left: 1%;}')
+file_css.write('body {background-color: #515151;font-family: "Lucida Console", "Courier New", monospace;}h2{text-align: center;}div{background-color: #404040;margin: 0px;}img{	width: 23%;	padding-right: 0.5%;	padding-left: 0.5%;}')
 file_css.close()
 
 #csvFileList = []
@@ -38,18 +38,28 @@ def vizualizer():
 		csvs_sting = str(csvs)
 		csvs_name = csvs_sting.split("\\")
 		logging.debug("Analyzing: " + csvs_sting)
-		if(csvs_sting.__contains__("GEN_1_min_max_progress.csv")):
+		if(csvs_sting.__contains__("_relative.csv")):
 			if(initialized == False):
 				file_object.write('<div class="w3-container">')
 				file_object.write('<h3>' + csvs_name[1] +'</h3>')
+				file_object.write('<img src="images/' + csvs_name[1] + '00.png" alt="Statistics">')
+				file_object.write('<img src="images/' + csvs_name[1] + '01.png" alt="Statistics">')
+				file_object.write('<img src="images/' + csvs_name[1] + '02.png" alt="Statistics">')
+				file_object.write('<img src="images/' + csvs_name[1] + '03.png" alt="Statistics">')
+				file_object.write('</div>\n')
+			df = pd.read_csv(csvs_sting)
+			df_long=pd.melt(df, id_vars='Round_Number', value_vars=['Fitness_Genetics1', 'Fitness_Genetics2'])
+			fig = px.scatter(df_long, x="Round_Number", y="value",color='variable', trendline="rolling", trendline_options=dict(window=5), title="Relative fitness")
+			fig.data = [t for t in fig.data if t.mode == "lines"]
+			fig.update_traces(showlegend=True) #trendlines have showlegend=False by default
+			fig.write_image(FOLER_IMG + csvs_name[1] + "00.png",engine='orca')
+		if(csvs_sting.__contains__("GEN_1_min_max_progress.csv")):
 			df = pd.read_csv(csvs_sting)
 			df_long=pd.melt(df, id_vars='Round_Number', value_vars=['wins', 'draws', 'losses'])
 			fig = px.scatter(df_long, x="Round_Number", y="value",color='variable', trendline="rolling", trendline_options=dict(window=5), title="Player 1")
 			fig.data = [t for t in fig.data if t.mode == "lines"]
 			fig.update_traces(showlegend=True) #trendlines have showlegend=False by default
 			fig.write_image(FOLER_IMG + csvs_name[1] + "01.png",engine='orca')
-			if(initialized == False):
-				file_object.write('<img src="images/' + csvs_name[1] + '01.png" alt="Statistics">')
 		if(csvs_sting.__contains__("GEN_2_min_max_progress.csv")):
 			df = pd.read_csv(csvs_sting)
 			df_long=pd.melt(df, id_vars='Round_Number', value_vars=['wins', 'draws', 'losses'])
@@ -57,8 +67,6 @@ def vizualizer():
 			fig.data = [t for t in fig.data if t.mode == "lines"]
 			fig.update_traces(showlegend=True) #trendlines have showlegend=False by default
 			fig.write_image(FOLER_IMG + csvs_name[1] + "02.png",engine='orca')
-			if(initialized == False):
-				file_object.write('<img src="images/' + csvs_name[1] + '02.png" alt="Statistics">')
 		if(csvs_sting.__contains__("visualizer.csv")):
 			df = pd.read_csv(csvs_sting)
 			df_long=pd.melt(df, id_vars='Round_Number', value_vars=['Absolute_Fitness'])
@@ -67,10 +75,7 @@ def vizualizer():
 			fig.data = [t for t in fig.data if t.mode == "lines"]
 			fig.update_traces(showlegend=True) #trendlines have showlegend=False by default
 			fig.write_image(FOLER_IMG + csvs_name[1] + "03.png",engine='orca')
-			if(initialized == False):
-				file_object.write('<img src="images/' + csvs_name[1] + '03.png" alt="Statistics">')
-				file_object.write('</div>\n')
-	
+
 	if(initialized == False):
 		file_object.close()
 		initialized = True

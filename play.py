@@ -54,9 +54,6 @@ if __name__ == '__main__':
 	parser.add_argument('neuronal_nwk', type=str, default="output.csv",help='path to neuronal network without "dumbed_saves"')
 	args = parser.parse_args()
 
-#AIPickStuff
-bannedOutputs = 0
-
 def getAIMove(userToPlay, board, indexMove):
 	#Append all scores to this list
 	moveProbabiltyScoreOverall = []
@@ -70,8 +67,6 @@ def getAIMove(userToPlay, board, indexMove):
 				viewfield.extend(rows[x][ai_width:ai_width+4])
 
 			moveProbabiltyScoreOffset = [0] * ai_width
-			#If all fields are zero then skip -> better performance
-			#if not (np.any(viewfield)):
 			viewfield.insert(0, ai_width)
 			viewfield.insert(0, ai_height)
 			moveProbabiltyScorePartly = genetics1.thinkParticular(userToPlay, viewfield).flatten()
@@ -110,8 +105,6 @@ def getAI2Move(userToPlay, board, indexMove):
 
 			moveProbabiltyScoreOffset = [0] * ai_width
 
-			#If all fields are zero then skip -> better performance
-			#if not (np.any(viewfield)):
 			viewfield.insert(0, ai_width)
 			viewfield.insert(0, ai_height)
 			moveProbabiltyScorePartly = genetics2.thinkParticular(userToPlay, viewfield).flatten()
@@ -132,12 +125,15 @@ def getAI2Move(userToPlay, board, indexMove):
 	for i in range(len(moveProbabiltyScoreSum)-1, -1, -1):
 		moveProbabiltyScoreAverage[i] = moveProbabiltyScoreSum[i] / moveProbabiltyScoreSumCount[i]
 
+	sortedPicks = sorted(range(len(moveProbabiltyScoreAverage)), key=lambda k: moveProbabiltyScoreAverage[k])
 	for i in range(len(moveProbabiltyScoreAverage)-1, -1, -1):
 		moveProbabiltyScoreAverage[i] = (moveProbabiltyScoreAverage[i]*10)**8 / 10
 	print(moveProbabiltyScoreAverage)
-
-	sortedPicks = sorted(range(len(moveProbabiltyScoreAverage)), key=lambda k: moveProbabiltyScoreAverage[k])
 	return sortedPicks[indexMove]
+
+
+
+
 
 
 filehandler = open("dumbed_saves/" + args.neuronal_nwk, 'rb') 
@@ -153,14 +149,13 @@ for b in range(ROUND_COUNT-1, 0, -1):
 		#Shuffle
 			game = GameField()
 			game_over = False
-			userToPlay = 0
+			userToPlay = 1
 			#firstMoveNoise = np.random.randint(0,gameW-1)
 			#firstMovePlayed = False
 			while not game_over:
 				debugMoves = 0
 				valid_move = False
-				bannedOutputs = 0					
-				while not valid_move:
+				for moveCount in range(0, gameW):
 					#if(firstMovePlayed == False):
 					#	firstMovePlayed = True;
 					#	aiPickOrder = firstMoveNoise
@@ -170,15 +165,16 @@ for b in range(ROUND_COUNT-1, 0, -1):
 						
 					else:
 						#aiPickOrder = minMaxAI(deepcopy(game))
-						aiPickOrder = getAI2Move(0, game.board, bannedOutputs)
+						aiPickOrder = getAI2Move(0, game.board, moveCount)
 					
 					valid_move = game.turn(aiPickOrder)
 					if(valid_move == False):
-						bannedOutputs += 1
-						if(aiPickOrder == -1 or bannedOutputs >= AGENT_OUTPUTS ):
+						if(aiPickOrder == -1 or moveCount >= AGENT_OUTPUTS ):
 							print("Game is a draw!")
 							game_over = True
 							valid_move = True
+					else:
+						break
 				
 				if(userToPlay == 0):
 					userToPlay = 1

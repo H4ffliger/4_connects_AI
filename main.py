@@ -121,7 +121,7 @@ if __name__ == '__main__':
 	parser.add_argument('-GHOSTGAMESPERROUND', type=int, default=7,help="Games per generation vs old saved AI")
 	parser.add_argument('-POP_COUNTER', type=int, default=400,help="Population size of the current AIs")
 	parser.add_argument('-GHOSTAGENTS_POP', type=int, default=200,help="Population size of saved old AIs")
-	parser.add_argument('-SNAPSHOT_PROBABILITY', type=int, default=10,help="Probability of saving a current AI to the old saved AIs")
+	parser.add_argument('-SNAPSHOT_PROBABILITY', type=int, default=20,help="Probability of saving a current AI to the old saved AIs")
 	parser.add_argument('-exportRate', type=int, default=50,help="Rate at which generations genetics get exported")
 	parser.add_argument('-ROUND_COUNT', type=int, default=2000,help="Amount of rounds to be played")
 	#FITNESS_REWARD = 1 #Temporary disabled
@@ -461,10 +461,8 @@ def gameRoundAI(y: int, idx: int):
 					if(chosen_move == -1 or bannedOutputs >= gameW):
 						if(y == 0):
 							genetics2.calculateFitnessParticular(x, DRAWFITNESS)
-							#genetics1.calculateFitnessParticular(enemy, DRAWFITNESS)
 						else:
 							genetics1.calculateFitnessParticular(x, DRAWFITNESS)
-							#genetics2.calculateFitnessParticular(enemy, DRAWFITNESS)
 						game_over = True
 						valid_move = True
 
@@ -487,18 +485,14 @@ def gameRoundAI(y: int, idx: int):
 				if(y == 0):
 					if(userToPlay == 0):
 						genetics2.calculateFitnessParticular(x, LOSEFITNESS)#Must be 3
-						#genetics1.calculateFitnessParticular(enemy, WINFITNESS)
 					else:
 						genetics2.calculateFitnessParticular(x, WINFITNESS)#Must be 3
-						#genetics1.calculateFitnessParticular(enemy, LOSEFITNESS)
 				#1 genetics1 training
 				else:
 					if(userToPlay == 0):
 						genetics1.calculateFitnessParticular(x, WINFITNESS)#Must be 3
-						#genetics2.calculateFitnessParticular(enemy, LOSEFITNESS)
 					else:
 						genetics1.calculateFitnessParticular(x, LOSEFITNESS)#Must be 3
-						#genetics2.calculateFitnessParticular(enemy, WINFITNESS)
 				game_over = True
 				valid_move = True
 
@@ -513,10 +507,8 @@ def gameRoundAI(y: int, idx: int):
 				if(game_over == False):
 					if(y == 0):
 						genetics2.calculateFitnessParticular(x, DRAWFITNESS)
-						#genetics1.calculateFitnessParticular(enemy, DRAWFITNESS)
 					else:
 						genetics1.calculateFitnessParticular(x, DRAWFITNESS)
-						#genetics2.calculateFitnessParticular(enemy, DRAWFITNESS)
 				game_over = True
 				valid_move = True
 
@@ -622,7 +614,7 @@ def checkAIQuality(y: int, idx: int):
 	file_object.write(str(roundsCompleted)+"," +str(qual_check_wins)+","+str(qual_check_draws)+","+str(qual_check_losses)+"\n")
 	file_object.close()
 	print("Generation" + str(2-y) + ": wins: " + str(qual_check_wins) + " draws: " + str(qual_check_draws) + " losses: " + str(qual_check_losses))	
-	return qual_check_wins + (qual_check_draws/6)  - qual_check_losses
+	return qual_check_wins + (qual_check_draws/6)
 
 
 #Main loop
@@ -693,7 +685,7 @@ for b in range(ROUND_COUNT-1, -1, -1):
 	genetics2.roundClose(randomizationAmount, randomizationStrengthWeights, randomizationStrengthBiases)
 
 	if(roundsCompleted == 0):
-		file_object = open(FOLER_STATS + args.learning_Name + ".csv", 'a')
+		file_object = open(FOLER_STATS + args.learning_Name + "_relative.csv", 'a')
 		file_object.write("Round_Number,Fitness_Genetics1,Fitness_Genetics2,Amount_GhostAgents1,Amount_GhostAgents2\n")
 		file_object.close()
 		file_object = open(FOLER_STATS + args.learning_Name + "_visualizer.csv", 'a')
@@ -706,7 +698,7 @@ for b in range(ROUND_COUNT-1, -1, -1):
 		file_object.write("Round_Number,wins,draws,losses\n")
 		file_object.close()
 
-	file_object = open(FOLER_STATS + args.learning_Name + ".csv", 'a')
+	file_object = open(FOLER_STATS + args.learning_Name + "_relative.csv", 'a')
 	file_object.write(str(roundsCompleted)+","+str(fitnessOfRound1)+ "," + str(fitnessOfRound2)+ "," +str(len(genetics1.ghostAgents))+";"+str(len(genetics2.ghostAgents))+"\n")
 	file_object.close()
 	roundsCompleted += 1
@@ -728,7 +720,7 @@ for b in range(ROUND_COUNT-1, -1, -1):
 		import plotly.express as px
 
 		#Relative view
-		df = pd.read_csv(FOLER_STATS + args.learning_Name + ".csv")
+		df = pd.read_csv(FOLER_STATS + args.learning_Name + "_relative.csv")
 		df_long=pd.melt(df, id_vars='Round_Number', value_vars=['Fitness_Genetics1', 'Fitness_Genetics2'])
 		#fig = px.line(df_long, x = 'Round_Number', y = 'value',color='variable', title='TITLE')
 		fig = px.scatter(df_long, x="Round_Number", y="value",color='variable', trendline="lowess", trendline_options=dict(frac=0.015))
@@ -768,7 +760,7 @@ for b in range(ROUND_COUNT-1, -1, -1):
 		gen_02_draw_sum = df.tail(tailLenght)['draws'].sum()/tailLenght
 		gen_02_loss_sum = df.tail(tailLenght)['losses'].sum()/tailLenght
 
-		hyperparameter_fitness = gen_01_win_sum + gen_02_win_sum + gen_01_draw_sum/6 + gen_02_draw_sum/6 - gen_01_loss_sum - gen_02_loss_sum
+		hyperparameter_fitness = gen_01_win_sum + gen_02_win_sum + gen_01_draw_sum/6 + gen_02_draw_sum/6
 
 		#Reinforcement hyperparameter Correlation analyzer
 		if not (os.path.exists("dumbed_saves/reinforcement_hyperparameter_correlation.csv")):
