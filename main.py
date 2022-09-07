@@ -564,7 +564,7 @@ def checkAIQuality(y: int, idx: int):
 						game_over = True
 						valid_move = True
 						return
-				if(x > POP_COUNT-2 and b % SHOWEVERY == 1 and b < ROUND_COUNT - SHOWAFTER):
+				if(x < 2 and y == 0):
 					time.sleep(0.3)
 					print(game.print_board())
 			
@@ -584,8 +584,12 @@ def checkAIQuality(y: int, idx: int):
 				if(y == 0):
 					if(userToPlay == 0):
 						qual_check_losses += 1
+						print("AI loses to minmax")
 					else:
 						qual_check_wins += 1
+						print("AI wins to minmax")
+					time.sleep(2)
+
 				#1 winns the game
 				else:
 					if(userToPlay == 0):

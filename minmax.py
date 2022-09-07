@@ -49,7 +49,7 @@ def getMinMaxMove(choice, game):
 	#print("Called multible times")
 	for i1 in range(gameFieldSize):
 		#MetoPlay
-		gamesToPlay.append(deepcopy(game))
+		gamesToPlay.append(game)
 		try:
 			gamesToPlay[i1].turn(i1)
 			if(gamesToPlay[i1].check_winner()):
@@ -67,80 +67,17 @@ def getMinMaxMove(choice, game):
 				#print(str(gamesToPlay1[len(gamesToPlay1)-1].check_winner()))
 				if(gamesToPlay1[len(gamesToPlay1)-1].check_winner() == 1):
 					#print("Losing in 1 on line " + str(i2+1) + " if i set " + str(i1+1))
-
 					moveProbOption = i1
-					moveProbabiltyScore[moveProbOption] += LOSINGSCOREADDITION	
-					#Old version
-					#moveProbOption = np.mod(len(gamesToPlay1)-1, gameFieldSize)
-					#if(moveProbabiltyScore[moveProbOption] >= LOSINGSCOREADDITION):
-					#	moveProbabiltyScore[moveProbOption] += LOSINGSCOREADDITION			
-						
+					moveProbabiltyScore[moveProbOption] += LOSINGSCOREADDITION			
 			except:
 				print("Invalid move prediction2")
-				'''
-		   #Me to play 2
-			for i3 in range(gameFieldSize):
-				gamesToPlay2.append(deepcopy(gamesToPlay1[len(gamesToPlay1)-1]))
-				depth2Score.append(0)
-				try:
-					gamesToPlay2[len(gamesToPlay2)-1].turn(i3)
-					if(gamesToPlay2[len(gamesToPlay2)-1].check_winner() == 0):
-						#print("Winning in 2 on line " + str(i3+1))
-						moveProbOption = np.mod(len(gamesToPlay1)-1, gameFieldSize)
-						if(moveProbabiltyScore[moveProbOption] >= WINNINGSCOREADDITION):
-							moveProbabiltyScore[moveProbOption] += WINNINGSCOREADDITION		
-				except:
-					print("Invalid move prediction3")
-				
-				#Enemy to play 2
-				for i4 in range(gameFieldSize):
-					gamesToPlay3.append(deepcopy(gamesToPlay2[len(gamesToPlay2)-1]))
-					depth3Score.append(0)					
-					gamesToPlay3[len(gamesToPlay3)-1].turn(i4)
-
-					if(gamesToPlay3[len(gamesToPlay3)-1].check_winner() == 1):
-						#print("Losing in 2 on line " + str(i4+1) + " if enemy sets " + str(i2+1) + ", (me) " + str(i3+1) + " enemy " + str(i4+1))
-						moveProbOption = i1
-						moveProbabiltyScore[moveProbOption] += LOSINGSCOREADDITION	
-						#Old version
-						#moveProbOption = np.mod(len(gamesToPlay1)-1, gameFieldSize)
-						#if(moveProbabiltyScore[moveProbOption] >= LOSINGSCOREADDITION2):
-						#	moveProbabiltyScore[moveProbOption] += LOSINGSCOREADDITION2				
-					
-					#Me to play 3
-					for i5 in range(gameFieldSize):
-						gamesToPlay4.append(deepcopy(gamesToPlay3[len(gamesToPlay3)-1]))
-						depth4Score.append(0)
-						try:
-							gamesToPlay4[len(gamesToPlay4)-1].turn(i5)
-							if(gamesToPlay4[len(gamesToPlay4)-1].check_winner() == 0):
-								#print("Winning in 3 on line " + str(i5+1))
-								moveProbOption = np.mod(len(gamesToPlay1)-1, gameFieldSize)
-								if(moveProbabiltyScore[moveProbOption] >= WINNINGSCOREADDITION2):
-									moveProbabiltyScore[moveProbOption] += WINNINGSCOREADDITION2	
-						except:
-							print("Invalid move prediction5")
-
-						#Enemy to play 3
-						for i6 in range(gameFieldSize):
-							gamesToPlay5.append(deepcopy(gamesToPlay4[len(gamesToPlay4)-1]))
-							depth5Score.append(0)					
-							gamesToPlay5[len(gamesToPlay5)-1].turn(i6)
-
-							if(gamesToPlay5[len(gamesToPlay5)-1].check_winner()):
-								#print("Losing in 3 on line " + str(i4+1) + " if enemy sets " + str(i2+1) + ", (me) " + str(i3+1) + " enemy " + str(i4+1))
-								moveProbOption = i1
-								moveProbabiltyScore[moveProbOption] += LOSINGSCOREADDITION #Not sure if LOSINGADITION3 is better
-								'''		
 	#print("Unsorted list")
-	#print(moveProbabiltyScore)
+	print(moveProbabiltyScore)
 	s = np.array(moveProbabiltyScore)
 	sort_index = np.argsort(s)
 	#print(sort_index)
 	#print(sort_index[choice])
 	return sort_index[choice]
-
-
 
 def minMaxAI(localGame):
 	loopCheck = -1
@@ -148,17 +85,22 @@ def minMaxAI(localGame):
 	#minMaxAI gets called multiple times trough while loop???
 	#print("SingleCall")
 	for x in range(0, gameFieldSize):
-		minMaxMove = -2
 		#print("while false loopCheck =  " + str(loopCheck) + " for loop = " + str(x))
-		moveMinMax = getMinMaxMove(x, localGame)
+		moveMinMax = getMinMaxMove(x, deepcopy(localGame))
+		#print("MoveMinMax: " + str(moveMinMax))
 		valid_move = localGame.turn(moveMinMax)
+		print
 		#print(valid_move)
 		#print(valid_move)
+		#print(x)
+		#print("minMaxAI move: " + str(moveMinMax) + " | " + str(valid_move))
 		if(valid_move):
+			#print("minMaxAI move: " + str(moveMinMax))
 			return moveMinMax
 		#print(str(x) + " " + str(loopCheck))
 	#print("Gameboard full game is a draw: " + str(loopCheck))
 	#localGame.print_board()
+	print("ERROR ------ no picked move return")
 	return False # Nach tests zu return -1 anpassen
 	#print("return " + str(loopCheck))
 	user = 0

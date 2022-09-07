@@ -58,7 +58,6 @@ class GameField():
 
                 self.turns += 1
                 return True
-
         return False
 
     def check_winner(self):
@@ -97,34 +96,3 @@ class GameField():
 
         # Did not find any winners
         return False
-
-def GameBoardF():
-    # Initialize the game board
-    game = GameField()
-
-    game_over = False
-    while not game_over:
-        game.print_board()
-
-        # Ask the user for input, but only accept valid turns
-        valid_move = False
-        while not valid_move:
-            user_move = input(f"{game.which_turn()}'s Turn - pick a column (1-{BOARD_COLS}): ")
-            try:
-                valid_move = game.turn(int(user_move)-1)
-            except:
-                print(f"Please choose a number between 1 and {BOARD_COLS}")
-
-        # End the game if there is a winner
-        game_over = game.check_winner()
-        print(game_over)
-        print(game.board)
-
-        # End the game if there is a tie
-        if not any(0 in x for x in game.board):
-            print("The game is a draw..")
-            return
-
-
-if __name__ == '__main__':
-    GameBoardF()

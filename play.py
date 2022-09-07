@@ -126,8 +126,8 @@ def getAI2Move(userToPlay, board, indexMove):
 		moveProbabiltyScoreAverage[i] = moveProbabiltyScoreSum[i] / moveProbabiltyScoreSumCount[i]
 
 	sortedPicks = sorted(range(len(moveProbabiltyScoreAverage)), key=lambda k: moveProbabiltyScoreAverage[k])
-	#for i in range(len(moveProbabiltyScoreAverage)-1, -1, -1):
-	#	moveProbabiltyScoreAverage[i] = (moveProbabiltyScoreAverage[i]*10)**8 / 10
+	for i in range(len(moveProbabiltyScoreAverage)-1, -1, -1):
+		moveProbabiltyScoreAverage[i] = (moveProbabiltyScoreAverage[i]*10)**8 / 10
 	print(moveProbabiltyScoreAverage)
 	return sortedPicks[indexMove]
 
@@ -149,30 +149,34 @@ for b in range(ROUND_COUNT-1, 0, -1):
 		#Shuffle
 			game = GameField()
 			game_over = False
-			userToPlay = 0
-			#firstMoveNoise = np.random.randint(0,gameW-1)
-			#firstMovePlayed = False
-			while not game_over:
+			userToPlay = 1
+			firstMoveNoise = np.random.randint(0,gameW-1)
+			firstMovePlayed = False
+			for gamesToPlay in range(0, 100):
 				debugMoves = 0
 				valid_move = False
 				for moveCount in range(0, gameW):
-					#if(firstMovePlayed == False):
-					#	firstMovePlayed = True;
-					#	aiPickOrder = firstMoveNoise
-					if(userToPlay == 0):
+					if(firstMovePlayed == False):
+						firstMovePlayed = True;
+						aiPickOrder = firstMoveNoise
+						print(aiPickOrder)
+
+					elif(userToPlay == 0):
 						print(game.print_board())
 						aiPickOrder = int(input(f"{game.which_turn()}'s Turn - pick a column (0-X): "))-1
 						
 					else:
-						#aiPickOrder = minMaxAI(deepcopy(game))
-						aiPickOrder = getAI2Move(0, game.board, moveCount)
+						aiPickOrder = minMaxAI(deepcopy(game))
+						#aiPickOrder = getAI2Move(0, game.board, moveCount)
 					
+					print("validMove: " + str(aiPickOrder))
 					valid_move = game.turn(aiPickOrder)
 					if(valid_move == False):
-						if(aiPickOrder == -1 or moveCount >= AGENT_OUTPUTS ):
+						if(aiPickOrder == -1 or moveCount >= gameW ):
 							print("Game is a draw!")
 							game_over = True
 							valid_move = True
+							break
 					else:
 						break
 				
@@ -188,16 +192,19 @@ for b in range(ROUND_COUNT-1, 0, -1):
 					if(userToPlay == 0):
 						game.print_board()
 						print("AI wins the game!")
+						break
 					#O winns the game
 					else:
 						game.print_board()
 						print("Human wins the game!")
+						break
 					game_over = True
 					valid_move = True
 
 				# End the game if there is a tie
 				if not any(0 in x for x in game.board):
 					print("Game is a draw!")
+					break
 
 	roundsCompleted += 1
 
