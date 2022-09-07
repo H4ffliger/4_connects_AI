@@ -166,11 +166,14 @@ for b in range(ROUND_COUNT-1, 0, -1):
 						aiPickOrder = int(input(f"{game.which_turn()}'s Turn - pick a column (0-X): "))-1
 						
 					else:
-						aiPickOrder = minMaxAI(deepcopy(game))
-						#aiPickOrder = getAI2Move(0, game.board, moveCount)
+						#aiPickOrder = minMaxAI(deepcopy(game))
+						aiPickOrder = getAI2Move(0, game.board, moveCount)
 					
 					print("validMove: " + str(aiPickOrder))
 					valid_move = game.turn(aiPickOrder)
+					#if(userToPlay == 0):
+					#	with open("gameBoard_MinMax_check_"+ str(np.random.randint(0,1000))+".txt", 'wb') as fh:
+					#		pickle.dump(game, fh)
 					if(valid_move == False):
 						if(aiPickOrder == -1 or moveCount >= gameW ):
 							print("Game is a draw!")

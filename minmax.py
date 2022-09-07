@@ -1,4 +1,4 @@
-from gamefield_min_max import GameField
+from gamefield import GameField
 import numpy as np
 from copy import deepcopy
 import time
@@ -72,7 +72,7 @@ def getMinMaxMove(choice, game):
 			except:
 				print("Invalid move prediction2")
 	#print("Unsorted list")
-	print(moveProbabiltyScore)
+	#print(moveProbabiltyScore)
 	s = np.array(moveProbabiltyScore)
 	sort_index = np.argsort(s)
 	#print(sort_index)
