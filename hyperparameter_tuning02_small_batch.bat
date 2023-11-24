@@ -1,0 +1,10 @@
+start /b main.py 7_games_per_round_100_pop_size_01 -LOSEFITNESS 0 -LOSEFITNESSGHOST 0
+start /b main.py 7_games_per_round_100_pop_size_02 -LOSEFITNESS -0.2 -LOSEFITNESSGHOST -0.1
+start /b main.py 7_games_per_round_100_pop_size_03 -LOSEFITNESS -0.2 -LOSEFITNESSGHOST -0.2
+start /b main.py 7_games_per_round_100_pop_size_04 -LOSEFITNESS -0.2 -LOSEFITNESSGHOST -0.4
+start /b main.py 7_games_per_round_100_pop_size_05 -LOSEFITNESS -0.8 -LOSEFITNESSGHOST -0.8
+start /b main.py 7_games_per_round_100_pop_size_06 -LOSEFITNESS -2 -LOSEFITNESSGHOST -1
+start /b main.py 7_games_per_round_100_pop_size_07 -LOSEFITNESS -0.1 -LOSEFITNESSGHOST -0.1
+start /b main.py 7_games_per_round_100_pop_size_08 -LOSEFITNESS -0.2 -LOSEFITNESSGHOST -0.1
+start /b main.py 7_games_per_round_100_pop_size_09 -LOSEFITNESS -0.3 -LOSEFITNESSGHOST -0.2
+start /b main.py 7_games_per_round_100_pop_size_10 -LOSEFITNESS -0.4 -LOSEFITNESSGHOST -0.2

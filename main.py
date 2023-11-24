@@ -8,7 +8,7 @@ import sys
 from concurrent.futures import ThreadPoolExecutor
 #For passing arguments
 from functools import partial
-from minmax import minMaxAI
+from montecarlo import monteCarloAI
 import pyfiglet
 #Analyzer
 import tracemalloc
@@ -65,7 +65,7 @@ print("Version 0.03\n"+
 	"Genetic neuronal network developed by Huffliger \n" +
 	"Designed to outperform the minmax algorithm\n" +
 	"Currently testing the network\n" + 
-	"Beat the game 4 connects with external minmax score progress check\n\n")
+	"Beat the game 4 connects with external monte carlo score progress check\n\n")
 
 
 #Game Specific
@@ -103,24 +103,70 @@ roundsCompleted = 0
 fitnessOfRound = 0
 
 
+logging.info("################# Unit Testing #################")
+testResult = "0"
+testGame = GameField()
+testGameOver = False
+testChosenMove=2
+testInputToPlay = True
+while(testResult == "0"):
+	validTestMoveMove = False
+	#Play in center on x_cord 5, stack to five then move left
+	#If testInput wins or draws unit test has failed
+	if(testInputToPlay):
+		testChosenMove = gameW-1
+		while (validTestMoveMove == False and testChosenMove != -2):
+			validTestMoveMove = testGame.turn(testChosenMove)
+			testChosenMove -=1
+
+		#testGame.turn(validTestMoveMove)
+		testInputToPlay = False
+	else:
+		testChosenMove = monteCarloAI(deepcopy(testGame))
+		#Check if move is valid
+		validTestMoveMove = testGame.turn(testChosenMove)
+		testInputToPlay = True
+		#if(validTestMoveMove):
+
+
+	#Game is a draw
+	if(validTestMoveMove == False):
+		testResult = "Draw"
+
+	#Check for a winner
+	if(testGame.check_winner()):
+		if(testInputToPlay):
+			testResult = "MonteCarloWon"
+		else:
+			testResult = "PredefinedMovesWon"
+
+
+#Debug
+if(testResult == "MonteCarloWon"):
+	logging.info("UnitTest SUCCESS: MonteCarlAI algorithm works")
+else:
+	logging.error("UnitTest ERROR: Monte Carlo Algorithm problem, Game status: " + testResult)
+	logging.error(testGame.print_board())
+logging.info("################# Unit Testing #################")
+
 #For automating hyperparameters
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='GNeuroNetWK for learning the 4 connects game')
 	#Hyphen makes argument optional
 	parser.add_argument('learning_Name', type=str, default="TESTRUN",help="Name of the GNeuroNetWK learning run")
-	parser.add_argument('-randomizationAmount', type=float, default=0.02,help="Amount of mutation which should happen with the genes")
-	parser.add_argument('-randomizationStrengthWeights', type=float, default=0.03,help="Value of how strong the Weights should be mutated")
-	parser.add_argument('-randomizationStrengthBiases', type=float, default=0.03,help="Value of how strong the Biases should be mutated")
+	parser.add_argument('-randomizationAmount', type=float, default=0.01,help="Amount of mutation which should happen with the genes")
+	parser.add_argument('-randomizationStrengthWeights', type=float, default=0.02,help="Value of how strong the Weights should be mutated")
+	parser.add_argument('-randomizationStrengthBiases', type=float, default=0.02,help="Value of how strong the Biases should be mutated")
 	parser.add_argument('-WINFITNESS', type=float, default=4,help="Reward of win vs current AI")
 	parser.add_argument('-DRAWFITNESS', type=float, default=0.6,help="Reward of draw vs current AI")
 	parser.add_argument('-LOSEFITNESS', type=float, default=-0.5,help="Reward of lose vs current AI")
 	parser.add_argument('-WINFITNESSGHOST', type=float, default=4,help="Reward of win vs old saved AI")
 	parser.add_argument('-DRAWFITNESSGHOST', type=float, default=0.2,help="Reward of draw vs old saved AI")
 	parser.add_argument('-LOSEFITNESSGHOST', type=float, default=-0.5,help="Reward of lose vs old saved AI")
-	parser.add_argument('-GAMESPERROUND', type=int, default=20,help="Games per generation vs a current AI")
-	parser.add_argument('-GHOSTGAMESPERROUND', type=int, default=7,help="Games per generation vs old saved AI")
-	parser.add_argument('-POP_COUNTER', type=int, default=400,help="Population size of the current AIs")
-	parser.add_argument('-GHOSTAGENTS_POP', type=int, default=200,help="Population size of saved old AIs")
+	parser.add_argument('-GAMESPERROUND', type=int, default=5,help="Games per generation vs a current AI")
+	parser.add_argument('-GHOSTGAMESPERROUND', type=int, default=2,help="Games per generation vs old saved AI")
+	parser.add_argument('-POP_COUNTER', type=int, default=100,help="Population size of the current AIs")
+	parser.add_argument('-GHOSTAGENTS_POP', type=int, default=100,help="Population size of saved old AIs")
 	parser.add_argument('-SNAPSHOT_PROBABILITY', type=int, default=20,help="Probability of saving a current AI to the old saved AIs")
 	parser.add_argument('-exportRate', type=int, default=50,help="Rate at which generations genetics get exported")
 	parser.add_argument('-ROUND_COUNT', type=int, default=2000,help="Amount of rounds to be played")
@@ -540,7 +586,7 @@ def checkAIQuality(y: int, idx: int):
 				elif(y == 0):
 					#userToPay 0 = Ghost gets first move
 					if(userToPlay == 0):
-						chosen_move = minMaxAI(deepcopy(game))
+						chosen_move = monteCarloAI(deepcopy(game))
 						#chosen_move = getGhostMove(enemy, game.board, bannedOutputs)
 					else:
 						chosen_move = getAI2Move(x, game.board, bannedOutputs)
@@ -549,7 +595,7 @@ def checkAIQuality(y: int, idx: int):
 						chosen_move = getAIMove(x, game.board, bannedOutputs)
 					else:
 						#chosen_move = getGhost2Move(enemy, game.board, bannedOutputs)
-						chosen_move = minMaxAI(deepcopy(game))
+						chosen_move = monteCarloAI(deepcopy(game))
 
 				valid_move = game.turn(chosen_move)
 					
@@ -577,17 +623,17 @@ def checkAIQuality(y: int, idx: int):
 				#Ghosts
 				# y == 0 then gen2
 				# y == 1 then gen1
-				#y == 0 and usertoplay == 1 AI win minmax loss
+				#y == 0 and usertoplay == 1 AI win montecarlo loss
 				#y == 0 and usertoplay == 0 AI lose
 				#y == 1 and usertoplay == 1 AI lose
 				#y == 1 and usertoplay == 0 AI win
 				if(y == 0):
 					if(userToPlay == 0):
 						qual_check_losses += 1
-						#print("AI loses to minmax")
+						#print("AI loses to montecarlo")
 					else:
 						qual_check_wins += 1
-						#print("AI wins to minmax")
+						#print("AI wins to montecarlo")
 					#time.sleep(2)
 
 				#1 winns the game
@@ -642,7 +688,7 @@ for b in range(ROUND_COUNT-1, -1, -1):
 
 
 
-		#Play against external minmax algorithm
+		#Play against external montecarlo algorithm
 		#Major performance issues with this _RATE == 1):
 		if(roundsCompleted % QUALITY_CHECK_RATE == 1):
 			hyperParameterScore += checkAIQuality(y,1)

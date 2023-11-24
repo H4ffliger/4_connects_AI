@@ -7,7 +7,7 @@ import time
 import pyfiglet
 import pickle
 import sys
-from minmax import minMaxAI
+from montecarlo import minMaxAI
 from copy import deepcopy
 import argparse
 
@@ -140,6 +140,8 @@ filehandler = open("dumbed_saves/" + args.neuronal_nwk, 'rb')
 genetics2.agents[0] = deepcopy(pickle.load(filehandler))
 genetics2.agents[0].debug_network()
 
+print(len(genetics2.agents))
+
 #Main loop
 for b in range(ROUND_COUNT-1, 0, -1):	
 	# Initialize the game board
@@ -150,7 +152,7 @@ for b in range(ROUND_COUNT-1, 0, -1):
 			game = GameField()
 			game_over = False
 			userToPlay = 1
-			firstMoveNoise = np.random.randint(0,gameW-1)
+			firstMoveNoise = np.random.randint(0,gameW)
 			firstMovePlayed = False
 			for gamesToPlay in range(0, 100):
 				debugMoves = 0
