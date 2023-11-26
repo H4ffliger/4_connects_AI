@@ -48,25 +48,19 @@ class NeuralNetwork:
 	def __init__(self, aInputs, aOutputs):
 		self.fitness = 0
 		self.denses = []
-		self.denses.append(Layer_Dense(aInputs,18))
+		self.denses.append(Layer_Dense(aInputs,32))
 		self.activation1 = Activation_ReLU()
-		self.denses.append(Layer_Dense(18, 18))
-		self.denses.append(Layer_Dense(18, 18))
-		self.denses.append(Layer_Dense(18, 18))
-		self.denses.append(Layer_Dense(18, aOutputs))
+		self.denses.append(Layer_Dense(32, 32))
+		self.denses.append(Layer_Dense(32, aOutputs))
 		self.activation2 = Activation_Softmax()
 
 	def think(self, inputs):
 		self.denses[0].forward(inputs)
-		self.activation1.forward(self.denses[0].output)
-		self.denses[1].forward(self.activation1.output)
+		self.activation2.forward(self.denses[0].output)
+		self.denses[1].forward(self.activation2.output)
 		self.activation1.forward(self.denses[1].output)
 		self.denses[2].forward(self.activation1.output)
-		self.activation1.forward(self.denses[2].output)
-		self.denses[3].forward(self.activation1.output)
-		self.activation1.forward(self.denses[3].output)
-		self.denses[4].forward(self.activation1.output)
-		self.activation2.forward(self.denses[4].output)
+		self.activation2.forward(self.denses[2].output)
 		#print(self.denses[4].output)
 		#print(self.activation2.output)
 		#For higher output and non normalized values on first and last field

@@ -7,7 +7,7 @@ import time
 import pyfiglet
 import pickle
 import sys
-from montecarlo import minMaxAI
+from montecarlo import monteCarloAI
 from copy import deepcopy
 import argparse
 

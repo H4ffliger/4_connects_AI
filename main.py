@@ -221,17 +221,16 @@ def getAIMove(userToPlay, board, indexMove):
 			viewfield = []
 			for x in range(0,4):
 				viewfield.extend(rows[x][ai_width:ai_width+4])
-
 			moveProbabiltyScoreOffset = [0] * ai_width
 			viewfield.insert(0, ai_width)
 			viewfield.insert(0, ai_height)
+			#print(viewfield)
 			moveProbabiltyScorePartly = genetics1.thinkParticular(userToPlay, viewfield).flatten()
 			moveProbabiltyScoreOffset.extend(moveProbabiltyScorePartly)
 			moveProbabiltyScoreFiller = [0] * (gameW - ai_width - 4)
 			moveProbabiltyScoreOffset.extend(moveProbabiltyScoreFiller)
 			moveProbabiltyScore = list(map(add, moveProbabiltyScore, moveProbabiltyScoreOffset))
 			moveProbabiltyScoreOverall.append(moveProbabiltyScore)
-
 	# Average the colums so that the edges of the game don't have lower values
 	moveProbabiltyScoreSum = [0] * gameW
 	moveProbabiltyScoreSumCount = [0] * gameW
@@ -243,7 +242,6 @@ def getAIMove(userToPlay, board, indexMove):
 				moveProbabiltyScoreSumCount[s] += 1
 	for i in range(len(moveProbabiltyScoreSum)-1, -1, -1):
 		moveProbabiltyScoreAverage[i] = moveProbabiltyScoreSum[i] / moveProbabiltyScoreSumCount[i]
-
 	sortedPicks = sorted(range(len(moveProbabiltyScoreAverage)), key=lambda k: moveProbabiltyScoreAverage[k])
 	return sortedPicks[indexMove]
 
@@ -389,7 +387,9 @@ def gameRoundGhost(y: int, idx: int):
 				elif(y == 0):
 					#userToPay 0 = Ghost gets first move
 					if(userToPlay == 0):
-						chosen_move = getGhostMove(enemy, game.board, bannedOutputs)
+						#Debug Test to check performance against montecarlo
+						chosen_move = monteCarloAI(deepcopy(game))
+						#chosen_move = getGhostMove(enemy, game.board, bannedOutputs)
 					else:
 						chosen_move = getAI2Move(x, game.board, bannedOutputs)
 				else:
@@ -397,9 +397,9 @@ def gameRoundGhost(y: int, idx: int):
 						chosen_move = getAIMove(x, game.board, bannedOutputs)
 
 					else:
-						chosen_move = getGhost2Move(enemy, game.board, bannedOutputs)
-
-
+						#Debug Test to check performance against montecarlo
+						chosen_move = monteCarloAI(deepcopy(game))
+						#chosen_move = getGhost2Move(enemy, game.board, bannedOutputs)
 
 				valid_move = game.turn(chosen_move)
 				if(valid_move == False and game_over == False):
