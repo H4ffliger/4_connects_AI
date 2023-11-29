@@ -69,8 +69,8 @@ print("Version 0.03\n"+
 
 
 #Game Specific
-gameW = 5
-gameH = 4
+gameW = 6
+gameH = 5
 gameSize = gameW*gameH
 
 #Genetic Algorithm
@@ -80,7 +80,7 @@ gameSize = gameW*gameH
 #Individual agents
 AGENT_INPUTS = 4*4+2
 #Output needs to be at least 2
-AGENT_OUTPUTS = 4 #ToDo:Check if not one to small
+AGENT_OUTPUTS = gameW #ToDo:Check if not one to small
 
 #Reward is exponential default 1.75
 FITNESS_REWARD = 1 #Temporary disabled
@@ -168,7 +168,7 @@ if __name__ == '__main__':
 	parser.add_argument('-POP_COUNTER', type=int, default=100,help="Population size of the current AIs")
 	parser.add_argument('-GHOSTAGENTS_POP', type=int, default=100,help="Population size of saved old AIs")
 	parser.add_argument('-SNAPSHOT_PROBABILITY', type=int, default=20,help="Probability of saving a current AI to the old saved AIs")
-	parser.add_argument('-exportRate', type=int, default=50,help="Rate at which generations genetics get exported")
+	parser.add_argument('-exportRate', type=int, default=20,help="Rate at which generations genetics get exported")
 	parser.add_argument('-ROUND_COUNT', type=int, default=2000,help="Amount of rounds to be played")
 	#FITNESS_REWARD = 1 #Temporary disabled
 	args = parser.parse_args()

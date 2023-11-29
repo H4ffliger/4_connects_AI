@@ -1,0 +1,10 @@
+ELO System to meassure progress x**2/200
+-----------------------------------------
+#   78  #   30 Monte Carlo Search Depth #
+#  100  #   50 Monte Carlo Search Depth #
+#  200  #  200 Monte Carlo Search Depth #
+#  300  #  450 Monte Carlo Search Depth #
+#  400  #  800 Monte Carlo Search Depth #
+#  500  # 1250 Monte Carlo Search Depth #
+#  600  # 1800 Monte Carlo Search Depth #
+-----------------------------------------

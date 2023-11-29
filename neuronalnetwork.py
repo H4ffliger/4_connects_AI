@@ -82,8 +82,6 @@ class NeuralNetwork:
 		print(self.denses[0].weights)
 		print(self.denses[1].weights)
 		print(self.denses[2].weights)
-		print(self.denses[3].weights)
-		print(self.denses[4].weights)
 
 
 		

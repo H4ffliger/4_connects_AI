@@ -20,8 +20,8 @@ ascii_banner = pyfiglet.figlet_format("GNeuroNetWK")
 print(ascii_banner)
 
 #Game Specific
-gameW = 5
-gameH = 4
+gameW = 6
+gameH = 5
 gameSize = gameW*gameH
 
 #Genetic Algorithm

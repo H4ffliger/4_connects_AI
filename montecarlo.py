@@ -12,7 +12,7 @@ if(ROUND_COUNT==0):
 	ROUND_COUNT = 1000000
 
 depth = 30
-gameFieldSize = 5
+gameFieldSize = 6
 
 #Balancing a win is 100 less worth than a loss
 WINNINGSCOREADDITION = 0
