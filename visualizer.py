@@ -100,12 +100,12 @@ vizualizer()
 
 '''
 tailLenght =  int(ROUND_COUNT/10) # Dynamic last 10 % of the learning will be meassured
-		df = pd.read_csv(FOLER_STATS + args.learning_Name + "_GEN_1_min_max_progress.csv")
+		df = pd.read_csv(FOLDER_STATS + args.learning_Name + "_GEN_1_min_max_progress.csv")
 		gen_01_win_sum = df.tail(tailLenght)['wins'].sum()/tailLenght
 		gen_01_draw_sum = df.tail(tailLenght)['draws'].sum()/tailLenght
 		gen_01_loss_sum = df.tail(tailLenght)['losses'].sum()/tailLenght
 
-		df = pd.read_csv(FOLER_STATS + args.learning_Name + "_GEN_2_min_max_progress.csv")
+		df = pd.read_csv(FOLDER_STATS + args.learning_Name + "_GEN_2_min_max_progress.csv")
 		gen_02_win_sum = df.tail(tailLenght)['wins'].sum()/tailLenght
 		gen_02_draw_sum = df.tail(tailLenght)['draws'].sum()/tailLenght
 		gen_02_loss_sum = df.tail(tailLenght)['losses'].sum()/tailLenght

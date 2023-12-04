@@ -64,7 +64,7 @@ print(ascii_banner)
 print("Version 0.03\n"+
 	"Genetic neuronal network developed by Huffliger \n" +
 	"Designed to outperform the minmax algorithm\n" +
-	"Currently testing the network\n" + 
+	"Currently testing the network\n" +
 	"Beat the game 4 connects with external monte carlo score progress check\n\n")
 
 
@@ -168,8 +168,9 @@ if __name__ == '__main__':
 	parser.add_argument('-POP_COUNTER', type=int, default=100,help="Population size of the current AIs")
 	parser.add_argument('-GHOSTAGENTS_POP', type=int, default=100,help="Population size of saved old AIs")
 	parser.add_argument('-SNAPSHOT_PROBABILITY', type=int, default=20,help="Probability of saving a current AI to the old saved AIs")
-	parser.add_argument('-exportRate', type=int, default=20,help="Rate at which generations genetics get exported")
+	parser.add_argument('-exportRate', type=int, default=10,help="Rate at which generations genetics get exported")
 	parser.add_argument('-ROUND_COUNT', type=int, default=2000,help="Amount of rounds to be played")
+	parser.add_argument('-continue_Training', type=bool, default=False,help="Continue training with learning_Name -[_1]/[_2] as import variable")
 	#FITNESS_REWARD = 1 #Temporary disabled
 	args = parser.parse_args()
 	randomizationAmount = args.randomizationAmount
@@ -188,11 +189,12 @@ if __name__ == '__main__':
 	SNAPSHOT_PROBABILITY = args.SNAPSHOT_PROBABILITY
 	EXPORTEVERYXMOVE = args.exportRate
 	ROUND_COUNT = args.ROUND_COUNT
+	CONTINUE_TRAINING = args.continue_Training
 
 
 #For a more organized hyperparameter tuning
-FOLER_STATS = 'dumbed_saves/' + args.learning_Name + '_stats/'
-os.makedirs(FOLER_STATS, exist_ok=True)
+FOLDER_STATS = 'dumbed_saves/' + args.learning_Name + '_stats/'
+os.makedirs(FOLDER_STATS, exist_ok=True)
 
 
 if(ROUND_COUNT==0):
@@ -201,6 +203,12 @@ if(ROUND_COUNT==0):
 #InitializePopulation
 genetics1 = Genetics(POP_COUNT, GHOSTAGENTS_POP, AGENT_INPUTS, AGENT_OUTPUTS, FITNESS_REWARD)
 genetics2 = Genetics(POP_COUNT, GHOSTAGENTS_POP, AGENT_INPUTS, AGENT_OUTPUTS, FITNESS_REWARD)
+
+
+#Continue training
+if(CONTINUE_TRAINING):
+	genetics1.fullImport("dumbed_saves/" + args.learning_Name + "_1")
+    genetics2.fullImport("dumbed_saves/" + args.learning_Name + "_2")
 
 #Copy random to ghosts
 for i in range(0, 1):
@@ -415,7 +423,7 @@ def gameRoundGhost(y: int, idx: int):
 				#if(x > POP_COUNT-2 and b % SHOWEVERY == 1 and b < ROUND_COUNT - SHOWAFTER):
 				#	time.sleep(0.3)
 				#	print(game.print_board())
-			
+
 
 
 
@@ -515,7 +523,7 @@ def gameRoundAI(y: int, idx: int):
 				#if(x > POP_COUNT-1 and b % SHOWEVERY == 1 and b < ROUND_COUNT - SHOWAFTER):
 					#time.sleep(0.2)
 					#print(game.print_board())
-			
+
 
 
 
@@ -598,9 +606,9 @@ def checkAIQuality(y: int, idx: int):
 						chosen_move = monteCarloAI(deepcopy(game))
 
 				valid_move = game.turn(chosen_move)
-					
+
 				if(valid_move == False and game_over == False):
-					
+
 					bannedOutputs += 1
 					if(chosen_move == -1 or bannedOutputs >= gameW):
 						if(y == 0):
@@ -613,7 +621,7 @@ def checkAIQuality(y: int, idx: int):
 				#if(x < 5 and y == 0):
 				#	time.sleep(0.3)
 				#	print(game.print_board())
-			
+
 
 
 
@@ -660,10 +668,10 @@ def checkAIQuality(y: int, idx: int):
 						qual_check_draws += 1
 				game_over = True
 				valid_move = True
-	file_object = open(FOLER_STATS + args.learning_Name + "_GEN_"+str(2-y) +"_min_max_progress.csv", 'a')
+	file_object = open(FOLDER_STATS + args.learning_Name + "_GEN_" + str(2 - y) + "_min_max_progress.csv", 'a')
 	file_object.write(str(roundsCompleted)+"," +str(qual_check_wins)+","+str(qual_check_draws)+","+str(qual_check_losses)+"\n")
 	file_object.close()
-	print("Generation" + str(2-y) + ": wins: " + str(qual_check_wins) + " draws: " + str(qual_check_draws) + " losses: " + str(qual_check_losses))	
+	print("Generation" + str(2-y) + ": wins: " + str(qual_check_wins) + " draws: " + str(qual_check_draws) + " losses: " + str(qual_check_losses))
 	return qual_check_wins + (qual_check_draws/6)
 
 
@@ -678,7 +686,7 @@ for b in range(ROUND_COUNT-1, -1, -1):
 
 
 
-		
+
 
 
 
@@ -694,7 +702,7 @@ for b in range(ROUND_COUNT-1, -1, -1):
 			hyperParameterScore += checkAIQuality(y,1)
 			if(y == 1):
 				hyperParameterScore = hyperParameterScore / 2
-				file_object = open(FOLER_STATS + args.learning_Name + "_visualizer.csv", 'a')
+				file_object = open(FOLDER_STATS + args.learning_Name + "_visualizer.csv", 'a')
 				file_object.write(str(roundsCompleted)+ "," + str(hyperParameterScore) + "\n")
 				file_object.close()
 				#Saving graph for hyperparamer
@@ -730,31 +738,33 @@ for b in range(ROUND_COUNT-1, -1, -1):
 	if(roundsCompleted % EXPORTEVERYXMOVE == 1 and b < ROUND_COUNT - EXPORTAFTER):
 		genetics1.savetoFile("genetics1-Test-v1-g-"+str(roundsCompleted), EXPORTQUALITY, EXPORTAMOUNT, args.learning_Name)
 		genetics2.savetoFile("genetics2-Test-v1-g-"+str(roundsCompleted), EXPORTQUALITY, EXPORTAMOUNT, args.learning_Name)
+		genetics1.saveFullExport("genetics-"+str(roundsCompleted)+"_1", args.learning_Name+"_full_export_" + +str(roundsCompleted))
+		genetics2.saveFullExport("genetics-"+str(roundsCompleted)+"_2", args.learning_Name+"_full_export_" + +str(roundsCompleted))
 	#7
 	genetics1.roundClose(randomizationAmount, randomizationStrengthWeights, randomizationStrengthBiases)
 	genetics2.roundClose(randomizationAmount, randomizationStrengthWeights, randomizationStrengthBiases)
 
 	if(roundsCompleted == 0):
-		file_object = open(FOLER_STATS + args.learning_Name + "_relative.csv", 'a')
+		file_object = open(FOLDER_STATS + args.learning_Name + "_relative.csv", 'a')
 		file_object.write("Round_Number,Fitness_Genetics1,Fitness_Genetics2,Amount_GhostAgents1,Amount_GhostAgents2\n")
 		file_object.close()
-		file_object = open(FOLER_STATS + args.learning_Name + "_visualizer.csv", 'a')
+		file_object = open(FOLDER_STATS + args.learning_Name + "_visualizer.csv", 'a')
 		file_object.write("Round_Number,Absolute_Fitness\n")
 		file_object.close()
-		file_object = open(FOLER_STATS + args.learning_Name + "_GEN_1_min_max_progress.csv", 'a')
+		file_object = open(FOLDER_STATS + args.learning_Name + "_GEN_1_min_max_progress.csv", 'a')
 		file_object.write("Round_Number,wins,draws,losses\n")
 		file_object.close()
-		file_object = open(FOLER_STATS+ args.learning_Name + "_GEN_2_min_max_progress.csv", 'a')
+		file_object = open(FOLDER_STATS + args.learning_Name + "_GEN_2_min_max_progress.csv", 'a')
 		file_object.write("Round_Number,wins,draws,losses\n")
 		file_object.close()
 
-	file_object = open(FOLER_STATS + args.learning_Name + "_relative.csv", 'a')
+	file_object = open(FOLDER_STATS + args.learning_Name + "_relative.csv", 'a')
 	file_object.write(str(roundsCompleted)+","+str(fitnessOfRound1)+ "," + str(fitnessOfRound2)+ "," +str(len(genetics1.ghostAgents))+";"+str(len(genetics2.ghostAgents))+"\n")
 	file_object.close()
 	roundsCompleted += 1
 
 	if(b == 0):
-		file_object = open(FOLER_STATS + args.learning_Name + ".txt", 'a')
+		file_object = open(FOLDER_STATS + args.learning_Name + ".txt", 'a')
 		file_object.write("GAMESPERROUND: " + str(GAMESPERROUND) + "\n"
 			+ "GHOSTGAMESPERROUND: " + str(GHOSTGAMESPERROUND) + "\n"
 			+ "randomizationAmount: " + str(randomizationAmount) + "\n"
@@ -770,42 +780,42 @@ for b in range(ROUND_COUNT-1, -1, -1):
 		import plotly.express as px
 
 		#Relative view
-		df = pd.read_csv(FOLER_STATS + args.learning_Name + "_relative.csv")
+		df = pd.read_csv(FOLDER_STATS + args.learning_Name + "_relative.csv")
 		df_long=pd.melt(df, id_vars='Round_Number', value_vars=['Fitness_Genetics1', 'Fitness_Genetics2'])
 		#fig = px.line(df_long, x = 'Round_Number', y = 'value',color='variable', title='TITLE')
 		fig = px.scatter(df_long, x="Round_Number", y="value",color='variable', trendline="lowess", trendline_options=dict(frac=0.015))
 		fig.data = [t for t in fig.data if t.mode == "lines"]
 		fig.update_traces(showlegend=True) #trendlines have showlegend=False by default
 		#fig.show()
-		fig.write_image(FOLER_STATS + args.learning_Name +".png",engine='orca')
+		fig.write_image(FOLDER_STATS + args.learning_Name + ".png", engine='orca')
 
 		#Gen1 absolute
-		df = pd.read_csv(FOLER_STATS + args.learning_Name + "_GEN_1_min_max_progress.csv")
+		df = pd.read_csv(FOLDER_STATS + args.learning_Name + "_GEN_1_min_max_progress.csv")
 		df_long=pd.melt(df, id_vars='Round_Number', value_vars=['wins', 'draws', 'losses'])
 		#fig = px.line(df_long, x = 'Round_Number', y = 'value',color='variable', title='TITLE')
 		fig = px.scatter(df_long, x="Round_Number", y="value",color='variable', trendline="lowess", trendline_options=dict(frac=0.015))
 		fig.data = [t for t in fig.data if t.mode == "lines"]
 		fig.update_traces(showlegend=True) #trendlines have showlegend=False by default
 		#fig.show()
-		fig.write_image(FOLER_STATS + args.learning_Name +"_GEN_1.png",engine='orca')
+		fig.write_image(FOLDER_STATS + args.learning_Name + "_GEN_1.png", engine='orca')
 		#Gen2 absolute
-		df = pd.read_csv(FOLER_STATS + args.learning_Name + "_GEN_2_min_max_progress.csv")
+		df = pd.read_csv(FOLDER_STATS + args.learning_Name + "_GEN_2_min_max_progress.csv")
 		df_long=pd.melt(df, id_vars='Round_Number', value_vars=['wins', 'draws', 'losses'])
 		#fig = px.line(df_long, x = 'Round_Number', y = 'value',color='variable', title='TITLE')
 		fig = px.scatter(df_long, x="Round_Number", y="value",color='variable', trendline="lowess", trendline_options=dict(frac=0.015))
 		fig.data = [t for t in fig.data if t.mode == "lines"]
 		fig.update_traces(showlegend=True) #trendlines have showlegend=False by default
 		#fig.show()
-		fig.write_image(FOLER_STATS + args.learning_Name +"_GEN_2.png",engine='orca')
+		fig.write_image(FOLDER_STATS + args.learning_Name + "_GEN_2.png", engine='orca')
 
 
 		tailLenght =  int(ROUND_COUNT/10) # Dynamic last 10 % of the learning will be meassured
-		df = pd.read_csv(FOLER_STATS + args.learning_Name + "_GEN_1_min_max_progress.csv")
+		df = pd.read_csv(FOLDER_STATS + args.learning_Name + "_GEN_1_min_max_progress.csv")
 		gen_01_win_sum = df.tail(tailLenght)['wins'].sum()/tailLenght
 		gen_01_draw_sum = df.tail(tailLenght)['draws'].sum()/tailLenght
 		gen_01_loss_sum = df.tail(tailLenght)['losses'].sum()/tailLenght
 
-		df = pd.read_csv(FOLER_STATS + args.learning_Name + "_GEN_2_min_max_progress.csv")
+		df = pd.read_csv(FOLDER_STATS + args.learning_Name + "_GEN_2_min_max_progress.csv")
 		gen_02_win_sum = df.tail(tailLenght)['wins'].sum()/tailLenght
 		gen_02_draw_sum = df.tail(tailLenght)['draws'].sum()/tailLenght
 		gen_02_loss_sum = df.tail(tailLenght)['losses'].sum()/tailLenght

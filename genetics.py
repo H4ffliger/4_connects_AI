@@ -1,6 +1,8 @@
 from neuronalnetwork import NeuralNetwork
 import numpy as np
 import pickle
+from copy import deepcopy
+import glob
 #Testing time
 import time
 import math
@@ -91,7 +93,20 @@ class Genetics():
 				with open(folder  + fileName + "-" + str(i) + "-q-"+ str(sortedAgents[len(sortedAgents)-i-1].fitness).replace(".", "_")  + ".txt", 'wb') as fh:
 					pickle.dump(sortedAgents[len(sortedAgents)-i-1], fh)
 
+	def saveFullExport(self, fileName, folderName):
+		folder = 'dumbed_saves/' + folderName + '/'
+		os.makedirs(folder, exist_ok=True)
 
+		for i in range(len(self.agents)):
+			with open(folder  + fileName + "-" + str(i) + ".txt", 'wb') as fh:
+				pickle.dump(self.agents[i], fh)
+
+
+	def fullImport(self, folderName):
+		genImports = glob.glob("dumbed_saves/"+ folderName + "/*")
+		for f in range(len(genImports)):
+			filehandler = open(genImports[f], 'rb')
+			self.agents[f] = deepcopy(pickle.load(filehandler))
 
 	def roundClose(self, randomizationAmount, randomuzationStrengthWeights, randomuzationStrengthBiases):
 		#start_time = time.time()
